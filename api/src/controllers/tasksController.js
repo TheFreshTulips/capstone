@@ -2,7 +2,7 @@ const env = process.env.NODE_ENV || "development";
 const config = require("../../knexfile")[env];
 const knex = require("knex")(config);
 
-//HELPER FUNCTIONS//
+// Helper functions ----------------------------------------------------------------------------------------
 const checkTime = (time) => {
   //returns bool if a time stamp is in the proper format or not
   // move this to separate function
@@ -15,7 +15,7 @@ const checkKeys = (validkeys, bodyKeys) => {
   });
 };
 
-// GET
+// GET requests ---------------------------------------------------------------------------------------------
 const orgRequest = (req, res) => {
   console.log(`working on get for /tasks/orgs/${req.params.orgid}`);
   // values given for each task {id, title, status, priority, suspense date, author_rank, author_name (database is author_id)}
@@ -186,18 +186,22 @@ const userWar = (req, res) => {
     .join("users_tasks as ut", "ut.task_id", "=", "tasks.id")
     .select(
       "tasks.id as task_id",
-      "tasks.title as task)_title",
+      "tasks.title as task_title",
       "tasks.completed_date as task_completed_date",
       "tasks.status as task_status"
     )
     .where("ut.user_id", "=", req.params.userid)
     .then((data) => {
-      res.set("Access-Control-Allow-Origin", "*");
-      res.status(200).send(data);
+      if (data) {
+        res.set("Access-Control-Allow-Origin", "*");
+        res.status(200).send(data);
+      } else {
+        res.status(301).send("unsuccessful GET");
+      }
     });
 };
 
-// POST at /tasks
+// POST requests ---------------------------------------------------------------------------------------------
 const addTask = async (req, res) => {
   //possible more error checking needed?
   console.log(`working on get for /tasks`);
@@ -215,7 +219,7 @@ const addTask = async (req, res) => {
       .then((data) => {
         if (data.length <= 0) {
           isValid = false;
-          res.status(301).send("is not a valid user");
+          res.status(301).send("author is not a valid user");
           return;
         }
       });
@@ -228,7 +232,7 @@ const addTask = async (req, res) => {
       .then((data) => {
         if (data.length <= 0) {
           isValid = false;
-          res.status(301).send("is not a valid organization");
+          res.status(302).send("is not a valid organization");
           return;
         }
       });
@@ -282,7 +286,6 @@ const addTaskUser = (req, res) => {
 };
 
 // POST req at /tasks/:taskid/comments, creates a new comment for a task
-// Req body that API is receiving: {body: 'blah blah blah', author: 1}
 const addComment = (req, res) => {
   const fieldsToInsert = {
     body: req.body.body,
@@ -296,13 +299,18 @@ const addComment = (req, res) => {
     .where("task_id", "=", parseInt(req.params.taskid))
     .insert(fieldsToInsert)
     .returning("*")
-    .catch((err) => console.log(err))
+    .catch((err) => {
+      console.log(err);
+      res.status(404).json({
+        message: "There was a problem adding this comment",
+      });
+    })
     .then((data) => {
       res.status(200).send(data);
     });
 };
 
-// PATCH req at /tasks/:taskid
+// PATCH request ---------------------------------------------------------------------------------------------
 const editTask = async (req, res) => {
   console.log(`working on patch for /tasks/${req.params.taskid}`);
   console.log(req.params);
@@ -349,6 +357,8 @@ const editTask = async (req, res) => {
   }
 };
 
+// DELETE request ---------------------------------------------------------------------------------------------
+
 const deleteTask = (req, res) => {
   console.log(`working on delete for /tasks/${req.params.taskid}`);
   knex("users_tasks")
@@ -362,6 +372,12 @@ const deleteTask = (req, res) => {
           knex("tasks")
             .where("tasks.id", "=", parseInt(req.params.id))
             .del()
+            .catch((err) => {
+              console.log(err);
+              res.status(404).json({
+                message: "There was a problem deleting this task",
+              });
+            })
             .then((data) => {
               res.status(200).send(`Number of records deleted: ${data}`);
             });
@@ -369,21 +385,26 @@ const deleteTask = (req, res) => {
     });
 };
 
+// unassign one or multiple users from a specific task
 const deleteTaskUsers = (req, res) => {
   console.log(`working on delete for /owners/${req.params.taskid}`);
-  let body = req.body
-  const fieldsToDelete = req.body.owners.map((ownerId) => ({
-    user_id: ownerId,
-    task_id: parseInt(req.params.taskid),
-  }))
+
   knex("users_tasks")
-    .where(fieldsToDelete)
+    .where((builder) => builder.whereIn("user_id", req.body.owners))
+    .andWhere(function () {
+      this.where("task_id", parseInt(req.params.taskid));
+    })
     .del()
+    .catch((err) => {
+      console.log(err);
+      res.status(404).json({
+        message: "There was a problem unassigning owners from this task",
+      });
+    })
     .then((data) => {
       res.status(200).send(`Number of records deleted: ${data}`);
-    })
-
-}
+    });
+};
 
 module.exports = {
   orgRequest,

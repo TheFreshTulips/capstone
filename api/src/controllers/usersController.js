@@ -117,31 +117,46 @@ const register = (req, res, next) => {
 };
 
 //returns 200 on success, 400 on invalid email, 401 on other invalid logins
-const login = (req, res) => {
+const login = async (req, res) => {
+  //super hacky knex stuff but it works
   console.log(`working on post for /login`);
   let keys = ["email", "password"];
 
   if (req.body[keys[0]] && req.body[keys[1]]) {
-    knex("positions")
-      .join("users", "position.id", "users.position_id")
+    knex("users")
       .select("*")
       .where({ email: req.body.email })
       .then((user) => {
         user = user[0];
-
         if (user === undefined) {
           res.status(400).send("Cannot find user");
         } else {
           bcrypt
-            .compare(req.body.password, user[0].password)
+            .compare(req.body.password, user.password)
             .then(function (result) {
               if (result) {
-                console.log(result);
-                console.log(user);
-                res.json({ body: { id: user.id, org_id: user.org_id } });
-                //res.status(200).send("success")
+                return knex("positions").then((data) => data);
               } else {
                 res.status(404).send("cannot login user");
+                return;
+              }
+            })
+            .then((position) => {
+              if (position) {
+                let sendPosition = position.filter(
+                  (ele) => user.position_id === ele.id
+                );
+
+                res.json({
+                  body: {
+                    id: user.id,
+                    org_id: user.org_id,
+                    position: sendPosition[0].name,
+                  },
+                });
+              } else {
+                res.status(405).send("an error occurred");
+                return;
               }
             });
         }
@@ -168,36 +183,41 @@ const update = (req, res) => {
     res.status(301).send("invalid keys");
   }
 };
+
 const remove = (req, res) => {
   console.log(`working on delete for /users/${req.params.userid}`);
-  knex("users_tasks")
-    .where("user_id", parseInt(req.params.userid))
+  knex("users_tasks") // remove inputs for user in users_tasks table
+    .where("user_id", "=", parseInt(req.params.userid))
+    .update({ task_id: null })
     .del()
+
     .then(() => {
-      knex("comments")
-        .where("user_id", parseInt(req.params.userid))
+      knex("comments") // remove the user's comments from the comments table
+        .where("user_id", "=", parseInt(req.params.userid))
         .del()
+
         .then(() => {
-          knex("tasks")
-            .where("user_id", parseInt(req.params.userid))
+          knex("tasks") // set user_id on tasks to null
+            .where("author_id", "=", parseInt(req.params.userid))
             .update({ author_id: null })
+
             .then(() => {
-              knex("users")
-                .where("id", parseInt(req.params.id))
+              knex("users") // now you can delete the user from the user's table
+                .where("id", "=", parseInt(req.params.userid))
                 .del()
                 .then((data) => {
-                  res.status(200).json(`Number of records deleted: ${data}`);
-                });
+                  res.status(200).json(`Number of users deleted: ${data}`);
+                })
+                .catch((err) =>
+                  console.log("Delete request UNSUCCESSFUL: ", err)
+                );
             });
         });
-    })
-    /*
+    });
+  /*
     .catch((err) => {
       console.log(err);
     })*/
-    .then((data) => {
-      res.status(200).json(`Number of users deleted: ${data}`);
-    });
 };
 
 module.exports = { profile, all, byOrg, register, login, update, remove };
