@@ -24,9 +24,9 @@ const AdminMenu = () => {
             alignItems="center"
             justifyContent="space-evenly"
           >
-            <Box m={2} pt={3}>
-              <Typography variant="h5">Admin Menu</Typography>
-            </Box>
+      <Box m={2} pt={3}>
+        <Typography variant="h5">Admin Menu</Typography>
+      </Box>
             <Box m={1}>
               <Link to={"/admin/roles"} style={{ textDecoration: 'none', color:"black" }}>
                 <Typography variant="h6" >View/Modify Roles</Typography>

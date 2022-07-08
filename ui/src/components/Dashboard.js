@@ -5,46 +5,43 @@ import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Button } from "@mui/material";
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Stack, Divider } from "@mui/material";
 import TaskCard from "./TaskCard.js";
-import { Stack } from "@mui/material";
-import { Divider } from "@mui/material";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import { TaskContext } from "../App.js";
 
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
-const dummy = [
-  {
-    task_id: 1,
-    task_title: "dummy",
-    task_status: "Backlog",
-    task_priority: 1,
-    task_suspense_date: "now",
-    task_created_by: "rank/firstname/lastname",
-    task_assigned_to: "Sp4 Jones",
-  },
-  {
-    task_id: 2,
-    task_title: "dummy",
-    task_status: "in progress",
-    task_priority: 1,
-    task_suspense_date: "now",
-    task_created_by: "rank/firstname/lastname",
-    task_assigned_to: "Sp4 Jones",
-  },
-  {
-    task_id: 3,
-    task_title: "dummy",
-    task_status: "in progress",
-    task_priority: 1,
-    task_suspense_date: "now",
-    task_author_id: 2,
-    task_assigned_to: "Sp4 Jones",
-  },
-];
+// const dummy = [
+//   {
+//     task_id: 1,
+//     task_title: "dummy",
+//     task_status: "Backlog",
+//     task_priority: 1,
+//     task_suspense_date: "now",
+//     task_created_by: "rank/firstname/lastname",
+//     task_assigned_to: "Sp4 Jones",
+//   },
+//   {
+//     task_id: 2,
+//     task_title: "dummy",
+//     task_status: "in progress",
+//     task_priority: 1,
+//     task_suspense_date: "now",
+//     task_created_by: "rank/firstname/lastname",
+//     task_assigned_to: "Sp4 Jones",
+//   },
+//   {
+//     task_id: 3,
+//     task_title: "dummy",
+//     task_status: "in progress",
+//     task_priority: 1,
+//     task_suspense_date: "now",
+//     task_author_id: 2,
+//     task_assigned_to: "Sp4 Jones",
+//   },
+// ];
 
 const userColumns = ["to do", "in progress", "Created"]; //created is current user is author and sole owner
 const unitColumns = ["to do", "in progress"];

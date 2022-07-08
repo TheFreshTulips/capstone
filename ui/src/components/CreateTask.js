@@ -7,8 +7,13 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Button } from "@mui/material";
+import { Button, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import moment from 'moment'
+
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
@@ -16,15 +21,21 @@ import { TaskContext } from "../App.js";
 
 // for creating/adding a new task
 const CreateTask = () => {
+  const validPriorities = [1, 2, 3, 4, 5]
+  const navigate = useNavigate();
   const tc = useContext(TaskContext);
 
   let [input, setInput] = useState({
     title: "",
     description: "",
-    priority: "",
-    assigned_date: "",
+    priority: '',
+    assigned_date: new Date(),
     suspense_date: "",
+    status: 'to do',
     comments: "",
+    creator_id: tc.userId,
+    owners: [tc.userId],
+    org_id: tc.userOrg
   });
 
   const handleChange = (e) => {
@@ -32,18 +43,20 @@ const CreateTask = () => {
       ...input,
       [e.target.name]: e.target.value,
     });
-    e.preventDefault();
   };
 
+  const handleSuspenseDateChange = (_value) => {
+    handleChange({target: {name: 'suspense_date', value: _value.format()}});
+  }
   const handleSubmit = (e) => {
-    const request = {
+    console.log(`sending body:`, input)
+    fetch(`${ApiUrl}/tasks`, {
       method: "POST",
       headers: {
-        "Content-Type": "applications/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(input),
-    };
-    fetch(`${ApiUrl}/tasks`, request)
+    })
       .then((res) => res.json())
       .then((data) => {
         alert("Task created!");
@@ -85,7 +98,7 @@ const CreateTask = () => {
                 name="title"
                 value={input.title}
                 onChange={handleChange}
-                required="required"
+                required
               />
             </Box>
             <Box m={1}>
@@ -95,19 +108,24 @@ const CreateTask = () => {
                 name="description"
                 value={input.description}
                 onChange={handleChange}
-                required="required"
+                required
               />
             </Box>
             <Box m={1}>
               <TextField
-                label="Priority"
+                id="priority"
+                select
                 name="priority"
                 value={input.priority}
+                label="Priority"
                 onChange={handleChange}
-                required="required"
-              />
+                required
+                sx={{ minWidth: 223 }}
+              >
+                {validPriorities.map(element => <MenuItem key={element} value={element}>{element}</MenuItem>)}
+              </TextField>
             </Box>
-            <Box m={1}>
+            {/* <Box m={1}>
               <TextField
                 label="Assigned Date"
                 name="assigned"
@@ -115,20 +133,32 @@ const CreateTask = () => {
                 onChange={handleChange}
                 required="required"
               />
-            </Box>
+            </Box> */}
             <Box m={1}>
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <Stack spacing={3}>
+                  <DateTimePicker
+                    label="Suspense Date/Time"
+                    value={input.suspense_date}
+                    onChange={handleSuspenseDateChange}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </Stack>
+              </LocalizationProvider>
+            </Box>
+            {/* <Box m={1}>
               <TextField
                 label="Suspense Date"
                 type="suspense"
                 name="suspense"
                 value={input.suspense}
                 onChange={handleChange}
-                required="required"
+                required
               />
-            </Box>
+            </Box> */}
             <Box m={2} pt={3}></Box>
             <Button className="submitButton" type="submit" value="Submit">
-              Register
+              Submit
             </Button>
           </Grid>
         </Box>
