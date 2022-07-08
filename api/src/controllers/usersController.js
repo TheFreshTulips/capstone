@@ -180,7 +180,7 @@ const update = (req, res) => {
         res.status(200).send(data);
       });
   } else {
-    res.status(301).send("invalid keys");
+    res.status(404).send("invalid keys");
   }
 };
 
@@ -208,16 +208,15 @@ const remove = (req, res) => {
                 .then((data) => {
                   res.status(200).json(`Number of users deleted: ${data}`);
                 })
-                .catch((err) =>
-                  console.log("Delete request UNSUCCESSFUL: ", err)
-                );
+                .catch((err) => {
+                  console.log(err);
+                  res.status(404).json({
+                    message: "There was a problem deleting this user",
+                  });
+                });
             });
         });
     });
-  /*
-    .catch((err) => {
-      console.log(err);
-    })*/
 };
 
 module.exports = { profile, all, byOrg, register, login, update, remove };

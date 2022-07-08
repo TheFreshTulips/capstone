@@ -196,7 +196,7 @@ const userWar = (req, res) => {
         res.set("Access-Control-Allow-Origin", "*");
         res.status(200).send(data);
       } else {
-        res.status(301).send("unsuccessful GET");
+        res.status(404).send("unsuccessful GET");
       }
     });
 };
@@ -208,7 +208,7 @@ const addTask = async (req, res) => {
   let isValid = true;
   // still need to do data validation here
   if (req.body.creator_id === undefined || req.body.org_id === undefined) {
-    res.status(301).send("creator id or org id does not exist");
+    res.status(404).send("creator id or org id does not exist");
     return;
   }
   //make sure that the creator_id is in the users table
@@ -219,7 +219,7 @@ const addTask = async (req, res) => {
       .then((data) => {
         if (data.length <= 0) {
           isValid = false;
-          res.status(301).send("author is not a valid user");
+          res.status(404).send("author is not a valid user");
           return;
         }
       });
@@ -232,7 +232,7 @@ const addTask = async (req, res) => {
       .then((data) => {
         if (data.length <= 0) {
           isValid = false;
-          res.status(302).send("is not a valid organization");
+          res.status(404).send("is not a valid organization");
           return;
         }
       });
@@ -281,7 +281,7 @@ const addTaskUser = (req, res) => {
         res.status(200).send(data);
       });
   } else {
-    res.status(301).send("does not include field owners");
+    res.status(400).send("does not include field owners");
   }
 };
 
