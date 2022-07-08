@@ -18,30 +18,40 @@ const Header = () => {
       <div className="navButtons">
         {
           tc.isAdmin ?
-            <Link to={`/menu`}>
-              <button className="toAdminMenu">Admin Menu</button>
+            <Link to={`/admin`}>
+              <button className="toAdmin">Admin</button>
             </Link>
             :
             <></>
         }
-        <Link to={`/unit`}>
-          <button className="toUnitTasks"> Unit Tasks </button>
-        </Link>
 
-        <Link to={`/reports`}>
-          <button className="toReports"> Reports </button>
-        </Link>
+        {
+          tc.userId !== null ?
+            <>
+              <Link to={`/unit`}>
+                <button className="toUnitTasks"> Unit Tasks </button>
+              </Link>
 
-        <Link to={`/archive`}>
-          <button className="toArchive"> Archive </button>
-        </Link>
+              <Link to={`/reports`}>
+                <button className="toReports"> Reports </button>
+              </Link>
 
-        <Link to={`/profile`}>
-          <button className="toProfile"> Profile </button>
-        </Link>
-        <Link to={`/admin`}>
-          <button className="toProfile"> Admin </button>
-        </Link>
+              <Link to={`/archive`}>
+                <button className="toArchive"> Archive </button>
+              </Link>
+
+              <Link to={`/profile`}>
+                <button className="toProfile"> Profile </button>
+              </Link>
+            </>
+            :
+            <>
+              <Link to={`/login`}>
+                <button className="toLogin"> Login </button>
+              </Link>
+            </>
+        }
+
       </div>
     </div>
   );

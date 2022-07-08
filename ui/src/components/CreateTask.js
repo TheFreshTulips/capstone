@@ -60,7 +60,7 @@ const CreateTask = () => {
       .then((res) => res.json())
       .then((data) => {
         alert("Task created!");
-        navigate("/tasks");
+        navigate("/");
       })
       .catch((err) => {
         console.log(err);

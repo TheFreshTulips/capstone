@@ -12,11 +12,13 @@ import config from "../config";
 import Typography from "@mui/material/Typography";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import { useNavigate } from "react-router-dom";
 
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 
 const ViewModifyOrgs = () => {
+  const navigate = useNavigate();
   const [orgs, setOrgs] = useState([])
   useEffect(() => {
     let url = `${ApiUrl}/orgs`
@@ -28,7 +30,7 @@ const ViewModifyOrgs = () => {
   return (
     <>
       <Box m={4} display='flex' justifyContent='right'>
-        <Fab color="primary" aria-label="add" onClick={() => navigate('/orgs/add')}>
+        <Fab color="primary" aria-label="add" onClick={() => navigate('/admin/orgs/create')}>
           <AddIcon />
         </Fab>
       </Box>

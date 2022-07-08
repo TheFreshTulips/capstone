@@ -16,13 +16,16 @@ const profile = (req, res) => {
   //{id, name, rank, organization, email}
   knex("users")
     .join("organizations", "organizations.id", "=", "users.org_id")
+    .join("positions", "positions.id", "=", "users.position_id")
     .select(
       "users.id as user_id",
       "users.name as user_name",
       "users.rank as user_rank",
       "organizations.id as org_id",
       "organizations.name as org_name",
-      "users.email as user_email"
+      "users.email as user_email",
+      "positions.id as position_id",
+      "positions.name as position_name"
     )
     .where("users.id", "=", req.params.userid)
     .then((data) => {
@@ -78,7 +81,7 @@ const byOrg = (req, res) => {
 const register = (req, res, next) => {
   console.log(`working on post for /register`);
 
-  let keys = ["name", "rank", "email", "position_id", "password"];
+  let keys = ["name", "rank", "email", "position_id", "password", "org_id"];
 
   if (
     req.body[keys[0]] &&
@@ -100,6 +103,7 @@ const register = (req, res, next) => {
                 email: req.body.email,
                 position_id: req.body.position_id,
                 password: hashedPassword,
+                org_id: req.body.org_id
               })
               .returning(["id", "email"])
               .then((users) => {
@@ -115,6 +119,22 @@ const register = (req, res, next) => {
     res.status(404).send();
   }
 };
+
+/*
+Current bug with login:
+  working on post for /login
+  api    | node:internal/errors:477
+  api    |     ErrorCaptureStackTrace(err);
+  api    |     ^
+  api    |
+  api    | Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+  api    |     at new NodeError (node:internal/errors:388:5)
+  api    |     at ServerResponse.setHeader (node:_http_outgoing:603:11)
+  api    |     at ServerResponse.header (/app/node_modules/express/lib/response.js:776:10)
+  api    |     at ServerResponse.send (/app/node_modules/express/lib/response.js:170:12)
+  api    |     at /app/src/controllers/usersController.js:160:33 {
+  api    |   code: 'ERR_HTTP_HEADERS_SENT'
+*/
 
 //returns 200 on success, 400 on invalid email, 401 on other invalid logins
 const login = async (req, res) => {
@@ -148,11 +168,9 @@ const login = async (req, res) => {
                 );
 
                 res.json({
-                  body: {
                     id: user.id,
                     org_id: user.org_id,
                     position: sendPosition[0].name,
-                  },
                 });
               } else {
                 res.status(405).send("an error occurred");

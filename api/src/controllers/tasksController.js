@@ -19,22 +19,26 @@ const checkKeys = (validkeys, bodyKeys) => {
 const orgRequest = (req, res) => {
   console.log(`working on get for /tasks/orgs/${req.params.orgid}`);
   // values given for each task {id, title, status, priority, suspense date, author_rank, author_name (database is author_id)}
-  knex("tasks")
-    .join("users", "users.id", "=", "tasks.author_id")
-    .select(
-      "tasks.id as task_id",
-      "tasks.title as task_title",
-      "tasks.status as task_status",
-      "tasks.priority as task_priority",
-      "tasks.suspense_date as task_suspense_date",
-      "users.rank as author_rank",
-      "users.name as author_name"
-    )
-    .where("tasks.org_id", "=", req.params.orgid)
-    .then((data) => {
-      res.set("Access-Control-Allow-Origin", "*");
-      res.status(200).send(data);
-    });
+  if(!isNaN(parseInt(req.params.orgid))) {
+    knex("tasks")
+      .join("users", "users.id", "=", "tasks.author_id")
+      .select(
+        "tasks.id as task_id",
+        "tasks.title as task_title",
+        "tasks.status as task_status",
+        "tasks.priority as task_priority",
+        "tasks.suspense_date as task_suspense_date",
+        "users.rank as author_rank",
+        "users.name as author_name"
+      )
+      .where("tasks.org_id", "=", req.params.orgid)
+      .then((data) => {
+        res.set("Access-Control-Allow-Origin", "*");
+        res.status(200).send(data);
+      });
+  } else {
+    res.status(404).send();
+  }
 };
 
 const userRequest = (req, res) => {
@@ -290,7 +294,7 @@ const addComment = (req, res) => {
   const fieldsToInsert = {
     body: req.body.body,
     task_id: parseInt(req.params.taskid),
-    user_id: req.body.author,
+    user_id: req.body.author_id,
   };
   console.log(
     `working on post request for /tasks/${req.params.taskid}/comments`
@@ -362,11 +366,11 @@ const editTask = async (req, res) => {
 const deleteTask = (req, res) => {
   console.log(`working on delete for /tasks/${req.params.taskid}`);
   knex("users_tasks")
-    .where("task_id", "=", req.params.id)
+    .where("task_id", "=", parseInt(req.params.id))
     .del()
     .then(() => {
       knex("comments")
-        .where("task_id", "=", req.params.id)
+        .where("task_id", "=", parseInt(req.params.id))
         .del()
         .then(() => {
           knex("tasks")

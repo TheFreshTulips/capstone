@@ -12,12 +12,14 @@ import Login from "./components/Login.js";
 import TaskCard from "./components/TaskCard.js";
 import ViewModifyRoles from "./components/ViewModifyRoles.js";
 import ViewModifyOrgs from "./components/ViewModifyOrgs.js"
+import ModifyRoles from "./components/ModifyRoles.js"
+import CreateOrg from "./components/CreateOrg.js";
 const TaskContext = createContext(null);
 
 function App() {
-  const [userId, setUserId] = useState(1); //set this in Login (start as null)
+  const [userId, setUserId] = useState(null); //set this in Login (start as null)
   const [isAdmin, setIsAdmin] = useState(false);
-  const [userOrg, setUserOrg] = useState(1); //set this in Login (start as null)
+  const [userOrg, setUserOrg] = useState(null); //set this in Login (start as null)
 
   const TaskContextValues = {
     userId,
@@ -34,46 +36,44 @@ function App() {
         <TaskContext.Provider value={TaskContextValues}>
           <Header />
           <Routes>
-            <Route path="/" element={<Dashboard user={true} />}>
-              {" "}
-            </Route>
-            <Route path="/unit" element={<Dashboard user={false} />}>
-              {" "}
-            </Route>
-            <Route path="/tasks/add" element={<CreateTask type={"task"} />}>
-              {" "}
-            </Route>
-            <Route path="/tasks/:task" element={<TaskDetails />}>
-              {" "}
-            </Route>
-            <Route
-              path="/reports"
-              element={<TaskTable isArchive={false} />}
-            >
-              {" "}
-            </Route>
-            <Route path="/profile" element={<Profile />}>
-              {" "}
-            </Route>
-            <Route path="/archive" element={<TaskTable isArchive={true} />}>
-              {" "}
-            </Route>
-            <Route path="/register" element={<Register />}>
-              {" "}
-            </Route>
-            <Route path="/login" element={<Login />}>
-              {" "}
-            </Route>
-            <Route path="/admin" element={<AdminMenu />}>
-              {" "}
-            </Route>
-            <Route path="/admin/roles" element={<ViewModifyRoles />}>
-              {" "}
-            </Route>
-            <Route path="/admin/orgs" element={<ViewModifyOrgs />}>
-              {" "}
-            </Route>
-            <Route path="/*" element={<Dashboard user={false} />}></Route>
+            {
+            isAdmin ?
+
+              <>
+                {/* admin routes only */}
+                <Route path="/admin" element={<AdminMenu />}/>
+                <Route path="/admin/roles" element={<ViewModifyRoles />}/>
+                <Route path="/admin/roles/edit/:id" element={<ModifyRoles />}/>
+                <Route path="/admin/orgs" element={<ViewModifyOrgs />}/>
+                <Route path="/admin/orgs/create" element={<CreateOrg />}/>
+                <Route path="/*" element={<Dashboard user={false} />}/>
+              </>
+              : <></>
+            }
+            {
+
+            userId !== null ?
+
+              <>
+                {/* all user routes */}
+                <Route path="/" element={<Dashboard user={true} />}/>
+                <Route path="/unit" element={<Dashboard user={false} />}/>
+                <Route path="/tasks/add" element={<CreateTask type={"task"} />}/>
+                <Route path="/tasks/:task" element={<TaskDetails />}/>
+                <Route path="/reports" element={<TaskTable isArchive={false} />}/>
+                <Route path="/profile" element={<Profile />}/>
+                <Route path="/archive" element={<TaskTable isArchive={true} />}/>
+                <Route path = '/*' element = {<Dashboard user = {true}/>}></Route>
+              </>
+            :
+
+              <>
+                {/* unauthenticated routes */}
+                <Route path="/register" element={<Register />}/>
+                <Route path="/login" element={<Login />}/>
+                <Route path = '/*' element = {<Login/>}/>
+              </>
+            }
           </Routes>
         </TaskContext.Provider>
       </Router>

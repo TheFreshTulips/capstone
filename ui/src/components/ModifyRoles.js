@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import EditableText from "./EditableText.js";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
@@ -8,9 +7,9 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Button, Select, MenuItem, InputLabel } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import config from "../config";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
+import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 import { TaskContext } from "../App.js";
@@ -22,12 +21,12 @@ const Register = () => {
   let [input, setInput] = useState({
     name: "",
     rank: "",
+    org_id: 0,
     email: "",
-    position_id: 1,
-    password: "",
-    org_id: 0
+    position_id: 0,
   });
 
+  const positions = ["member", "supervisor", "admin"];
   const validRanks = [
     "CIV",
     "Spc 1",
@@ -50,18 +49,29 @@ const Register = () => {
     "Lt Gen",
     "Gen"
   ]
+  const [orgs, setOrgs] = useState([])
+
+  let {id} = useParams();
 
   const [password2, setPassword2] = useState('');
   const [feedback, setFeedback] = useState('');
 
-  const [orgs, setOrgs] = useState([])
-
   useEffect(() => {
-    let url = `${ApiUrl}/orgs`
-    fetch(url)
+    fetch(`${ApiUrl}/users/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        setInput({
+          name: data.user_name,
+          rank: data.user_rank,
+          org_id: data.org_id,
+          email: data.user_email,
+          position_id: data.position_id,
+        })
+      })
+    fetch(`${ApiUrl}/orgs`)
       .then(res => res.json())
       .then(data => setOrgs(data))
-  }, [])
+  }, [id])
 
   const handleChange = (e) => {
     // sets Input state depending on what the user inputted into registration fields
@@ -87,26 +97,23 @@ const Register = () => {
         tempFeedback += 'invalid email format\n';
         error = true;
     }
-    if(input.password !== password2) {
-      tempFeedback += 'passwords must match\n'
-      error = true;
-    }
+
     setFeedback(tempFeedback);
     if(error === false) {
       // sends post request with input state info to API when user clicks submit/register
-      fetch(`${ApiUrl}/register`, {
-        method: 'POST',
+      fetch(`${ApiUrl}/users/${id}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
       })
         .then((res) => res.json())
         .then((data) => {
-          alert("Registration successful!");
-          navigate("/login");
+          alert(`Update on user ${id} was successful!`);
+          navigate("/");
         })
         .catch((err) => {
           console.log(err);
-          alert(`Failed to register new user`);
+          alert(`Failed to update user ${id}`);
         });
     }
 
@@ -132,7 +139,7 @@ const Register = () => {
             justifyContent="space-evenly"
           >
             <Box m={2} pt={3}>
-              <Typography variant="h5">Register Here</Typography>
+              <Typography variant="h5">Modify Role</Typography>
             </Box>
 
             <Box m={1}>
@@ -189,26 +196,19 @@ const Register = () => {
             </Box>
             <Box m={1}>
               <TextField
-                label="Password"
-                type="password"
-                name="password"
-                value={input.password}
+                id="position"
+                select
+                value={input.position_id}
+                label="Position"
                 onChange={handleChange}
+                name="position_id"
                 required
-                maxLength={50}
-              />
+                sx={{minWidth: 223}}
+                >
+                {positions.map(org => <MenuItem key={org.org_id} value={org.org_id}>{org.org_name}</MenuItem>)}
+              </TextField>
             </Box>
-            <Box m={1}>
-              <TextField
-                label="Re-Enter Password"
-                type="password"
-                name="password2"
-                value={password2}
-                onChange={e => setPassword2(e.target.value)}
-                required
-                maxLength={50}
-              />
-            </Box>
+
             <Box m={2} pt={3}></Box>
             <Button className="submitButton" type="submit" value="Submit">
               Register

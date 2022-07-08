@@ -17,7 +17,6 @@ const Login = () => {
     email: '',
     password: '',
   })
-  let [isAuthenticated, setIsAuthenticated] = useState(false);
   const [feedback, setFeedback] = useState('');
   let navigate = useNavigate();
   const tc = useContext(TaskContext);
@@ -47,33 +46,39 @@ const Login = () => {
     }
     setFeedback(tempFeedback);
     if (error === false) {
+      let isAuthenticated = false;
       let res = await fetch(`${ApiUrl}/login`, {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(input)
-      })
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(input)
+        })
         .then(response => {
           //console.log("RESPONSE AFTER SIGNING IN", response.json())
           if (response.ok) {
-            setIsAuthenticated(true);
+            isAuthenticated = true;
             return response.json();
           } else if (response.status === 401) {
-            setIsAuthenticated(false);
-            console.log("Unsuccessfull login - ui from ui")
+            isAuthenticated = false
+            console.log("Unsuccessfull login")
             return;
+          }
+        })
+        .then(data => {
+          // res is the id of the user that signed in
+          if (isAuthenticated) {
+            console.log(`data: `, data)
+            tc.setIsAdmin(data.position === "admin")
+            tc.setUserId(data.id);
+            if(data.org_id) {
+              tc.setUserOrg(data.org_id)
+            }
+            navigate(`/`)
           }
         })
         .catch(error => console.log('error is', error));
 
-      // res is the id of the user that signed in
-      if (isAuthenticated) {
-        tc.setIsAdmin(res.body.isAdmin)
-        tc.setUserId(res.body.user_id)
-        tc.setUserOrg(res.body.org_id)
-        navigate(`/`)
-      }
 
-      console.log("RES VALUE", res);
+      // console.log("RES VALUE", res);
     }
 
   }
@@ -86,11 +91,6 @@ const Login = () => {
     });
     e.preventDefault();
   }
-
-  useEffect(() => {
-    //placeholder for now
-    tc.setUserId(1);
-  }, []);
 
   return (
     <Container

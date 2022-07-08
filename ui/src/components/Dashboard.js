@@ -77,7 +77,7 @@ const Dashboard = ({ user }) => {
         setTasks(data);
         setIsLoading(false);
         if (user) {
-          console.log(userId);
+          console.log(tc.userId);
         }
       });
   }, [user]);
