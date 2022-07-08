@@ -10,6 +10,9 @@ import { Button } from "@mui/material";
 import { TaskContext } from "../App.js";
 import EditableText from "./EditableText.js"
 // import { useParams } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Fab from "@mui/material/Fab";
+import { useNavigate } from 'react-router-dom'
 
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -27,7 +30,8 @@ const TaskDetails = () => {
   const [comments, setComments] = useState([]);
   const [input, setInput] = useState([])
   const tc = useContext(TaskContext);
-  let {task} = useParams()
+  let {task} = useParams();
+  let navigate = useNavigate();
 
   function compare(a, b) {
     if (a.id < b.id) {
@@ -46,6 +50,16 @@ const TaskDetails = () => {
     setComments(commentArray)
   };
 
+  const handleDelete = () => {
+    fetch(`${ApiUrl}/tasks/${taskDetails.task_id}`)
+      .then(res => {
+        if(res.status === 200) {
+          navigate('/');
+        } else {
+          alert('an error occurred with the delete')
+        }
+      })
+  }
 
   useEffect(() => {
     let url = `${ApiUrl}/tasks/${task}`
@@ -58,7 +72,8 @@ const TaskDetails = () => {
       })
       .then((data) => {
          sortComments(data.comments);
-         setOwnsTask(data.author_id === tc.userId) //if the author of the task is the same user in the global context they can edit the task
+        //  setOwnsTask(data.author_id === tc.userId) //if the author of the task is the same user in the global context they can edit the task
+        setOwnsTask(true); //change this back to the line above once the author_id is being passed by the API
        })
       .catch((err) => console.log(err));
   }, []);
@@ -72,6 +87,13 @@ const TaskDetails = () => {
     <>
       <Box marginTop={5} sx={{ width: "100%" }}>
           <Box m={2}><Typography variant="h5">{`Task #${taskDetails.task_id}`}</Typography></Box>
+          {ownsTask ? (
+            <Box m = {4} display='flex' justifyContent='right'>
+              <Fab color="primary" aria-label="add" onClick={handleDelete}>
+                <DeleteIcon />
+              </Fab>
+            </Box>
+          ) : null}
           <Grid
             container
             spacing={3}
