@@ -8,13 +8,15 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Button, Select, MenuItem, InputLabel } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Fab from "@mui/material/Fab";
 
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 import { TaskContext } from "../App.js";
 
-const Register = () => {
+const ModifyRoles = () => {
   const tc = useContext(TaskContext);
   const navigate = useNavigate();
 
@@ -26,7 +28,7 @@ const Register = () => {
     position_id: 0,
   });
 
-  const positions = ["member", "supervisor", "admin"];
+  const positions = [ {name: "member", id: 1}, {name: "supervisor", id:2}, {name: "admin", id:3}];
   const validRanks = [
     "CIV",
     "Spc 1",
@@ -55,17 +57,32 @@ const Register = () => {
 
   const [password2, setPassword2] = useState('');
   const [feedback, setFeedback] = useState('');
-
+  const handleDelete = () => {
+    fetch(`${ApiUrl}/users/${id}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(`Delete on user ${id} was successful!`);
+        navigate("/admin/roles");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(`Failed to delete user ${id}`);
+      });
+  }
   useEffect(() => {
     fetch(`${ApiUrl}/users/${id}`)
       .then(res => res.json())
       .then(data => {
+        console.log(`data on user ${id}: `, data[0])
         setInput({
-          name: data.user_name,
-          rank: data.user_rank,
-          org_id: data.org_id,
-          email: data.user_email,
-          position_id: data.position_id,
+          name: data[0].user_name,
+          rank: data[0].user_rank,
+          org_id: data[0].org_id,
+          email: data[0].user_email,
+          position_id: data[0].position_id,
         })
       })
     fetch(`${ApiUrl}/orgs`)
@@ -109,7 +126,7 @@ const Register = () => {
         .then((res) => res.json())
         .then((data) => {
           alert(`Update on user ${id} was successful!`);
-          navigate("/");
+          navigate("/admin/roles");
         })
         .catch((err) => {
           console.log(err);
@@ -129,8 +146,14 @@ const Register = () => {
         borderRadius: "5px",
       }}
     >
+      <Fab color="primary" aria-label="add" onClick={handleDelete}>
+        <DeleteIcon />
+      </Fab>
       <form onSubmit={handleSubmit}>
         <Box m={2} pt={3}>
+          <Link to={"/admin/roles"} style={{ textDecoration: 'none', color: "black" }} className='roles-link'>
+            <Typography variant="h6">Back to the roles page</Typography>
+          </Link>
           <Grid
             container
             spacing={3}
@@ -205,17 +228,15 @@ const Register = () => {
                 required
                 sx={{minWidth: 223}}
                 >
-                {positions.map(org => <MenuItem key={org.org_id} value={org.org_id}>{org.org_name}</MenuItem>)}
+                {positions.map(position => <MenuItem key={position.id} value={position.id}>{position.name}</MenuItem>)}
               </TextField>
             </Box>
 
             <Box m={2} pt={3}></Box>
             <Button className="submitButton" type="submit" value="Submit">
-              Register
+              Submit Changes
             </Button>
-            <Link to={"/login"} style={{ textDecoration: 'none', color: "black" }} className='register-link'>
-            <Typography variant="h6" >Already have an account? Click here to be taken to the login page!</Typography>
-          </Link>
+
           </Grid>
         </Box>
       </form>
@@ -223,4 +244,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default ModifyRoles;

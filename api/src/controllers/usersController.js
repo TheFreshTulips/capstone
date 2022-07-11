@@ -56,6 +56,7 @@ const all = (req, res) => {
 
 const byOrg = (req, res) => {
   console.log(`working on post for /users/orgs/${req.params.id}`);
+  //add condition for if id is a number
   knex("users")
     .join("organizations as org", "org.id", "=", "users.org_id")
     .join("positions", "positions.id", "=", "users.position_id")
@@ -141,28 +142,30 @@ const login = async (req, res) => {
   //super hacky knex stuff but it works
   console.log(`working on post for /login`);
   let keys = ["email", "password"];
+  let isAuthenticated = false;
 
   if (req.body[keys[0]] && req.body[keys[1]]) {
     knex("users")
       .select("*")
       .where({ email: req.body.email })
-      .then((user) => {
-        user = user[0];
-        if (user === undefined) {
-          res.status(400).send("Cannot find user");
+      .then((results) => {
+        if (results.length === 0) {
+          res.status(404).send("Cannot find user");
         } else {
+          let user = results[0]
           bcrypt
             .compare(req.body.password, user.password)
-            .then(function (result) {
+            .then(result => {
               if (result) {
+                isAuthenticated = true;
                 return knex("positions").then((data) => data);
               } else {
-                res.status(404).send("cannot login user");
+                res.status(400).send("invalid password");
                 return;
               }
             })
             .then((position) => {
-              if (position) {
+              if (isAuthenticated) {
                 let sendPosition = position.filter(
                   (ele) => user.position_id === ele.id
                 );
@@ -172,11 +175,12 @@ const login = async (req, res) => {
                     org_id: user.org_id,
                     position: sendPosition[0].name,
                 });
-              } else {
-                res.status(405).send("an error occurred");
-                return;
               }
-            });
+            })
+            // .catch((err) => {
+            //   console.log(`Failed to authenticate user ${req.body.email}`, err);
+            //   res.status(404).send('invalid password');
+            // });
         }
       });
   }

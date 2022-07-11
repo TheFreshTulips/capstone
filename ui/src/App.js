@@ -10,10 +10,11 @@ import Header from "./components/Header.js";
 import Register from "./components/Register.js";
 import Login from "./components/Login.js";
 import TaskCard from "./components/TaskCard.js";
+import ViewModifyOrgs from "./components/ViewModifyOrgs.js";
 import ViewModifyRoles from "./components/ViewModifyRoles.js";
-import ViewModifyOrgs from "./components/ViewModifyOrgs.js"
-import ModifyRoles from "./components/ModifyRoles.js"
-import CreateOrg from "./components/CreateOrg.js";
+import CreateOrgs from "./components/CreateOrgs.js";
+import ModifyOrgs from "./components/ModifyOrgs.js";
+import ModifyRoles from "./components/ModifyRoles.js";
 const TaskContext = createContext(null);
 
 function App() {
@@ -45,7 +46,8 @@ function App() {
                 <Route path="/admin/roles" element={<ViewModifyRoles />}/>
                 <Route path="/admin/roles/edit/:id" element={<ModifyRoles />}/>
                 <Route path="/admin/orgs" element={<ViewModifyOrgs />}/>
-                <Route path="/admin/orgs/create" element={<CreateOrg />}/>
+                <Route path="/admin/orgs/create" element={<CreateOrgs />}/>
+                <Route path="/admin/orgs/edit/:id" element={<ModifyOrgs />}/>
                 <Route path="/*" element={<Dashboard user={false} />}/>
               </>
               : <></>

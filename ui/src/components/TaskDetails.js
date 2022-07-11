@@ -6,7 +6,8 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import { Button } from "@mui/material";
+import { Button, Select, MenuItem, InputLabel } from "@mui/material";
+import FormControl from '@mui/material/FormControl';
 import { TaskContext } from "../App.js";
 import EditableText from "./EditableText.js"
 // import { useParams } from "react-router-dom";
@@ -18,7 +19,16 @@ import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 /*
-scroll container for comments?
+TODO:
+  - get drop down info for supervisors (example in project 3)
+    -implement drop down func for supervisors
+    - in patch request for supervisors, if they change the owners then both a delete and post request has to be performed for owners,
+      along with the patch request for the task
+  - send patch request for task  creators
+  - delete functionality
+  - Display task owners
+  - conditional rendering for an editable suspense date if the user is the creator of the task
+  - Style the page better
 */
 
 const TaskDetails = () => {
@@ -28,12 +38,26 @@ const TaskDetails = () => {
   const tc = useContext(TaskContext);
   const [ownsTask, setOwnsTask] = useState(null)
   const [taskDetails, setTaskDetails] = useState({}); // this is the actual task object
+  const [owners, setOwners] = useState([])
   const [comments, setComments] = useState([]);
-  const [input, setInput] = useState({body: "", author_id : tc.userId}) //ADD AUTHOR_ID  author_id : tc.userId
-  const [inputTask, setInputTask] = useState({})
+  const [users, setUsers] = useState([])
+  const [selectedName, setSelectedName] = useState([])
+  const [input, setInput] = useState({body: "", author_id : tc.userId}) //This input will be used for the POST for comments
+  const [inputTask, setInputTask] = useState({title: "", description:"", priority:null, status:"", suspense_date:"", owners: []}) //This input will be used for PATCH for tasks
   const [isSubmit, setIsSubmit] = useState(false)
   let { task } = useParams();
   let navigate = useNavigate();
+
+let formatPatchReq = () =>{
+  let body = {}
+  Object.keys(inputTask).forEach((x) => {
+    if (inputTask[x] !== '' && inputTask[x] !== null && x != "owners"){
+      body[x] = inputTask[x]
+      }
+  })
+  console.log(body)
+  return body
+}
 
   function compare(a, b) {
     if (a.id < b.id) {
@@ -70,7 +94,32 @@ const TaskDetails = () => {
       console.log('delete is supposed to happen, we need to fix this')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmitTask = (e) => {
+    let request = 'PATCH'
+    let body = formatPatchReq()
+    let url = `${ApiUrl}/tasks/${taskDetails.task_id}`
+
+    fetch(url, {
+        method: request,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    })
+    .then(res => {
+        console.log(res)
+    })
+    e.preventDefault()
+  }
+
+  const handleSelect = (event: SelectChangeEvent<typeof selectedName>) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedName(
+      typeof value === 'string' ? value.split(',') : value,
+    )
+  }
+
+  const handleSubmitComments = (e) => {
     console.log(`sending body:`, input)
     fetch(`${ApiUrl}/tasks/${taskDetails.task_id}/comments`, {
       method: "POST",
@@ -98,22 +147,42 @@ const TaskDetails = () => {
       .then((res) => res.json())
       .then((data) => {
         setTaskDetails(data[0]);
-        setComments(data[0].comments)
+        //setComments(data[0].comments)
+        setOwners(data[0].owners)
         return data[0]
       })
       .then((data) => {
         sortComments(data.comments);
+        setOwners(data.owners)
         //  setOwnsTask(data.author_id === tc.userId) //if the author of the task is the same user in the global context they can edit the task
-        setOwnsTask(true); //change this back to the line above once the author_id is being passed by the API
+        setOwnsTask(tc.userId === data.task_id); //change this back to the line above once the author_id is being passed by the API
       })
       .catch((err) => console.log(err));
   }, [isSubmit]);
 
+  useEffect(() => {
+    // fetches and sets an array of all users in the organization in the state
+    fetch(`${ApiUrl}/users/orgs/${tc.userOrg}`)
+      .then(res => res.json())
+      .then(data => {
+        setUsers(data.map((el) => {
+          return (
+            {
+              id: el.user_id,
+              name: el.user_name,
+              rank: el.user_rank,
+              email: el.user_email
+            }
+          )
+        }))
+      })
+      .catch((err) => console.log('Error getting users array', err))
+  }, [])
 
-  //NOTE: To edit fields in place, change the Typography to Editable Text, pass the setInput as a "callback" prop for the function
-  //If the canEdit field is false then it won't be editable. The only thing that might need to be customized for this project
-  //is if you want the type of text to be different between the different fields.
-  //NOTE: conditional rendering for the suspense date if the user
+  console.log(users)
+
+
+
   return (
     <>
       <Box marginTop={5} sx={{ width: "100%" }}>
@@ -123,6 +192,7 @@ const TaskDetails = () => {
             <Fab color="primary" aria-label="add" onClick={handleDelete}>
               <DeleteIcon />
             </Fab>
+            <Button variant = "outlined" onClick = {handleSubmitTask}>Submit Changes Here</Button>
           </Box>
         ) : null}
         <Grid
@@ -130,23 +200,56 @@ const TaskDetails = () => {
           spacing={3}
         >
           <Grid item xs={6} display="flex" justifyContent="center">
-            <EditableText field = 'title' val = {taskDetails.task_title} canEdit = {tc.userId === taskDetails.task_id} callback = {setInputTask}/>
+            <EditableText field = 'title' val = {taskDetails.task_title} canEdit = {ownsTask} callback = {setInputTask} input={inputTask}/>
           </Grid>
+
           <Grid item xs={6} display="flex" justifyContent="center">
-            <EditableText field = 'priority' val = {taskDetails.task_priority} canEdit = {tc.userId === taskDetails.task_id} callback = {setInputTask}/>
+            <EditableText field = 'priority' val = {taskDetails.task_priority} canEdit = {ownsTask} callback = {setInputTask} input={inputTask}/>
           </Grid>
+
           <Grid item xs={6} display="flex" justifyContent="center">
-            <EditableText field = 'status' val = {taskDetails.task_status} canEdit = {tc.userId === taskDetails.task_id} callback = {setInputTask}/>
+            <EditableText field = 'status' val = {taskDetails.task_status} canEdit = {ownsTask} callback = {setInputTask} input={inputTask}/>
           </Grid>
+
           <Grid item xs={6} display="flex" justifyContent="center">
             <Typography>{`Assigned Date: ${taskDetails.task_assigned_date}`}</Typography>
           </Grid>
+
           <Grid item xs={6} display="flex" justifyContent="center">
-            <Typography>{`Suspense Date: ${taskDetails.task_suspense_date}`}</Typography>
+            <EditableText field = 'suspense_date' val = {taskDetails.task_suspense_date} canEdit = {ownsTask} callback = {setInputTask} input={inputTask} input_type ="date"/>
           </Grid>
+
           <Grid item xs={12} display="flex" justifyContent="center">
-            <Typography>{`Description:\n${taskDetails.task_description}`}</Typography>
+            <EditableText field = 'description' val = {taskDetails.task_description} canEdit = {ownsTask} callback = {setInputTask} input={inputTask} input_type="large"/>
           </Grid>
+
+          <Grid item xs={12} display="flex" justifyContent="center">
+            <Typography>
+              Assigned To:
+            </Typography>
+            <>
+            {
+              //owners.map(owner => <Typography>{`${owner.user_rank} ${owner.user_name}`}</Typography>)
+            }
+            </>
+            <FormControl sx={{ m: 1, width: 300 }}>
+              <InputLabel id='multi-select-label'>Name</InputLabel>
+              <Select
+                labelId='multi-select-label'
+                multiple
+                value={selectedName}
+                onChange={handleSelect}
+                id='multi-select-name'
+              >
+                {users.map((el) => (
+                  <MenuItem key={el.id} value={el.id}>
+                    {el.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
         </Grid>
 
         <Container>
@@ -169,7 +272,7 @@ const TaskDetails = () => {
                 </>
               );
             })}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmitComments}>
               <TextField
                 fullWidth
                 id="outlined-basic"
@@ -187,3 +290,4 @@ const TaskDetails = () => {
 };
 
 export default TaskDetails;
+/*{validRanks.map((rank, index) => <MenuItem key={index} value={rank}>{rank}</MenuItem>)} */

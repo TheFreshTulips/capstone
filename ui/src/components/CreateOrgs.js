@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { useNavigate } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from "@mui/material/Grid";
 import { Button, MenuItem } from "@mui/material";
@@ -9,13 +10,13 @@ import { Button, MenuItem } from "@mui/material";
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
-const CreateOrg = () => {
-
+const CreateOrgs = () => {
+  let navigate = useNavigate();
   const [orgs, setOrgs] = useState([])
   const [input, setInput] = useState({
-    name: "",
     img_url: "",
-    org_id: 0
+    name: "",
+    parent_id: 0
   })
 
   useEffect(() => {
@@ -36,7 +37,7 @@ const CreateOrg = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        alert("Organization created!");
+        alert("Organization created");
         navigate("/admin/orgs");
       })
       .catch((err) => {
@@ -79,8 +80,8 @@ const CreateOrg = () => {
               <TextField
                 label="Organization Name"
                 type="Organization Name"
-                name="Organization Name"
-                value={input.title}
+                name="name"
+                value={input.name}
                 onChange={handleChange}
                 required
               />
@@ -89,8 +90,8 @@ const CreateOrg = () => {
               <TextField
                 label="Image URL"
                 type="Image URL"
-                name="Image URL"
-                value={input.im_url}
+                name="img_url"
+                value={input.img_url}
                 onChange={handleChange}
                 required
               />
@@ -99,10 +100,10 @@ const CreateOrg = () => {
               <TextField
                 id="org"
                 select
-                value={input.org_id}
+                value={input.parent_id}
                 label="Parent Organization (Optional)"
                 onChange={handleChange}
-                name="org_id"
+                name="parent_id"
                 sx={{ minWidth: 223 }}
               >
                 {orgs.map(org => <MenuItem key={org.org_id} value={org.org_id}>{org.org_name}</MenuItem>)}
@@ -118,5 +119,5 @@ const CreateOrg = () => {
     </Container >
   )
 }
-
-export default CreateOrg;
+//https://en.wikipedia.org/wiki/721st_Operations_Support_Squadron#/media/File:3rd_Combat_Training_Squadron_emblem.png
+export default CreateOrgs;

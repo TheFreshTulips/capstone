@@ -57,10 +57,16 @@ const Login = () => {
           if (response.ok) {
             isAuthenticated = true;
             return response.json();
-          } else if (response.status === 401) {
-            isAuthenticated = false
-            console.log("Unsuccessfull login")
+          } else if (response.status === 404) {
+            setFeedback("invalid username")
+            console.log("invalid username")
             return;
+          } else if (response.status === 400) {
+            setFeedback("invalid password")
+            console.log('invalid password')
+          } else {
+            setFeedback("an error occurred")
+            console.log('an error occurred');
           }
         })
         .then(data => {

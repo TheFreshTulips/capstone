@@ -13,6 +13,8 @@ import Typography from "@mui/material/Typography";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
+import {Link} from "react-router-dom";
+
 
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
@@ -53,6 +55,7 @@ const ViewModifyOrgs = () => {
                     <TableCell align="right"> Organization Name </TableCell>
                     <TableCell align="right"> Image </TableCell>
                     <TableCell align="right"> Parent Organization </TableCell>
+                    <TableCell align="right"> Edit </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -61,7 +64,7 @@ const ViewModifyOrgs = () => {
                       key={org.org_id}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
-                      <TableCell component="th" scope="row">
+                      <TableCell align="right">
                         {org.org_id}
                       </TableCell>
                       <TableCell align="right">{org.org_name}</TableCell>
@@ -69,16 +72,19 @@ const ViewModifyOrgs = () => {
                         <Box
                           component="img"
                           sx={{
-                            height: 40,
-                            width: 40,
                             maxHeight: { xs: 40, md: 40 },
                             maxWidth: { xs: 40, md: 40 },
                           }}
-                          alt="Loading Image"
+                          alt="No Image Found"
                           src={org.org_img_url}
                         />
                       </TableCell>
                       <TableCell align="right">{org.parent_name}</TableCell>
+                      <TableCell align="right">
+                      <Link to={`/admin/orgs/edit/${org.org_id}`}>
+                      Edit
+                    </Link>
+                  </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

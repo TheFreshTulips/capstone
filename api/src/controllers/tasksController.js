@@ -90,7 +90,7 @@ const detailedRequest = (req, res) => {
   promiseArr.push(
     knex("users as owners")
       .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
-      .select("owners.rank as owner_rank", "owners.name as owner_name")
+      .select("owners.id as owner_id", "owners.rank as owner_rank", "owners.name as owner_name")
       .where("ut.task_id", "=", req.params.taskid)
   );
 

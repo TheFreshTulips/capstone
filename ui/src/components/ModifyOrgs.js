@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import EditableText from "./EditableText.js";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
@@ -8,60 +7,54 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Button, Select, MenuItem, InputLabel } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import config from "../config";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
+import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 import { TaskContext } from "../App.js";
 
-const Register = () => {
+const ModifyOrgs = () => {
   const tc = useContext(TaskContext);
   const navigate = useNavigate();
-
+//   "org.id as org_id",
+      // "org.img_url as org_img_url",
+      // "org.name as org_name",
+      // "org.parent_id as org_parent_id",
+      // "parent.name as parent_name"
   let [input, setInput] = useState({
     name: "",
-    rank: "",
-    email: "",
-    position_id: 1,
-    password: "",
-    org_id: null
+    parent_name: "",
+    parent_id: 0,
+    img_url: ""
   });
 
-  const validRanks = [
-    "CIV",
-    "Spc 1",
-    "Spc 2",
-    "Spc 3",
-    "Spc 4",
-    "Sgt",
-    "TSgt",
-    "MSgt",
-    "SMSgt",
-    "CMSgt",
-    "2d Lt",
-    "1st Lt",
-    "Capt",
-    "Maj",
-    "Lt Col",
-    "Col",
-    "Brig Gen",
-    "Maj Gen",
-    "Lt Gen",
-    "Gen"
-  ]
 
-  const [password2, setPassword2] = useState('');
-  const [feedback, setFeedback] = useState('');
-
+  const [feedback, setFeedback] = useState('')
   const [orgs, setOrgs] = useState([])
 
+  let {id} = useParams();
+
   useEffect(() => {
-    let url = `${ApiUrl}/orgs`
-    fetch(url)
+    fetch(`${ApiUrl}/orgs/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(`data on orgs ${id}: `, data[0])
+      //   "org.id as org_id",
+      // "org.img_url as org_img_url",
+      // "org.name as org_name",
+      // "org.parent_id as org_parent_id",
+      // "parent.name as parent_name"
+        setInput({
+          name: data[0].org_name,
+          img_url: data[0].org_img_url,
+          parent_id: data[0].org_parent_id
+        })
+      })
+    fetch(`${ApiUrl}/orgs`)
       .then(res => res.json())
       .then(data => setOrgs(data))
-  }, [])
+  }, [id])
 
   const handleChange = (e) => {
     // sets Input state depending on what the user inputted into registration fields
@@ -81,32 +74,29 @@ const Register = () => {
     let tempFeedback = ''
 
     //data validation for each input field
-    if(!input.email.match(
+    if(input.name.match(
         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       )) {
-        tempFeedback += 'invalid email format\n';
+        tempFeedback += 'invalid name format\n';
         error = true;
     }
-    if(input.password !== password2) {
-      tempFeedback += 'passwords must match\n'
-      error = true;
-    }
+
     setFeedback(tempFeedback);
     if(error === false) {
       // sends post request with input state info to API when user clicks submit/register
-      fetch(`${ApiUrl}/register`, {
-        method: 'POST',
+      fetch(`${ApiUrl}/orgs/${id}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
       })
         .then((res) => res.json())
         .then((data) => {
-          alert("Registration successful!");
-          navigate("/login");
+          alert(`Update on user ${id} was successful!`);
+          navigate("/admin/orgs");
         })
         .catch((err) => {
           console.log(err);
-          alert(`Failed to register new user`);
+          alert(`Failed to update user ${id}`);
         });
     }
 
@@ -124,6 +114,9 @@ const Register = () => {
     >
       <form onSubmit={handleSubmit}>
         <Box m={2} pt={3}>
+          <Link to={"/admin/orgs"} style={{ textDecoration: 'none', color: "black" }} className='roles-link'>
+            <Typography variant="h6">Back to the orgs page</Typography>
+          </Link>
           <Grid
             container
             spacing={3}
@@ -132,7 +125,7 @@ const Register = () => {
             justifyContent="space-evenly"
           >
             <Box m={2} pt={3}>
-              <Typography variant="h5">Register Here</Typography>
+              <Typography variant="h5">Modify Organizations</Typography>
             </Box>
 
             <Box m={1}>
@@ -140,7 +133,7 @@ const Register = () => {
             </Box>
             <Box m={1}>
               <TextField
-                label="Name"
+                label="Organization Name"
                 type="name"
                 name="name"
                 value={input.name}
@@ -151,71 +144,33 @@ const Register = () => {
             </Box>
             <Box m={1}>
               <TextField
-                id="rank"
-                select
-                value={input.rank}
-                label="Rank"
+                value={input.img_url}
+                label="Image URL"
                 onChange={handleChange}
-                name="rank"
+                name="img_url"
                 required
                 sx={{minWidth: 223}}
                 >
-                {validRanks.map((rank, index) => <MenuItem key={index} value={rank}>{rank}</MenuItem>)}
               </TextField>
             </Box>
             <Box m={1}>
               <TextField
-                id="org"
                 select
-                value={input.org_id}
-                label="Organization"
+                value={input.parent_id}
+                label="Parent Organization"
                 onChange={handleChange}
-                name="org_id"
-                required
+                name="parent_id"
                 sx={{minWidth: 223}}
                 >
                 {orgs.map(org => <MenuItem key={org.org_id} value={org.org_id}>{org.org_name}</MenuItem>)}
               </TextField>
             </Box>
-            <Box m={1}>
-              <TextField
-                label="Email"
-                name="email"
-                value={input.email}
-                onChange={handleChange}
-                required
-                maxLength={50}
-              />
-            </Box>
-            <Box m={1}>
-              <TextField
-                label="Password"
-                type="password"
-                name="password"
-                value={input.password}
-                onChange={handleChange}
-                required
-                maxLength={50}
-              />
-            </Box>
-            <Box m={1}>
-              <TextField
-                label="Re-Enter Password"
-                type="password"
-                name="password2"
-                value={password2}
-                onChange={e => setPassword2(e.target.value)}
-                required
-                maxLength={50}
-              />
-            </Box>
+
             <Box m={2} pt={3}></Box>
             <Button className="submitButton" type="submit" value="Submit">
-              Register
+              Submit Changes
             </Button>
-            <Link to={"/login"} style={{ textDecoration: 'none', color: "black" }} className='register-link'>
-            <Typography variant="h6" >Already have an account? Click here to be taken to the login page!</Typography>
-          </Link>
+
           </Grid>
         </Box>
       </form>
@@ -223,4 +178,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default ModifyOrgs;

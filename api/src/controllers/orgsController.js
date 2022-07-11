@@ -27,6 +27,26 @@ const request = (req, res) => {
       res.status(200).send(data);
     });
 };
+
+const detailedRequest = (req, res) => {
+  console.log(`request for /orgs/${req.params.id}`);
+  // {id, img_url, name, parent_id, parent_name}
+  knex("organizations as org")
+    .where("org.id", "=", parseInt(req.params.id))
+    .leftJoin("organizations as parent", "parent.id", "org.parent_id")
+    .select(
+      "org.id as org_id",
+      "org.img_url as org_img_url",
+      "org.name as org_name",
+      "org.parent_id as org_parent_id",
+      "parent.name as parent_name"
+    )
+    .then((data) => {
+      res.set("Access-Control-Allow-Origin", "*");
+      res.status(200).send(data);
+    });
+};
+
 const add = (req, res) => {
   //add is done, but not check
   let body = req.body;
@@ -54,6 +74,17 @@ const add = (req, res) => {
           res.status(404).send("invalid parent org");
         }
       });
+    // } else {
+    //   knex("organizations")
+    //     .insert({
+    //       img_url: body.img_url,
+    //       name: body.name,
+    //       parent_id: 0,
+    //     })
+    //     .returning("*")
+    //     .then((data) => {
+    //       res.status(200).send(data);
+    //     });
   }
 };
 const update = (req, res) => {
@@ -71,6 +102,7 @@ const update = (req, res) => {
           checkKeys(["img_url", "name", "parent_id"], Object.keys(body))
         ) {
           knex("organizations")
+            .where('id', '=', req.params.id)
             .update(body)
             .returning("*")
             .then((data) => {
@@ -83,6 +115,7 @@ const update = (req, res) => {
   } else {
     if (checkKeys(["img_url", "name", "parent_id"], Object.keys(body))) {
       knex("organizations")
+        .where('id', '=', req.params.id)
         .update(body)
         .returning("*")
         .then((data) => {
@@ -119,4 +152,4 @@ const remove = (req, res) => {
     });
 };
 
-module.exports = { request, add, update, remove };
+module.exports = { request, detailedRequest, add, update, remove };

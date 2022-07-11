@@ -1,10 +1,10 @@
 const express = require("express");
-const { request, add, update, remove } = require("../controllers/orgsController.js");
+const { request, detailedRequest, add, update, remove } = require("../controllers/orgsController.js");
 const router = express.Router();
 
 /*
   ENDPOINTS:
-  GET 
+  GET
     /orgs
 
   POST
@@ -13,11 +13,12 @@ const router = express.Router();
   PATCH
     /orgs/:id
 
-  DELETE 
+  DELETE
     /orgs/:id
 */
 
 router.route("/orgs").get(request);
+router.route("/orgs/:id").get(detailedRequest)
 router.route("/orgs").post(add);
 router.route("/orgs/:id").patch(update);
 router.route("/orgs/:id").delete(remove);

@@ -90,6 +90,7 @@ const Profile = () => {
           </Grid>
         </Paper>
         <Button>Submit Changes</Button>
+        <Button onClick={() => {tc.setUserId(null); tc.setIsAdmin(false); tc.setUserOrg(null)}}>Log Out</Button>
       </Stack>
     </Box>
   );
