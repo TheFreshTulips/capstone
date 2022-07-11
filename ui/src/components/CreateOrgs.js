@@ -16,7 +16,7 @@ const CreateOrgs = () => {
   const [input, setInput] = useState({
     img_url: "",
     name: "",
-    parent_id: 0
+    parent_id: 1
   })
 
   useEffect(() => {
@@ -27,13 +27,22 @@ const CreateOrgs = () => {
   }, [])
 
   const handleSubmit = (e) => {
-    console.log(e.target.value);
+    console.log(input);
+    let tempInput = {};
+    if(input.parent_id === 0){
+      tempInput = {
+        img_url: input.img_url,
+        name: input.name
+      }
+    } else {
+      tempInput = input;
+    }
     fetch(`${ApiUrl}/orgs`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify(tempInput),
     })
       .then((res) => res.json())
       .then((data) => {

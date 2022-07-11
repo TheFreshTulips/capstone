@@ -11,26 +11,27 @@ const {
   editTask,
   deleteTask,
   deleteTaskUsers,
+  createdByRequest
 } = require("../controllers/tasksController.js");
 const router = express.Router();
 
 /*
   ENDPOINTS:
-  GET   
+  GET
     /tasks/orgs/:orgid
     /tasks/users/:userid
     /tasks/:taskid
     /war/orgs/:orgid
     /war/users/:userid
 
-  POST  
+  POST
     /tasks
     /tasks/:taskid/comments
-        
-  PATCH 
+
+  PATCH
     /task/:taskid
-  
-  DELETE 
+
+  DELETE
     /tasks/:taskid
 */
 
@@ -38,6 +39,7 @@ const router = express.Router();
 router.route("/tasks/orgs/:orgid").get(orgRequest);
 router.route("/tasks/users/:userid").get(userRequest);
 router.route("/tasks/:taskid").get(detailedRequest);
+router.route("/tasks/users/:userid/created").get(createdByRequest);
 router.route("/war/orgs/:orgid").get(orgWar);
 router.route("/war/users/:userid").get(userWar);
 

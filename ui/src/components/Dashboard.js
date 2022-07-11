@@ -49,6 +49,7 @@ const unitColumns = ["to do", "in progress"];
 const Dashboard = ({ user }) => {
   const tc = useContext(TaskContext);
   let [tasks, setTasks] = useState([]);
+  let [createdTasks, setCreatedTasks] = useState([]);
   let [isLoading, setIsLoading] = useState(null); //use this to make loading circle
   let [columns, setColumns] = useState([]);
   let navigate = useNavigate()
@@ -71,15 +72,23 @@ const Dashboard = ({ user }) => {
     user ? setColumns(userColumns) : setColumns(unitColumns);
 
     setIsLoading(true);
+    if(user) {
+      fetch(getUrl + '/created')
+        .then((res) => res.json())
+        .then((data) => {
+          setCreatedTasks(data)
+        })
+    }
     fetch(getUrl)
       .then((res) => res.json())
       .then((data) => {
         setTasks(data);
-        setIsLoading(false);
-        if (user) {
-          console.log(tc.userId);
-        }
+        // if (user) {
+        //   console.log(tc.userId);
+        // }
+        setIsLoading(false)
       });
+
   }, [user]);
 
   //const classes = useStyles()
@@ -89,7 +98,7 @@ const Dashboard = ({ user }) => {
 
   return (
     <div>
-      <Box m = {4} display='flex' justifyContent='right'>
+      <Box m={4} display='flex' justifyContent='right'>
         <Fab color="primary" aria-label="add" onClick={() => navigate('/tasks/add')}>
           <AddIcon />
         </Fab>
@@ -105,22 +114,14 @@ const Dashboard = ({ user }) => {
           return (
             <Box style={{ height: 100 }}>
               <Stack spacing={2} alignItems="center">
-                  <Typography
-                    variant="h4"
-                  >
-                    {formatColumn(colName)}
-                  </Typography>
+                <Typography
+                  variant="h4"
+                >
+                  {formatColumn(colName)}
+                </Typography>
                 {tasks.map((element) => {
-                  return colName === "Created" &&
-                    element.author_id === tc.userId ? (
-                    <TaskCard
-                      id={element.task_id}
-                      title={element.task_title}
-                      status={formatColumn(element.task_status)}
-                      suspense_date={element.task_suspense_date}
-                      priority={element.task_priority}
-                    />
-                  ) : element.task_status === colName ? (
+                  //if we are in the correct column, give back the following card
+                  return element.task_status === colName ? (
                     <TaskCard
                       id={element.task_id}
                       title={element.task_title}
@@ -128,10 +129,21 @@ const Dashboard = ({ user }) => {
                       suspense_date={element.task_suspense_date}
                       priority={element.task_priority}
                     />
-                  ) : (
-                    <></>
-                  );
+                  ) : <></>
                 })}
+
+                { colName === 'Created' ?
+                  createdTasks.map((element) => (
+                    //if we are in the created column, give back this
+                    <TaskCard
+                      id={element.task_id}
+                      title={element.task_title}
+                      status={formatColumn(element.task_status)}
+                      suspense_date={element.task_suspense_date}
+                      priority={element.task_priority}
+                    />
+                  )) : <></>
+                }
               </Stack>
             </Box>
           );

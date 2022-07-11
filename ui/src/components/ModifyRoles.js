@@ -142,18 +142,25 @@ const ModifyRoles = () => {
       className="post-page"
       sx={{
         marginBottom: "0",
+        marginTop: "30px",
         boxShadow: "0 0 10px rgb(10, 31, 10)",
         borderRadius: "5px",
       }}
     >
-      <Fab color="primary" aria-label="add" onClick={handleDelete}>
-        <DeleteIcon />
-      </Fab>
-      <form onSubmit={handleSubmit}>
-        <Box m={2} pt={3}>
+      <Grid container alignItems="center">
+        <Grid item xs={6} justifyContent="left" display="flex">
           <Link to={"/admin/roles"} style={{ textDecoration: 'none', color: "black" }} className='roles-link'>
             <Typography variant="h6">Back to the roles page</Typography>
           </Link>
+        </Grid>
+        <Grid item xs={6} justifyContent="right" display="flex">
+          <Fab color="primary" aria-label="add" onClick={handleDelete}>
+            <DeleteIcon />
+          </Fab>
+        </Grid>
+      </Grid>
+      <form onSubmit={handleSubmit}>
+        <Box m={2} pt={3}>
           <Grid
             container
             spacing={3}

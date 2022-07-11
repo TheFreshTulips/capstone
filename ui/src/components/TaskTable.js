@@ -14,6 +14,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import config from "../config";
 import { TaskContext } from "../App.js";
+import {useLocation} from 'react-router-dom';
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 const createData = (task, date_completed, completed_by) => {
@@ -21,15 +22,18 @@ const createData = (task, date_completed, completed_by) => {
 };
 
 /*
- */
 const rows = [
   createData("dont be a piece of shit", "never", "me >:D"),
   createData("un heck yourself trainee", "tomorrow", "me mum"),
   createData("get wrecked", "now", "ur MOM"),
 ];
+ */
+
+
 
 //variables here can probably have better names, these are the possible names of the columns
-const rowNames = ["Task", "Date Completed", "Completed By"];
+const rowNames = ["Task Name", "Date Completed"];
+const keys = ["task_title", "task_completed_date"]
 const adminRoles = [];
 const adminOrgs = [];
 
@@ -37,41 +41,46 @@ const TaskTable = (props) => {
   const tc = useContext(TaskContext);
   let [tasks, setTasks] = useState([]);
   let [isUnit, setIsUnit] = useState(true); //make toggle button to toggle if the table should show unit data or single user data
+  let {pathname} = useLocation();
 
-  function isDateInThisWeek(date) { //assumes date is a Date objct
-    const todayObj = new Date();
-    const todayDate = todayObj.getDate();
-    const todayDay = todayObj.getDay();
+  // function isDateInThisWeek(date) { //assumes date is a Date objct
+  //   const todayObj = new Date();
+  //   const todayDate = todayObj.getDate();
+  //   const todayDay = todayObj.getDay();
 
-    // get first date of week
-    const firstDayOfWeek = new Date(todayObj.setDate(todayDate - todayDay));
+  //   // get first date of week
+  //   const firstDayOfWeek = new Date(todayObj.setDate(todayDate - todayDay));
 
-    // get last date of week
-    const lastDayOfWeek = new Date(firstDayOfWeek);
-    lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+  //   // get last date of week
+  //   const lastDayOfWeek = new Date(firstDayOfWeek);
+  //   lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
 
-    // if date is equal or within the first and last dates of the week
-    return date >= firstDayOfWeek && date <= lastDayOfWeek;
-  }
+  //   // if date is equal or within the first and last dates of the week
+  //   return date >= firstDayOfWeek && date <= lastDayOfWeek;
+  // }
 
   useEffect(() => {
     let url;
-    isUnit ? (url = `${ApiUrl}/war/orgs/${tc.userOrg}`) : (url = `${ApiUrl}/war/users/${tc.userOrg}`);
+    console.log('pathname: ', pathname)
+    pathname === "/archive" ? (url = `${ApiUrl}/tasks/users/${tc.userId}`) : (
+      isUnit ? (url = `${ApiUrl}/war/orgs/${tc.userOrg}`) : (url = `${ApiUrl}/war/users/${tc.userId}`) );
 
     fetch(url)
       .then((res) => res.json())
       .then((data) => sortTasks(data));
-  }, [isUnit]);
+  }, [isUnit, pathname]);
 
   const sortTasks = (data) => {
     let temp = [];
-    if (props.isArchive) {
+    if (pathname === "/archive") {
       //if its archived then the completed date is not null
       temp = data.filter((element) => element.task_completed_date !== null);
     } else {
       //if its not archived then get the tasks that are completed for the week or in progress
       //Note: I dont know if this date sorting is gonna work
-      temp = data.filter((element) => {element.task_status === 'in progress' && isDateInThisWeek(element.task_completed_date)})
+      // temp = data.filter((element) => {element.task_status === 'in progress' && isDateInThisWeek(element.task_completed_date)})
+      //use line above if we want to filter later on
+      temp = data;
     }
     setTasks(temp);
   };
@@ -80,18 +89,22 @@ const TaskTable = (props) => {
     <Box width={"90%"} margin="auto" marginTop={5}>
       <Paper>
         <Box m={3}>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Switch
-                onChange={() => {
-                  setIsUnit(!isUnit);
-                }}
+          {pathname !== '/archive' ? (
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Switch
+                    onChange={() => {
+                      setIsUnit(!isUnit);
+                    }}
+                  />
+                }
+                label="See my personal report"
               />
+            </FormGroup>)
+            :
+            <></>
             }
-            label="See my personal report"
-          />
-        </FormGroup>
         </Box>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -111,16 +124,16 @@ const TaskTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => {
+              {tasks.map((row) => {
                 return (
                   <>
                     <TableRow
-                      key={row.task}
+                      key={tasks.task_id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      {Object.keys(row).map((colName, index) => {
-                        console.log(`column:${colName}`);
-                        console.log(`index:${index}`);
+                      {keys.map((colName, index) => {
+                        // console.log(`column:${colName}`);
+                        // console.log(`index:${index}`);
                         return index === 0 ? (
                           <TableCell
                             key={`element${index}`}
@@ -131,7 +144,7 @@ const TaskTable = (props) => {
                           </TableCell>
                         ) : (
                           <TableCell key={`element${index}`} align="right">
-                            {row[colName]}
+                            {row[colName] === null ? "N/A" : row[colName]}
                           </TableCell>
                         );
                       })}

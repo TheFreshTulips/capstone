@@ -11,7 +11,7 @@ const checkKeys = (validKeys, bodyKeys) => {
 };
 
 const request = (req, res) => {
-  console.log(`request for /orgs`);
+  console.log(`working on GET for /orgs`);
   // {id, img_url, name, parent_id, parent_name}
   knex("organizations as org")
     .leftJoin("organizations as parent", "parent.id", "org.parent_id")
@@ -29,7 +29,7 @@ const request = (req, res) => {
 };
 
 const detailedRequest = (req, res) => {
-  console.log(`request for /orgs/${req.params.id}`);
+  console.log(`working on GET for /orgs/${req.params.id}`);
   // {id, img_url, name, parent_id, parent_name}
   knex("organizations as org")
     .where("org.id", "=", parseInt(req.params.id))
@@ -48,6 +48,8 @@ const detailedRequest = (req, res) => {
 };
 
 const add = (req, res) => {
+  console.log(`working on POST for /orgs`);
+
   //add is done, but not check
   let body = req.body;
 
@@ -74,20 +76,22 @@ const add = (req, res) => {
           res.status(404).send("invalid parent org");
         }
       });
-    // } else {
-    //   knex("organizations")
-    //     .insert({
-    //       img_url: body.img_url,
-    //       name: body.name,
-    //       parent_id: 0,
-    //     })
-    //     .returning("*")
-    //     .then((data) => {
-    //       res.status(200).send(data);
-    //     });
+  } else {
+    knex("organizations")
+      .insert({
+        img_url: body.img_url,
+        name: body.name,
+        parent_id: 1,
+      })
+      .returning("*")
+      .then((data) => {
+        res.status(200).send(data);
+      });
   }
 };
 const update = (req, res) => {
+  console.log(`working on PATCH for /orgs/${req.params.id}`);
+
   let body = req.body;
   if (body.parent_id) {
     //check for foriegn key of parent org
@@ -126,30 +130,42 @@ const update = (req, res) => {
     }
   }
 };
+
 const remove = (req, res) => {
   console.log(`working on delete for 'organizations/${req.params.id}'`);
-  knex("users")
-    .where("org_id", "=", req.params.id)
-    .update({ org_id: null })
-    .then(() => {
-      knex("organizations")
-        .where("parent_id", "=", req.params.id)
-        .update({ parent_id: null })
-        .then(() => {
-          knex("organizations")
-            .where("id", "=", parseInt(req.params.id))
-            .del()
-            .catch((err) => {
-              console.log(err);
-              res.status(404).json({
-                message: "There was a problem deleting this organization",
+  if (req.params.id === 1) {
+    res.status(404).json({
+      message: "Why would you try that? Don't do it again"
+    })
+  } else {
+    knex("users")
+      .where("org_id", "=", req.params.id)
+      .update({ org_id: null })
+      .then(() => {
+        knex("organizations")
+          .where("parent_id", "=", req.params.id)
+          .update({ parent_id: null })
+          .then(() => {
+            knex("tasks")
+              .where("tasks.org_id", "=", req.params.id)
+              .update({ org_id: null })
+              .then(() => {
+                knex("organizations")
+                  .where("id", "=", parseInt(req.params.id))
+                  .del()
+                  .catch((err) => {
+                    console.log(err);
+                    res.status(404).json({
+                      message: "There was a problem deleting this organization",
+                    });
+                  })
+                  .then((data) => {
+                    res.status(200).json(`Number of records deleted: ${data}`);
+                  });
               });
-            })
-            .then((data) => {
-              res.status(200).json(`Number of records deleted: ${data}`);
-            });
-        });
-    });
+          });
+      });
+  }
 };
 
 module.exports = { request, detailedRequest, add, update, remove };
