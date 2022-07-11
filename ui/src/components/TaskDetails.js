@@ -38,7 +38,7 @@ const TaskDetails = () => {
   const tc = useContext(TaskContext);
   const [ownsTask, setOwnsTask] = useState(null)
   const [taskDetails, setTaskDetails] = useState({}); // this is the actual task object
-  const [owners, setOwners] = useState([])
+  const [owners, setOwners] = useState([]) //state for JUST the owners (like the comments)
   const [comments, setComments] = useState([]);
   const [users, setUsers] = useState([])
   const [selectedName, setSelectedName] = useState([])
@@ -95,6 +95,24 @@ let formatPatchReq = () =>{
   }
 
   const handleSubmitTask = (e) => {
+
+    if (inputTask.owners.length > 0){
+      let url = `${ApiUrl}/owners/${taskDetails.task_id}`
+      let delBody = owners //the state of the old owners is stored in owners
+      let postBody = {owners : inputTask.owners} //the state of the new owners is stored in taskowners
+
+      fetch(url, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(delBody),
+      })
+        .then(fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(postBody),
+      }))
+    }
+
     let request = 'PATCH'
     let body = formatPatchReq()
     let url = `${ApiUrl}/tasks/${taskDetails.task_id}`
@@ -110,13 +128,17 @@ let formatPatchReq = () =>{
     e.preventDefault()
   }
 
-  const handleSelect = (event: SelectChangeEvent<typeof selectedName>) => {
+  const handleSelect = (event) => {
     const {
       target: { value },
     } = event;
     setSelectedName(
       typeof value === 'string' ? value.split(',') : value,
     )
+    setInputTask({
+      ...inputTask,
+      owners: inputTask.owners.push(value)
+    })
   }
 
   const handleSubmitComments = (e) => {
@@ -240,10 +262,14 @@ let formatPatchReq = () =>{
                 value={selectedName}
                 onChange={handleSelect}
                 id='multi-select-name'
+                input={<OutlinedInput label="Tag" />}
+                renderValue={(selected) => selected.join(', ')}
+                MenuProps={MenuProps}
               >
                 {users.map((el) => (
                   <MenuItem key={el.id} value={el.id}>
-                    {el.name}
+                    <Checkbox checked={selectedName.indexOf(el.name) > -1} />
+                    <ListItemText primary={el.name} />
                   </MenuItem>
                 ))}
               </Select>
