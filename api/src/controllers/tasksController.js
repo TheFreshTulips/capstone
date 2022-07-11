@@ -19,7 +19,7 @@ const checkKeys = (validkeys, bodyKeys) => {
 const orgRequest = (req, res) => {
   console.log(`working on get for /tasks/orgs/${req.params.orgid}`);
   // values given for each task {id, title, status, priority, suspense date, author_rank, author_name (database is author_id)}
-  if(!isNaN(parseInt(req.params.orgid))) {
+  if (!isNaN(parseInt(req.params.orgid))) {
     knex("tasks")
       .join("users", "users.id", "=", "tasks.author_id")
       .select(
@@ -90,7 +90,11 @@ const detailedRequest = (req, res) => {
   promiseArr.push(
     knex("users as owners")
       .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
-      .select("owners.id as owner_id", "owners.rank as owner_rank", "owners.name as owner_name")
+      .select(
+        "owners.id as owner_id",
+        "owners.rank as owner_rank",
+        "owners.name as owner_name"
+      )
       .where("ut.task_id", "=", req.params.taskid)
   );
 

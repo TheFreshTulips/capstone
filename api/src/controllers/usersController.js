@@ -104,7 +104,7 @@ const register = (req, res, next) => {
                 email: req.body.email,
                 position_id: req.body.position_id,
                 password: hashedPassword,
-                org_id: req.body.org_id
+                org_id: req.body.org_id,
               })
               .returning(["id", "email"])
               .then((users) => {
@@ -152,10 +152,10 @@ const login = async (req, res) => {
         if (results.length === 0) {
           res.status(404).send("Cannot find user");
         } else {
-          let user = results[0]
+          let user = results[0];
           bcrypt
             .compare(req.body.password, user.password)
-            .then(result => {
+            .then((result) => {
               if (result) {
                 isAuthenticated = true;
                 return knex("positions").then((data) => data);
@@ -171,16 +171,16 @@ const login = async (req, res) => {
                 );
 
                 res.json({
-                    id: user.id,
-                    org_id: user.org_id,
-                    position: sendPosition[0].name,
+                  id: user.id,
+                  org_id: user.org_id,
+                  position: sendPosition[0].name,
                 });
               }
-            })
-            // .catch((err) => {
-            //   console.log(`Failed to authenticate user ${req.body.email}`, err);
-            //   res.status(404).send('invalid password');
-            // });
+            });
+          // .catch((err) => {
+          //   console.log(`Failed to authenticate user ${req.body.email}`, err);
+          //   res.status(404).send('invalid password');
+          // });
         }
       });
   }

@@ -1,105 +1,95 @@
-import React, { useEffect, useState } from 'react'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
+import React, { useEffect, useState } from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
 import config from "../config";
-import Grid from "@mui/material/Grid"
-import EditableText from './EditableText';
+import Grid from "@mui/material/Grid";
+import EditableText from "./EditableText";
 import Typography from "@mui/material/Typography";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 const ViewModifyRoles = () => {
-  const [users, setUsers] = useState([])
-
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    let url = `${ApiUrl}/users`
+    let url = `${ApiUrl}/users`;
     fetch(url)
-      .then(res => res.json())
-      .then(data => setUsers(data))
-  }, [])
+      .then((res) => res.json())
+      .then((data) => setUsers(data));
+  }, []);
 
   const updateByIndex = (index) => {
     let tempUsers = users;
     users[index] = {
       ...input,
       [e.target.name]: e.target.value,
-    }
-  }
+    };
+  };
   return (
     <Box width={"90%"} margin="auto" marginTop={5}>
       <Grid
-          container
-          spacing={3}
-          direction="column"
-          alignItems="center"
-          justifyContent="space-evenly"
-        >
-      <Typography align="center" variant="h4">View/Modify Roles</Typography>
-      <Paper style={{ padding: "40px 20px" }}>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell> User Id </TableCell>
-                <TableCell align="right"> Name </TableCell>
-                <TableCell align="right"> Rank </TableCell>
-                <TableCell align="right"> Organization Name </TableCell>
-                <TableCell align="right"> Email </TableCell>
-                <TableCell align="right"> Position Name </TableCell>
-                <TableCell align="right"> Edit </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users.map((user, index) => (
-                <TableRow
-                  key={user.user_id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {user.user_id}
-
-                  </TableCell>
-                  <TableCell align="right">
-                    {user.user_name}
-                    {/* <EditableText field='user_name' canEdit={true} val={users[index].user_name callback={() => handleChange(index)}}/> */}
-                  </TableCell>
-                  <TableCell align="right">
-                    {user.user_rank}
-                  </TableCell>
-                  <TableCell align="right">
-                    {user.org_name}
-                  </TableCell>
-                  <TableCell align="right">
-                    {user.user_email}
-                  </TableCell>
-                  <TableCell align="right">
-                    {user.position_name}
-                  </TableCell>
-                  <TableCell align="right">
-                    <Link to={`/admin/roles/edit/${user.user_id}`}>
-                      Edit
-                    </Link>
-                  </TableCell>
+        container
+        spacing={3}
+        direction="column"
+        alignItems="center"
+        justifyContent="space-evenly"
+      >
+        <Typography align="center" variant="h4">
+          View/Modify Roles
+        </Typography>
+        <Paper style={{ padding: "40px 20px" }}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell> User Id </TableCell>
+                  <TableCell align="right"> Name </TableCell>
+                  <TableCell align="right"> Rank </TableCell>
+                  <TableCell align="right"> Organization Name </TableCell>
+                  <TableCell align="right"> Email </TableCell>
+                  <TableCell align="right"> Position Name </TableCell>
+                  <TableCell align="right"> Edit </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-        </Grid>
+              </TableHead>
+              <TableBody>
+                {users.map((user, index) => (
+                  <TableRow
+                    key={user.user_id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {user.user_id}
+                    </TableCell>
+                    <TableCell align="right">
+                      {user.user_name}
+                      {/* <EditableText field='user_name' canEdit={true} val={users[index].user_name callback={() => handleChange(index)}}/> */}
+                    </TableCell>
+                    <TableCell align="right">{user.user_rank}</TableCell>
+                    <TableCell align="right">{user.org_name}</TableCell>
+                    <TableCell align="right">{user.user_email}</TableCell>
+                    <TableCell align="right">{user.position_name}</TableCell>
+                    <TableCell align="right">
+                      <Link to={`/admin/roles/edit/${user.user_id}`}>Edit</Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Grid>
     </Box>
-  )
-}
+  );
+};
 
-export default ViewModifyRoles
+export default ViewModifyRoles;
 
 /*
     "user_id": 1,

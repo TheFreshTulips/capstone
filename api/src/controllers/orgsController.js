@@ -102,7 +102,7 @@ const update = (req, res) => {
           checkKeys(["img_url", "name", "parent_id"], Object.keys(body))
         ) {
           knex("organizations")
-            .where('id', '=', req.params.id)
+            .where("id", "=", req.params.id)
             .update(body)
             .returning("*")
             .then((data) => {
@@ -115,7 +115,7 @@ const update = (req, res) => {
   } else {
     if (checkKeys(["img_url", "name", "parent_id"], Object.keys(body))) {
       knex("organizations")
-        .where('id', '=', req.params.id)
+        .where("id", "=", req.params.id)
         .update(body)
         .returning("*")
         .then((data) => {
