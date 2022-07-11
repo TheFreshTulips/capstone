@@ -57,25 +57,29 @@ const all = (req, res) => {
 const byOrg = (req, res) => {
   console.log(`working on post for /users/orgs/${req.params.id}`);
   //add condition for if id is a number
-  knex("users")
-    .join("organizations as org", "org.id", "=", "users.org_id")
-    .join("positions", "positions.id", "=", "users.position_id")
-    .select(
-      "users.id as user_id",
-      "users.name as user_name",
-      "users.rank as user_rank",
-      "org.id as org_id",
-      "org.name as org_name",
-      "users.email as user_email",
-      "positions.id as position_id",
-      "positions.name as position_name"
-    )
-    .where("users.org_id", "=", req.params.id)
-    .then((data) => {
-      console.log(data);
-      res.set("Access-Control-Allow-Origin", "*");
-      res.status(200).send(data);
-    });
+  if(!isNaN(parseInt(req.params.id))) {
+    knex("users")
+      .join("organizations as org", "org.id", "=", "users.org_id")
+      .join("positions", "positions.id", "=", "users.position_id")
+      .select(
+        "users.id as user_id",
+        "users.name as user_name",
+        "users.rank as user_rank",
+        "org.id as org_id",
+        "org.name as org_name",
+        "users.email as user_email",
+        "positions.id as position_id",
+        "positions.name as position_name"
+      )
+      .where("users.org_id", "=", req.params.id)
+      .then((data) => {
+        console.log(data);
+        res.set("Access-Control-Allow-Origin", "*");
+        res.status(200).send(data);
+      });
+  } else {
+    res.status(404).send();
+  }
 };
 
 //returns 200 on success, 400 on invalid email, returns 404 on other invalid request

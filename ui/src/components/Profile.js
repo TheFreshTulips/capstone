@@ -9,6 +9,7 @@ import { Button } from "@mui/material";
 import { TaskContext } from "../App.js";
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -21,6 +22,8 @@ const Profile = () => {
     "org_name": "",
     "user_email": ""
   });
+
+  const navigate = useNavigate();
 
   const tc = useContext(TaskContext);
 

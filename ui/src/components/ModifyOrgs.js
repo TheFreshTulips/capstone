@@ -8,6 +8,10 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Button, Select, MenuItem, InputLabel } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import Fab from "@mui/material/Fab";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+
 
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -17,11 +21,11 @@ import { TaskContext } from "../App.js";
 const ModifyOrgs = () => {
   const tc = useContext(TaskContext);
   const navigate = useNavigate();
-//   "org.id as org_id",
-      // "org.img_url as org_img_url",
-      // "org.name as org_name",
-      // "org.parent_id as org_parent_id",
-      // "parent.name as parent_name"
+  //   "org.id as org_id",
+  // "org.img_url as org_img_url",
+  // "org.name as org_name",
+  // "org.parent_id as org_parent_id",
+  // "parent.name as parent_name"
   let [input, setInput] = useState({
     name: "",
     parent_name: "",
@@ -33,18 +37,18 @@ const ModifyOrgs = () => {
   const [feedback, setFeedback] = useState('')
   const [orgs, setOrgs] = useState([])
 
-  let {id} = useParams();
+  let { id } = useParams();
 
   useEffect(() => {
     fetch(`${ApiUrl}/orgs/${id}`)
       .then(res => res.json())
       .then(data => {
         console.log(`data on orgs ${id}: `, data[0])
-      //   "org.id as org_id",
-      // "org.img_url as org_img_url",
-      // "org.name as org_name",
-      // "org.parent_id as org_parent_id",
-      // "parent.name as parent_name"
+        //   "org.id as org_id",
+        // "org.img_url as org_img_url",
+        // "org.name as org_name",
+        // "org.parent_id as org_parent_id",
+        // "parent.name as parent_name"
         setInput({
           name: data[0].org_name,
           img_url: data[0].org_img_url,
@@ -59,10 +63,10 @@ const ModifyOrgs = () => {
   const handleChange = (e) => {
     // sets Input state depending on what the user inputted into registration fields
 
-      setInput({
-        ...input,
-        [e.target.name]: e.target.value,
-      });
+    setInput({
+      ...input,
+      [e.target.name]: e.target.value,
+    });
     e.preventDefault();
   };
 
@@ -74,15 +78,15 @@ const ModifyOrgs = () => {
     let tempFeedback = ''
 
     //data validation for each input field
-    if(input.name.match(
-        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      )) {
-        tempFeedback += 'invalid name format\n';
-        error = true;
+    if (input.name.match(
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    )) {
+      tempFeedback += 'invalid name format\n';
+      error = true;
     }
 
     setFeedback(tempFeedback);
-    if(error === false) {
+    if (error === false) {
       // sends post request with input state info to API when user clicks submit/register
       fetch(`${ApiUrl}/orgs/${id}`, {
         method: 'PATCH',
@@ -91,7 +95,7 @@ const ModifyOrgs = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          alert(`Update on user ${id} was successful!`);
+          alert(`Update on org ${id} was successful!`);
           navigate("/admin/orgs");
         })
         .catch((err) => {
@@ -99,8 +103,23 @@ const ModifyOrgs = () => {
           alert(`Failed to update user ${id}`);
         });
     }
-
   };
+
+  const handleDelete = () => {
+    fetch(`${ApiUrl}/orgs/${id}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(`Delete on org ${id} was successful!`);
+        navigate("/admin/orgs");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(`Failed to delete org ${id}`);
+      });
+  }
 
   return (
     <Container
@@ -108,15 +127,25 @@ const ModifyOrgs = () => {
       className="post-page"
       sx={{
         marginBottom: "0",
+        marginTop: "30px",
         boxShadow: "0 0 10px rgb(10, 31, 10)",
         borderRadius: "5px",
       }}
     >
-      <form onSubmit={handleSubmit}>
-        <Box m={2} pt={3}>
+      <Grid container alignItems="center">
+        <Grid item xs={6} justifyContent="left" display="flex">
           <Link to={"/admin/orgs"} style={{ textDecoration: 'none', color: "black" }} className='roles-link'>
             <Typography variant="h6">Back to the orgs page</Typography>
           </Link>
+        </Grid>
+        <Grid item xs={6} justifyContent="right" display="flex">
+          <Fab color="primary" aria-label="add" onClick={handleDelete}>
+            <DeleteIcon />
+          </Fab>
+        </Grid>
+      </Grid>
+      <form onSubmit={handleSubmit}>
+        <Box m={2} pt={3}>
           <Grid
             container
             spacing={3}
@@ -149,8 +178,8 @@ const ModifyOrgs = () => {
                 onChange={handleChange}
                 name="img_url"
                 required
-                sx={{minWidth: 223}}
-                >
+                sx={{ minWidth: 223 }}
+              >
               </TextField>
             </Box>
             <Box m={1}>
@@ -160,8 +189,8 @@ const ModifyOrgs = () => {
                 label="Parent Organization"
                 onChange={handleChange}
                 name="parent_id"
-                sx={{minWidth: 223}}
-                >
+                sx={{ minWidth: 223 }}
+              >
                 {orgs.map(org => <MenuItem key={org.org_id} value={org.org_id}>{org.org_name}</MenuItem>)}
               </TextField>
             </Box>
@@ -174,7 +203,7 @@ const ModifyOrgs = () => {
           </Grid>
         </Box>
       </form>
-    </Container>
+    </Container >
   );
 };
 
