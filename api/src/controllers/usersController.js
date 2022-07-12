@@ -57,7 +57,7 @@ const all = (req, res) => {
 const byOrg = (req, res) => {
   console.log(`working on post for /users/orgs/${req.params.id}`);
   //add condition for if id is a number
-  if(!isNaN(parseInt(req.params.id))) {
+  if (!isNaN(parseInt(req.params.id))) {
     knex("users")
       .join("organizations as org", "org.id", "=", "users.org_id")
       .join("positions", "positions.id", "=", "users.position_id")

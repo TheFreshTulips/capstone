@@ -22,7 +22,7 @@ const orgRequest = (req, res) => {
   if (!isNaN(parseInt(req.params.orgid))) {
     knex("tasks")
       .join("users", "users.id", "=", "tasks.author_id")
-      .join("organizations", "organizations.id", '=', "tasks.org_id")
+      .join("organizations", "organizations.id", "=", "tasks.org_id")
       .select(
         "tasks.id as task_id",
         "tasks.title as task_title",
@@ -369,21 +369,13 @@ const editTask = async (req, res) => {
     "author_id",
   ];
   let body = req.body;
-  let validTimeStamp;
-
-  if (body.suspense_date) {
-    validTimeStamp = checkTime(body.suspense_date);
-  } else {
-    validTimeStamp = true;
-  }
 
   const validRequest = Object.keys(body).every((element) => {
     return keys.includes(element);
   });
-  console.log(validTimeStamp);
   console.log(validRequest);
 
-  if (validTimeStamp && validRequest) {
+  if (validRequest) {
     knex("tasks")
       .where("tasks.id", "=", parseInt(req.params.taskid))
       .update(req.body, Object.keys(req.body))
