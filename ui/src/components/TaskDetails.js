@@ -6,13 +6,7 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import {
-  Button,
-  Select,
-  MenuItem,
-  InputLabel,
-  Stack,
-} from "@mui/material";
+import { Button, Select, MenuItem, InputLabel, Stack } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import { TaskContext } from "../App.js";
 import EditableText from "./EditableText.js";
@@ -120,7 +114,7 @@ const TaskDetails = () => {
     };
     fetch(`${ApiUrl}/tasks/${taskDetails.task_id}`, request)
       .then((res) => {
-        if(res.status === 200) {
+        if (res.status === 200) {
           alert(`Delete of task ${taskDetails.task_id} was successful!`);
           navigate("/");
         } else {
@@ -359,7 +353,9 @@ const TaskDetails = () => {
             <Typography>Assigned To:</Typography>
             <Box m={2}>
               {owners.map((owner, index) => (
-                <Typography key={index}>{`${owner.owner_rank} ${owner.owner_name}`}</Typography>
+                <Typography
+                  key={index}
+                >{`${owner.owner_rank} ${owner.owner_name}`}</Typography>
               ))}
             </Box>
           </Grid>
@@ -406,7 +402,13 @@ const TaskDetails = () => {
                         {comment.comment_body}
                       </p>
                       <p style={{ textAlign: "left", color: "gray" }}>
-                        {comment.comment_timestamp}
+                        {new Date(comment.comment_timestamp)
+                          .toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })
+                          .replace(",", "")}
                       </p>
                     </Grid>
                   </Grid>
