@@ -1,6 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
-import EditableText from "./EditableText.js";
-import Paper from "@mui/material/Paper";
+import React, {useState, useContext } from "react";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import moment from 'moment'
 
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -57,10 +54,13 @@ const CreateTask = () => {
       },
       body: JSON.stringify(input),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("Task created!");
-        navigate("/");
+      .then((res) => {
+        if(res.status === 200) {
+          alert("Task created!");
+          navigate("/");
+        } else {
+          alert('task creation failed')
+        }
       })
       .catch((err) => {
         console.log(err);

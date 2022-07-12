@@ -11,10 +11,8 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  ListItemText,
   Stack,
 } from "@mui/material";
-import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
 import { TaskContext } from "../App.js";
 import EditableText from "./EditableText.js";
@@ -100,10 +98,10 @@ const TaskDetails = () => {
     setComments(commentArray);
   };
 
-  const sortOwners = (data) => {
-    let inputOwners = data.map((x) => x);
-    setOwners(inputOwners);
-  };
+  // const sortOwners = (data) => {
+  //   let inputOwners = data.map((x) => x);
+  //   setOwners(inputOwners);
+  // };
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -121,10 +119,13 @@ const TaskDetails = () => {
       headers: { "Content-Type": "application/json" },
     };
     fetch(`${ApiUrl}/tasks/${taskDetails.task_id}`, request)
-      .then((res) => res.json())
-      .then((data) => {
-        alert(`Delete of task ${taskDetails.task_id} was successful!`);
-        navigate("/");
+      .then((res) => {
+        if(res.status === 200) {
+          alert(`Delete of task ${taskDetails.task_id} was successful!`);
+          navigate("/");
+        } else {
+          alert(`Delete of task ${taskDetails.task_id} failed!`);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -357,8 +358,8 @@ const TaskDetails = () => {
           <Grid item xs={6} display="flex" justifyContent="center">
             <Typography>Assigned To:</Typography>
             <Box m={2}>
-              {owners.map((owner) => (
-                <Typography>{`${owner.owner_rank} ${owner.owner_name}`}</Typography>
+              {owners.map((owner, index) => (
+                <Typography key={index}>{`${owner.owner_rank} ${owner.owner_name}`}</Typography>
               ))}
             </Box>
           </Grid>

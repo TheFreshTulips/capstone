@@ -1,22 +1,17 @@
-import React, { useEffect, useState, useContext } from "react";
-import EditableText from "./EditableText.js";
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
+import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Button, Select, MenuItem, InputLabel } from "@mui/material";
+import { Button, MenuItem } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import config from "../config";
 
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
-import { TaskContext } from "../App.js";
 
 const Register = () => {
-  const tc = useContext(TaskContext);
   const navigate = useNavigate();
 
   let [input, setInput] = useState({
@@ -82,7 +77,7 @@ const Register = () => {
 
     //data validation for each input field
     if(!input.email.match(
-        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ //eslint-disable-line
       )) {
         tempFeedback += 'invalid email format\n';
         error = true;
@@ -99,10 +94,13 @@ const Register = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
       })
-        .then((res) => res.json())
-        .then((data) => {
-          alert("Registration successful!");
-          navigate("/login");
+        .then((res) => {
+          if(res.status === 200) {
+            alert("Registration successful!");
+            navigate("/login");
+          } else {
+            alert("Registration failed!");
+          }
         })
         .catch((err) => {
           console.log(err);

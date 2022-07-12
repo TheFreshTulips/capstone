@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useContext } from "react";
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
+import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Button, Select, MenuItem, InputLabel } from "@mui/material";
+import { Button, MenuItem } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Fab from "@mui/material/Fab";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -16,10 +14,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
-import { TaskContext } from "../App.js";
 
 const ModifyOrgs = () => {
-  const tc = useContext(TaskContext);
   const navigate = useNavigate();
   //   "org.id as org_id",
   // "org.img_url as org_img_url",
@@ -79,7 +75,7 @@ const ModifyOrgs = () => {
 
     //data validation for each input field
     if (input.name.match(
-      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ //eslint-disable-line
     )) {
       tempFeedback += 'invalid name format\n';
       error = true;
@@ -93,10 +89,13 @@ const ModifyOrgs = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
       })
-        .then((res) => res.json())
-        .then((data) => {
-          alert(`Update on org ${id} was successful!`);
-          navigate("/admin/orgs");
+        .then((res) => {
+          if(res.status === 200) {
+            alert(`Update on org ${id} was successful!`);
+            navigate("/admin/orgs");
+          } else {
+            alert(`update on org ${id} failed`)
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -110,10 +109,13 @@ const ModifyOrgs = () => {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' }
     })
-      .then((res) => res.json())
-      .then((data) => {
-        alert(`Delete on org ${id} was successful!`);
-        navigate("/admin/orgs");
+      .then((res) => {
+        if(res.status === 200){
+          alert(`Delete on org ${id} was successful!`);
+          navigate("/admin/orgs");
+        } else {
+          alert(`update on org ${id} failed`)
+        }
       })
       .catch((err) => {
         console.log(err);

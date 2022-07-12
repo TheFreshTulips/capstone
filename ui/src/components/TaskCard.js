@@ -5,14 +5,11 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
-import React, { useEffect, useState, useContext } from "react";
-import { TaskContext } from "../App.js";
+import React from "react";
 
 const TaskCard = (props) => {
   console.log("here");
   const navigate = useNavigate()
-
-  const tc = useContext(TaskContext);
 
   const clickHandler = () => {
     navigate(`/tasks/${props.id}`)

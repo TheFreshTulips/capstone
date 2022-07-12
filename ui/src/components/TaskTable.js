@@ -17,9 +17,9 @@ import { TaskContext } from "../App.js";
 import {useLocation} from 'react-router-dom';
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
-const createData = (task, date_completed, completed_by) => {
-  return { task, date_completed, completed_by };
-};
+// const createData = (task, date_completed, completed_by) => {
+//   return { task, date_completed, completed_by };
+// };
 
 /*
 const rows = [
@@ -34,10 +34,10 @@ const rows = [
 //variables here can probably have better names, these are the possible names of the columns
 const rowNames = ["Task Name", "Date Completed"];
 const keys = ["task_title", "task_completed_date"]
-const adminRoles = [];
-const adminOrgs = [];
+// const adminRoles = [];
+// const adminOrgs = [];
 
-const TaskTable = (props) => {
+const TaskTable = () => {
   const tc = useContext(TaskContext);
   let [tasks, setTasks] = useState([]);
   let [isUnit, setIsUnit] = useState(true); //make toggle button to toggle if the table should show unit data or single user data
@@ -136,14 +136,14 @@ const TaskTable = (props) => {
                         // console.log(`index:${index}`);
                         return index === 0 ? (
                           <TableCell
-                            key={`element${index}`}
+                            key={index}
                             component="th"
                             scope="row"
                           >
                           {row[colName]}
                           </TableCell>
                         ) : (
-                          <TableCell key={`element${index}`} align="right">
+                          <TableCell key={index} align="right">
                             {row[colName] === null ? "N/A" : row[colName]}
                           </TableCell>
                         );

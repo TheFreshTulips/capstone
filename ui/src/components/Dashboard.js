@@ -2,10 +2,9 @@ import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../config.js";
 import Grid from "@mui/material/Grid";
-import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Button, CircularProgress, Stack, Divider } from "@mui/material";
+import { Stack } from "@mui/material";
 import TaskCard from "./TaskCard.js";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
@@ -110,19 +109,20 @@ const Dashboard = ({ user }) => {
         justifyContent="space-evenly"
         alignItems="center"
       >
-        {columns.map((colName) => {
+        {columns.map((colName, index) => {
           return (
-            <Box style={{ height: 100 }}>
+            <Box style={{ height: 100 }} key={index}>
               <Stack spacing={2} alignItems="center">
                 <Typography
                   variant="h4"
                 >
                   {formatColumn(colName)}
                 </Typography>
-                {tasks.map((element) => {
+                { isLoading ? "Loading" : tasks.map((element) => {
                   //if we are in the correct column, give back the following card
                   return element.task_status === colName ? (
                     <TaskCard
+                      key={element.task_id}
                       id={element.task_id}
                       title={element.task_title}
                       status={element.task_status}
@@ -136,6 +136,7 @@ const Dashboard = ({ user }) => {
                   createdTasks.map((element) => (
                     //if we are in the created column, give back this
                     <TaskCard
+                      key={element.task_id}
                       id={element.task_id}
                       title={element.task_title}
                       status={formatColumn(element.task_status)}

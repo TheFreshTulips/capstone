@@ -44,10 +44,13 @@ const CreateOrgs = () => {
       },
       body: JSON.stringify(tempInput),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("Organization created");
-        navigate("/admin/orgs");
+      .then((res) => {
+        if(res.status === 200){
+          alert("Organization created");
+          navigate("/admin/orgs");
+        } else {
+          alert("organization creation failed");
+        }
       })
       .catch((err) => {
         console.log(err);

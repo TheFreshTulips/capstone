@@ -25,7 +25,9 @@ services:
       - pgdatasource:/var/lib/postgresql/data
 
   api:
-    build: api/
+    build:
+      context: ./api/
+      dockerfile: Dockerfile
     container_name: api
     depends_on:
       db:

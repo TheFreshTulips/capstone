@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { Alert } from "@mui/material";
 import config from "../config";
 import { useNavigate, Link } from "react-router-dom";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -39,7 +38,7 @@ const Login = () => {
 
 
     if (!input.email.match(
-      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ //eslint-disable-line
     )) {
       tempFeedback += 'invalid email format\n';
       error = true;
@@ -47,7 +46,7 @@ const Login = () => {
     setFeedback(tempFeedback);
     if (error === false) {
       let isAuthenticated = false;
-      let res = await fetch(`${ApiUrl}/login`, {
+      await fetch(`${ApiUrl}/login`, {
           method: "POST",
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(input)

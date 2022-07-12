@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, { useState, createContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard.js";
 import CreateTask from "./components/CreateTask.js";
@@ -9,7 +9,6 @@ import AdminMenu from "./components/AdminMenu.js";
 import Header from "./components/Header.js";
 import Register from "./components/Register.js";
 import Login from "./components/Login.js";
-import TaskCard from "./components/TaskCard.js";
 import ViewModifyOrgs from "./components/ViewModifyOrgs.js";
 import ViewModifyRoles from "./components/ViewModifyRoles.js";
 import CreateOrgs from "./components/CreateOrgs.js";
@@ -30,6 +29,8 @@ function App() {
     userOrg,
     setUserOrg,
   };
+
+  /* eslint-disable react/prop-types */
 
   return (
     <div>
@@ -62,9 +63,9 @@ function App() {
                 <Route path="/unit" element={<Dashboard user={false} />}/>
                 <Route path="/tasks/add" element={<CreateTask type={"task"} />}/>
                 <Route path="/tasks/:task" element={<TaskDetails />}/>
-                <Route path="/reports" element={<TaskTable isArchive={false} />}/>
+                <Route path="/reports" element={<TaskTable/>}/>
                 <Route path="/profile" element={<Profile />}/>
-                <Route path="/archive" element={<TaskTable isArchive={true} />}/>
+                <Route path="/archive" element={<TaskTable/>}/>
                 <Route path = '/*' element = {<Dashboard user = {true}/>}></Route>
               </>
             :

@@ -9,7 +9,6 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import config from "../config";
 import Grid from "@mui/material/Grid";
-import EditableText from "./EditableText";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 
@@ -25,13 +24,13 @@ const ViewModifyRoles = () => {
       .then((data) => setUsers(data));
   }, []);
 
-  const updateByIndex = (index) => {
-    let tempUsers = users;
-    users[index] = {
-      ...input,
-      [e.target.name]: e.target.value,
-    };
-  };
+  // const updateByIndex = (index) => {
+  //   let tempUsers = users;
+  //   users[index] = {
+  //     ...input,
+  //     [e.target.name]: e.target.value,
+  //   };
+  // };
   return (
     <Box width={"90%"} margin="auto" marginTop={5}>
       <Grid
@@ -59,7 +58,7 @@ const ViewModifyRoles = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.map((user, index) => (
+                {users.map((user) => (
                   <TableRow
                     key={user.user_id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

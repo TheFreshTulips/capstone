@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { TextField } from "@mui/material";
@@ -7,7 +7,6 @@ import { Box } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import moment from "moment";
 import Stack from "@mui/material/Stack";
 
 /*
@@ -42,13 +41,6 @@ const EditableText = (props) => {
     setIsEdit(!isEdit);
   };
 
-  const handleDateChange = (e) => {
-    props.callback({
-      ...props.input,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   const handleSuspenseDateChange = (_value) => {
     handleChange({ target: { name: "suspense_date", value: _value.format() } });
   };
@@ -65,9 +57,9 @@ const EditableText = (props) => {
     handleChange();
   };
 
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+//   function capitalizeFirstLetter(string) {
+//     return string.charAt(0).toUpperCase() + string.slice(1);
+//   }
 
   return (
     <Box m={2} p={1}>

@@ -47,8 +47,7 @@ const ViewModifyOrgs = () => {
           <Typography align="center" variant="h3">View/Modify Organizations</Typography>
           <Paper style={{ padding: "40px 20px" }}>
             <TableContainer>
-              <Table
-                justifyContent="center">
+              <Table>
                 <TableHead>
                   <TableRow>
                     <TableCell> Organization Id </TableCell>
