@@ -14,24 +14,28 @@ const checkKeys = (validKeys, bodyKeys) => {
 const profile = (req, res) => {
   console.log(`working on get for /users/${req.params.userid}`);
   //{id, name, rank, organization, email}
-  knex("users")
-    .join("organizations", "organizations.id", "=", "users.org_id")
-    .join("positions", "positions.id", "=", "users.position_id")
-    .select(
-      "users.id as user_id",
-      "users.name as user_name",
-      "users.rank as user_rank",
-      "organizations.id as org_id",
-      "organizations.name as org_name",
-      "users.email as user_email",
-      "positions.id as position_id",
-      "positions.name as position_name"
-    )
-    .where("users.id", "=", req.params.userid)
-    .then((data) => {
-      res.set("Access-Control-Allow-Origin", "*");
-      res.status(200).send(data);
-    });
+  if (!isNaN(parseInt(req.params.userid))) {
+    knex("users")
+      .join("organizations", "organizations.id", "=", "users.org_id")
+      .join("positions", "positions.id", "=", "users.position_id")
+      .select(
+        "users.id as user_id",
+        "users.name as user_name",
+        "users.rank as user_rank",
+        "organizations.id as org_id",
+        "organizations.name as org_name",
+        "users.email as user_email",
+        "positions.id as position_id",
+        "positions.name as position_name"
+      )
+      .where("users.id", "=", req.params.userid)
+      .then((data) => {
+        res.set("Access-Control-Allow-Origin", "*");
+        res.status(200).send(data);
+      });
+  } else {
+    res.status(404).send()
+  }
 };
 const all = (req, res) => {
   console.log(`working on post for /users`);
@@ -192,57 +196,65 @@ const login = async (req, res) => {
 
 const update = (req, res) => {
   console.log(`working on patch for /users/${req.params.userid}`);
-  if (
-    checkKeys(
-      ["name", "rank", "org_id", "email", "position_id", "password"],
-      Object.keys(req.body)
-    )
-  ) {
-    knex("users")
-      .where("id", "=", parseInt(req.params.userid))
-      .update(req.body)
-      .returning("*")
-      .then((data) => {
-        res.status(200).send(data);
-      });
+  if (!isNaN(parseInt(req.params.userid))) {
+    if (
+      checkKeys(
+        ["name", "rank", "org_id", "email", "position_id", "password"],
+        Object.keys(req.body)
+      )
+    ) {
+      knex("users")
+        .where("id", "=", parseInt(req.params.userid))
+        .update(req.body)
+        .returning("*")
+        .then((data) => {
+          res.status(200).send(data);
+        });
+    } else {
+      res.status(404).send("invalid keys");
+    }
   } else {
-    res.status(404).send("invalid keys");
+    res.status(404).send()
   }
 };
 
 const remove = (req, res) => {
   console.log(`working on delete for /users/${req.params.userid}`);
-  knex("users_tasks") // remove inputs for user in users_tasks table
-    .where("user_id", "=", parseInt(req.params.userid))
-    .update({ task_id: null })
-    .del()
+  if (!isNaN(parseInt(req.params.userid))) {
+    knex("users_tasks") // remove inputs for user in users_tasks table
+      .where("user_id", "=", parseInt(req.params.userid))
+      .update({ task_id: null })
+      .del()
 
-    .then(() => {
-      knex("comments") // remove the user's comments from the comments table
-        .where("user_id", "=", parseInt(req.params.userid))
-        .del()
+      .then(() => {
+        knex("comments") // remove the user's comments from the comments table
+          .where("user_id", "=", parseInt(req.params.userid))
+          .del()
 
-        .then(() => {
-          knex("tasks") // set user_id on tasks to null
-            .where("author_id", "=", parseInt(req.params.userid))
-            .update({ author_id: null })
+          .then(() => {
+            knex("tasks") // set user_id on tasks to null
+              .where("author_id", "=", parseInt(req.params.userid))
+              .update({ author_id: null })
 
-            .then(() => {
-              knex("users") // now you can delete the user from the user's table
-                .where("id", "=", parseInt(req.params.userid))
-                .del()
-                .then((data) => {
-                  res.status(200).json(`Number of users deleted: ${data}`);
-                })
-                .catch((err) => {
-                  console.log(err);
-                  res.status(404).json({
-                    message: "There was a problem deleting this user",
+              .then(() => {
+                knex("users") // now you can delete the user from the user's table
+                  .where("id", "=", parseInt(req.params.userid))
+                  .del()
+                  .then((data) => {
+                    res.status(200).json(`Number of users deleted: ${data}`);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    res.status(404).json({
+                      message: "There was a problem deleting this user",
+                    });
                   });
-                });
-            });
-        });
-    });
+              });
+          });
+      });
+  } else {
+    res.status(404).send()
+  }
 };
 
 module.exports = { profile, all, byOrg, register, login, update, remove };
