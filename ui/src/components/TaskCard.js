@@ -19,14 +19,7 @@ const TaskCard = (props) => {
     <>
       <Box m={1}>
         <Typography align="right" sx={{ fontSize: 11 }} color="text.secondary">
-          Suspense:{" "}
-          {new Date(props.suspense_date)
-            .toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })
-            .replace(",", "")}
+          Suspense: {new Date(props.suspense_date).toLocaleString("en-US")}
         </Typography>
       </Box>
       <CardContent>
@@ -34,7 +27,7 @@ const TaskCard = (props) => {
           {props.title}
         </Typography>
         <Typography sx={{ fontSize: 11 }} color="text.primary" align="center">
-          Priority Level:{props.priority}
+          Priority:{props.priority}
         </Typography>
       </CardContent>
       <CardActions>

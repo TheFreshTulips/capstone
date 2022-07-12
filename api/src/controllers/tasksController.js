@@ -64,7 +64,7 @@ const userRequest = (req, res) => {
 };
 
 const createdByRequest = (req, res) => {
-  console.log(`working on get for /tasks/users/${req.params.userid}/created`)
+  console.log(`working on get for /tasks/users/${req.params.userid}/created`);
   knex("tasks")
     .select(
       "tasks.id as task_id",
@@ -79,7 +79,7 @@ const createdByRequest = (req, res) => {
       res.set("Access-Control-Allow-Origin", "*");
       res.status(200).send(data);
     });
-}
+};
 
 const detailedRequest = (req, res) => {
   console.log(`working on get for /tasks/${req.params.taskid}`);
@@ -164,7 +164,7 @@ const orgWar = (req, res) => {
   */
   let promiseArr = [];
   let aWeekAgo = new Date();
-  aWeekAgo.setDate(aWeekAgo.getDate()-7);
+  aWeekAgo.setDate(aWeekAgo.getDate() - 7);
   let now = new Date();
 
   promiseArr.push(
@@ -176,7 +176,7 @@ const orgWar = (req, res) => {
         "tasks.status as task_status"
       )
       .where("tasks.org_id", "=", req.params.orgid)
-      .whereBetween('tasks.assigned_date', [ aWeekAgo , now ])
+      .whereBetween("tasks.assigned_date", [aWeekAgo, now])
   );
 
   promiseArr.push(
@@ -189,7 +189,7 @@ const orgWar = (req, res) => {
         "owners.name as owner_name"
       )
       .where("tasks.org_id", "=", req.params.orgid)
-      .whereBetween('tasks.assigned_date', [ aWeekAgo , now ])
+      .whereBetween("tasks.assigned_date", [aWeekAgo, now])
       .then((data) => {
         console.log(`owners: `, data);
         return data;
@@ -216,7 +216,7 @@ const userWar = (req, res) => {
   console.log(`working on get for /war/users/${req.params.userid}`);
   //{id, title, completed_date}
   let aWeekAgo = new Date();
-  aWeekAgo.setDate(aWeekAgo.getDate()-7);
+  aWeekAgo.setDate(aWeekAgo.getDate() - 7);
   let now = new Date();
   knex("tasks")
     .join("users_tasks as ut", "ut.task_id", "=", "tasks.id")
@@ -227,7 +227,7 @@ const userWar = (req, res) => {
       "tasks.status as task_status"
     )
     .where("ut.user_id", "=", req.params.userid)
-    .whereBetween('tasks.assigned_date', [ aWeekAgo , now ])
+    .whereBetween("tasks.assigned_date", [aWeekAgo, now])
     .then((data) => {
       if (data) {
         res.set("Access-Control-Allow-Origin", "*");
@@ -274,7 +274,7 @@ const addTask = async (req, res) => {
         }
       });
   }
-  if(isValid) {
+  if (isValid) {
     knex("tasks")
       .insert({
         title: req.body.title,
@@ -370,7 +370,7 @@ const editTask = async (req, res) => {
 
   if (body.suspense_date) {
     validTimeStamp = checkTime(body.suspense_date);
-  }else {
+  } else {
     validTimeStamp = true;
   }
 
@@ -458,5 +458,5 @@ module.exports = {
   editTask,
   deleteTask,
   deleteTaskUsers,
-  createdByRequest
+  createdByRequest,
 };

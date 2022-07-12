@@ -32,14 +32,8 @@ typography: if you want to set the typography to "body", or "h1" then this is th
             the setInput is what I would pass into this component)
 */
 
-const formatString = (sentence) => {
-  const words = sentence.split(" ");
-
-  return words
-    .map((word) => {
-      return word[0].toUpperCase() + word.substring(1);
-    })
-    .join(" ");
+const convertDateTime = (zuluTime) => {
+  return new Date(zuluTime).toLocaleString("en-US");
 };
 
 const EditableText = (props) => {
@@ -47,8 +41,24 @@ const EditableText = (props) => {
   let [value, setValue] = useState(props.val);
   let [typography, setTypography] = useState(""); //can set the typography type if desired
 
+  const formatString = (sentence) => {
+    const words = sentence.split(" ");
+    if (words && words.length > 0) {
+      return words
+        .map((word) => {
+          if (word.length > 0) {
+            return word[0].toUpperCase() + word.substring(1);
+          } else {
+            return "";
+          }
+        })
+        .join(" ");
+    } else {
+      return "";
+    }
+  };
+
   useEffect(() => {
-    console.log(props.dropdown);
     setValue(props.val);
     setTypography(props.typography);
   }, [props.val]);
@@ -58,7 +68,7 @@ const EditableText = (props) => {
   };
 
   const handleSuspenseDateChange = (_value) => {
-    handleChange({ target: { name: "suspense_date", value: _value.format() } });
+    setValue(_value.format());
   };
 
   let handleChange = () => {
@@ -72,10 +82,6 @@ const EditableText = (props) => {
     toggleEdit();
     handleChange();
   };
-
-  //   function capitalizeFirstLetter(string) {
-  //     return string.charAt(0).toUpperCase() + string.slice(1);
-  //   }
 
   return (
     <Box m={2} p={1}>
@@ -102,7 +108,7 @@ const EditableText = (props) => {
               <Stack spacing={3}>
                 <DateTimePicker
                   label="Suspense Date/Time"
-                  value={props.val}
+                  value={value}
                   onChange={handleSuspenseDateChange}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -146,7 +152,9 @@ const EditableText = (props) => {
           justifyContent="space-evenly"
         >
           <Typography variant={typography}>
-            {typeof value === "string" && props.field !== "description"
+            {props.field === "suspense_date"
+              ? convertDateTime(value)
+              : typeof value === "string" && props.field !== "description"
               ? formatString(value)
               : value}
           </Typography>

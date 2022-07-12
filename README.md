@@ -27,6 +27,10 @@ By contrast, Taskify is a centralized location for task management where all mem
 
 Aside from task tracking, the second key feature of Taskify is weekly activity tracking. Weekly Activity Reports (WARs) are commonly used for oversight in military units, but the process of writing and reviewing them can be tedious and a time-sink. The same goes for writing awards packages and performance reports. Taskify streamlines that process by enabling supervisors to quickly see what their people are up to, and allowing servicemembers to easily refer back to their accomplishments when gathering bullets for EPRs/OPRs and awards. When a user completes a task, that task gets pushed to their Weekly Activity Reports page. Supervisors can view WARs for all members of their unit as well as their own WAR. WAR pages are updated weekly and then older tasks can be referenced in the Archive.
 
+### Add ERD here
+
+### Add screen capture of dashboard here
+
 ## Future Work
 
 There are number of additional features that could be added to future versions of Taskify:

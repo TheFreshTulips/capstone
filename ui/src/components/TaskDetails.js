@@ -60,9 +60,12 @@ const TaskDetails = () => {
     priority: null,
     status: "",
     suspense_date: "",
+    completed_date: "",
     owners: [],
   }); //This input will be used for PATCH for tasks
   const [isSubmit, setIsSubmit] = useState(false);
+  const titleTypography = "body1";
+  const valueTypography = "body2";
   let { task } = useParams();
   let navigate = useNavigate();
 
@@ -73,6 +76,10 @@ const TaskDetails = () => {
         body[x] = inputTask[x];
       }
     });
+    if (inputTask.status === "finished") {
+      body.completed_date = new Date();
+    }
+    console.log(body);
     return body;
   };
 
@@ -255,12 +262,13 @@ const TaskDetails = () => {
       .catch((err) => console.log("Error getting users array", err));
   }, []);
 
+  const convertDateTime = (zuluTime) => {
+    return new Date(zuluTime).toLocaleString("en-US");
+  };
+
   return (
     <>
       <Box marginTop={5} sx={{ width: "100%" }}>
-        <Box m={2}>
-          <Typography variant="h5">{`Task #${taskDetails.task_id}`}</Typography>
-        </Box>
         {ownsTask ? (
           <Box m={4} display="flex" justifyContent="right">
             <Fab color="primary" aria-label="add" onClick={handleDelete}>
@@ -284,21 +292,22 @@ const TaskDetails = () => {
           </Grid>
 
           <Grid item xs={6} display="flex" justifyContent="center">
-            <Stack>
-              <Typography>Priority:</Typography>
+            <Stack alignItems={"center"}>
+              <Typography variant={titleTypography}>Priority:</Typography>
               <EditableText
                 field="priority"
                 val={taskDetails.task_priority}
                 canEdit={ownsTask}
                 callback={setInputTask}
                 input={inputTask}
+                typography={valueTypography}
               />
             </Stack>
           </Grid>
 
           <Grid item xs={6} display="flex" justifyContent="center">
-            <Stack>
-              <Typography>Status: </Typography>
+            <Stack alignItems={"center"}>
+              <Typography variant={titleTypography}>Status:</Typography>
               <EditableText
                 field="status"
                 val={taskDetails.task_status}
@@ -307,35 +316,26 @@ const TaskDetails = () => {
                 input={inputTask}
                 input_type="dropdown"
                 dropdown={["to do", "in progress", "finished"]}
+                typography={valueTypography}
               />
             </Stack>
           </Grid>
 
           <Grid item xs={6} display="flex" justifyContent="center">
-            <Stack>
-              <Typography>Assigned Date:</Typography>
-              <Typography>{`${new Date(taskDetails.task_assigned_date)
-                .toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })
-                .replace(",", "")}`}</Typography>
+            <Stack alignItems={"center"}>
+              <Typography variant={titleTypography}>Assigned Date:</Typography>
+              <Typography>{`${convertDateTime(
+                taskDetails.task_assigned_date
+              )}`}</Typography>
             </Stack>
           </Grid>
 
           <Grid item xs={6} display="flex" justifyContent="center">
-            <Stack>
-              <Typography>Suspense Date:</Typography>
+            <Stack alignItems={"center"}>
+              <Typography variant={titleTypography}>Suspense Date:</Typography>
               <EditableText
                 field="suspense_date"
-                val={new Date(taskDetails.task_suspense_date)
-                  .toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })
-                  .replace(",", "")}
+                val={taskDetails.task_suspense_date}
                 canEdit={ownsTask}
                 callback={setInputTask}
                 input={inputTask}
@@ -345,26 +345,31 @@ const TaskDetails = () => {
           </Grid>
 
           <Grid item xs={12} display="flex" justifyContent="center">
-            <Typography>Details:</Typography>
-            <EditableText
-              field="description"
-              val={taskDetails.task_description}
-              canEdit={ownsTask}
-              callback={setInputTask}
-              input={inputTask}
-              input_type="large"
-            />
+            <Stack alignItems={"center"}>
+              <Typography variant={titleTypography}>Details:</Typography>
+              <EditableText
+                field="description"
+                val={taskDetails.task_description}
+                canEdit={ownsTask}
+                callback={setInputTask}
+                input={inputTask}
+                input_type="large"
+                typography={valueTypography}
+              />
+            </Stack>
           </Grid>
 
           <Grid item xs={6} display="flex" justifyContent="center">
-            <Typography>Assigned To:</Typography>
-            <Box m={2}>
-              {owners.map((owner, index) => (
-                <Typography
-                  key={index}
-                >{`${owner.owner_rank} ${owner.owner_name}`}</Typography>
-              ))}
-            </Box>
+            <Stack alignItems={"center"}>
+              <Typography>Assigned To:</Typography>
+              <Box m={2}>
+                {owners.map((owner, index) => (
+                  <Typography
+                    key={index}
+                  >{`${owner.owner_rank} ${owner.owner_name}`}</Typography>
+                ))}
+              </Box>
+            </Stack>
           </Grid>
           {ownsTask ? (
             <Grid item xs={6} display="flex" justifyContent="center">
@@ -409,13 +414,7 @@ const TaskDetails = () => {
                         {comment.comment_body}
                       </p>
                       <p style={{ textAlign: "left", color: "gray" }}>
-                        {new Date(comment.comment_timestamp)
-                          .toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })
-                          .replace(",", "")}
+                        {convertDateTime(comment.comment_timestamp)}
                       </p>
                     </Grid>
                   </Grid>
