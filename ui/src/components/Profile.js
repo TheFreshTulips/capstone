@@ -52,11 +52,21 @@ const MenuProps = {
 };
 
 const Profile = () => {
-  let [input, setInput] = useState({ 
+  let [input, setInput] = useState({
     name: "",
     rank: "",
     org_id: 0,
     email: "",
+  });
+  let [userData, setUserData] = useState({
+    org_id: null,
+    org_name: "",
+    position_id: null,
+    position_name: "",
+    user_email: "",
+    user_id: null,
+    user_name: "",
+    user_rank: "",
   });
   let [orgs, setOrgs] = useState([]);
   let [selected, setSelected] = useState("");
@@ -65,9 +75,9 @@ const Profile = () => {
 
   let formatPatchReq = () => {
     let body = {};
-    Object.keys(inputTask).forEach((x) => {
-      if (inputTask[x] !== "" && inputTask[x] !== null && inputTask[x] !== 0) {
-        body[x] = inputTask[x];
+    Object.keys(input).forEach((x) => {
+      if (input[x] !== "" && input[x] !== null && input[x] !== 0) {
+        body[x] = input[x];
       }
     });
 
@@ -78,7 +88,7 @@ const Profile = () => {
     let url = `${ApiUrl}/users/${tc.userId}`;
     fetch(url)
       .then((res) => res.json())
-      .then((data) => setInput(data[0]))
+      .then((data) => setUserData(data[0]))
       .then(
         fetch(`${ApiUrl}/orgs`)
           .then((res) => res.json())
@@ -92,15 +102,16 @@ const Profile = () => {
     setSelected(event.target.value);
     setInput({
       ...input,
-      organization: event.target.value,
+      org_id: event.target.value,
     });
   };
 
-  const handleSubmit = () =>{
-
+  const handleSubmit = (e) => {
     let request = "PATCH";
     let body = formatPatchReq();
     let url = `${ApiUrl}/users/${tc.userId}`;
+
+    console.log(body);
 
     if (Object.keys(body).length > 0) {
       fetch(url, {
@@ -109,12 +120,10 @@ const Profile = () => {
         body: JSON.stringify(body),
       }).then((res) => {
         console.log(res);
-        setIsSubmit(!isSubmit);
       });
       e.preventDefault();
     }
-
-  }
+  };
 
   return (
     <Box m={2} p={1} alignItems="center">
@@ -129,8 +138,8 @@ const Profile = () => {
             </Grid>
             <Grid item xs={8}>
               <EditableText
-                field={"user_name"}
-                val={input.user_name}
+                field={"name"}
+                val={userData.user_name}
                 canEdit={true}
                 callback={setInput}
                 input={input}
@@ -141,8 +150,8 @@ const Profile = () => {
             </Grid>
             <Grid item xs={8}>
               <EditableText
-                field={"user_rank"}
-                val={input.user_rank}
+                field={"rank"}
+                val={userData.user_rank}
                 canEdit={true}
                 callback={setInput}
                 input={input}
@@ -155,8 +164,8 @@ const Profile = () => {
             </Grid>
             <Grid item xs={8}>
               <EditableText
-                field={"user_email"}
-                val={input.user_email}
+                field={"email"}
+                val={userData.user_email}
                 canEdit={true}
                 callback={setInput}
                 input={input}
@@ -165,20 +174,19 @@ const Profile = () => {
             <Grid item xs={4} display="flex" justifyContent="flex-end">
               <Typography pt={3}>Organization:</Typography>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={8} justifySelf="center">
               <FormControl sx={{ m: 1, width: 150 }}>
                 <Select
                   labelId="demo-multiple-name-label"
                   id="demo-multiple-name"
+                  defaultValue={userData.org_name}
                   value={selected}
                   onChange={handleSelect}
                   input={<OutlinedInput label="Name" />}
                   MenuProps={MenuProps}
                 >
                   {orgs.map((el) => (
-                    <MenuItem value={el.org_id}>
-                      {el.org_name}
-                    </MenuItem>
+                    <MenuItem value={el.org_id}>{el.org_name}</MenuItem>
                   ))}
                 </Select>
               </FormControl>

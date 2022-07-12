@@ -192,6 +192,7 @@ const login = async (req, res) => {
 
 const update = (req, res) => {
   console.log(`working on patch for /users/${req.params.userid}`);
+
   if (
     checkKeys(
       ["name", "rank", "org_id", "email", "position_id", "password"],
