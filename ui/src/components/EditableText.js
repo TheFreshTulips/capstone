@@ -125,8 +125,8 @@ const EditableText = (props) => {
                   label="status"
                   onChange={(e) => setValue(e.target.value)}
                 >
-                  {props.dropdown.map((ele) => (
-                    <MenuItem value={ele}>{formatString(ele)}</MenuItem>
+                  {props.dropdown.map((ele, index) => (
+                    <MenuItem value={ele} key={index}>{formatString(ele)}</MenuItem>
                   ))}
                 </Select>
               </FormControl>

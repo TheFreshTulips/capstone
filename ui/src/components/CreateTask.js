@@ -124,14 +124,13 @@ const CreateTask = () => {
               alert("Task created!");
               navigate("/");
               e.preventDefault();
-            } 
+            }
           else {
           alert("task creation failed");
         }
       })
       .catch((err) => {
         console.log(err);
-        console.log(res.status);
         alert(`Failed to create a new task`);
       });
   };
