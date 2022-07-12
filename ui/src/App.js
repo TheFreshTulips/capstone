@@ -20,6 +20,7 @@ function App() {
   const [userId, setUserId] = useState(null); //set this in Login (start as null)
   const [isAdmin, setIsAdmin] = useState(false);
   const [userOrg, setUserOrg] = useState(null); //set this in Login (start as null)
+  const [isSupervisor, setIsSupervisor] = useState(false)
 
   const TaskContextValues = {
     userId,
@@ -28,6 +29,8 @@ function App() {
     setIsAdmin,
     userOrg,
     setUserOrg,
+    isSupervisor,
+    setIsSupervisor
   };
 
   /* eslint-disable react/prop-types */

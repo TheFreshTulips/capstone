@@ -73,6 +73,7 @@ const Login = () => {
           if (isAuthenticated) {
             console.log(`data: `, data)
             tc.setIsAdmin(data.position === "admin")
+            tc.setIsSupervisor(data.position === "supervisor")
             tc.setUserId(data.id);
             if(data.org_id) {
               tc.setUserOrg(data.org_id)
