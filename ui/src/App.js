@@ -14,13 +14,36 @@ import ViewModifyRoles from "./components/ViewModifyRoles.js";
 import CreateOrgs from "./components/CreateOrgs.js";
 import ModifyOrgs from "./components/ModifyOrgs.js";
 import ModifyRoles from "./components/ModifyRoles.js";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 const TaskContext = createContext(null);
+
+const theme = createTheme({
+  /*
+  palette: {
+    primary: {
+      main: "#003655",
+    },
+    secondary: {
+      main: "rgba(4,1,32,0.56)",
+    },
+    background: {
+      default: "#172635",
+      paper: "#192633",
+    },
+  },*/
+  typography: {
+    //most text is "body1"
+    h5: {
+      fontWeight: 600,
+    },
+  },
+});
 
 function App() {
   const [userId, setUserId] = useState(null); //set this in Login (start as null)
   const [isAdmin, setIsAdmin] = useState(false);
   const [userOrg, setUserOrg] = useState(null); //set this in Login (start as null)
-  const [isSupervisor, setIsSupervisor] = useState(false)
+  const [isSupervisor, setIsSupervisor] = useState(false);
 
   const TaskContextValues = {
     userId,
@@ -30,59 +53,62 @@ function App() {
     userOrg,
     setUserOrg,
     isSupervisor,
-    setIsSupervisor
+    setIsSupervisor,
   };
 
   /* eslint-disable react/prop-types */
 
   return (
     <div>
-      <Router>
-        <TaskContext.Provider value={TaskContextValues}>
-          <Header />
-          <Routes>
-            {
-            isAdmin ?
-
-              <>
-                {/* admin routes only */}
-                <Route path="/admin" element={<AdminMenu />}/>
-                <Route path="/admin/roles" element={<ViewModifyRoles />}/>
-                <Route path="/admin/roles/edit/:id" element={<ModifyRoles />}/>
-                <Route path="/admin/orgs" element={<ViewModifyOrgs />}/>
-                <Route path="/admin/orgs/create" element={<CreateOrgs />}/>
-                <Route path="/admin/orgs/edit/:id" element={<ModifyOrgs />}/>
-                <Route path="/*" element={<Dashboard user={false} />}/>
-              </>
-              : <></>
-            }
-            {
-
-            userId !== null ?
-
-              <>
-                {/* all user routes */}
-                <Route path="/" element={<Dashboard user={true} />}/>
-                <Route path="/unit" element={<Dashboard user={false} />}/>
-                <Route path="/tasks/add" element={<CreateTask type={"task"} />}/>
-                <Route path="/tasks/:task" element={<TaskDetails />}/>
-                <Route path="/reports" element={<TaskTable/>}/>
-                <Route path="/profile" element={<Profile />}/>
-                <Route path="/archive" element={<TaskTable/>}/>
-                <Route path = '/*' element = {<Dashboard user = {true}/>}></Route>
-              </>
-            :
-
-              <>
-                {/* unauthenticated routes */}
-                <Route path="/register" element={<Register />}/>
-                <Route path="/login" element={<Login />}/>
-                <Route path = '/*' element = {<Login/>}/>
-              </>
-            }
-          </Routes>
-        </TaskContext.Provider>
-      </Router>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <TaskContext.Provider value={TaskContextValues}>
+            <Header />
+            <Routes>
+              {isAdmin ? (
+                <>
+                  {/* admin routes only */}
+                  <Route path="/admin" element={<AdminMenu />} />
+                  <Route path="/admin/roles" element={<ViewModifyRoles />} />
+                  <Route
+                    path="/admin/roles/edit/:id"
+                    element={<ModifyRoles />}
+                  />
+                  <Route path="/admin/orgs" element={<ViewModifyOrgs />} />
+                  <Route path="/admin/orgs/create" element={<CreateOrgs />} />
+                  <Route path="/admin/orgs/edit/:id" element={<ModifyOrgs />} />
+                  <Route path="/*" element={<Dashboard user={false} />} />
+                </>
+              ) : (
+                <></>
+              )}
+              {userId !== null ? (
+                <>
+                  {/* all user routes */}
+                  <Route path="/" element={<Dashboard user={true} />} />
+                  <Route path="/unit" element={<Dashboard user={false} />} />
+                  <Route
+                    path="/tasks/add"
+                    element={<CreateTask type={"task"} />}
+                  />
+                  <Route path="/tasks/:task" element={<TaskDetails />} />
+                  <Route path="/reports" element={<TaskTable />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/archive" element={<TaskTable />} />
+                  <Route path="/*" element={<Dashboard user={true} />}></Route>
+                </>
+              ) : (
+                <>
+                  {/* unauthenticated routes */}
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/*" element={<Login />} />
+                </>
+              )}
+            </Routes>
+          </TaskContext.Provider>
+        </Router>
+      </ThemeProvider>
     </div>
   );
 }

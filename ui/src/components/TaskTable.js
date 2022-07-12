@@ -14,7 +14,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import config from "../config";
 import { TaskContext } from "../App.js";
-import {useLocation} from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 // const createData = (task, date_completed, completed_by) => {
@@ -29,11 +29,9 @@ const rows = [
 ];
  */
 
-
-
 //variables here can probably have better names, these are the possible names of the columns
 const rowNames = ["Task Name", "Date Completed"];
-const keys = ["task_title", "task_completed_date"]
+const keys = ["task_title", "task_completed_date"];
 // const adminRoles = [];
 // const adminOrgs = [];
 
@@ -41,7 +39,7 @@ const TaskTable = () => {
   const tc = useContext(TaskContext);
   let [tasks, setTasks] = useState([]);
   let [isUnit, setIsUnit] = useState(true); //make toggle button to toggle if the table should show unit data or single user data
-  let {pathname} = useLocation();
+  let { pathname } = useLocation();
 
   // function isDateInThisWeek(date) { //assumes date is a Date objct
   //   const todayObj = new Date();
@@ -61,9 +59,12 @@ const TaskTable = () => {
 
   useEffect(() => {
     let url;
-    console.log('pathname: ', pathname)
-    pathname === "/archive" ? (url = `${ApiUrl}/tasks/users/${tc.userId}`) : (
-      isUnit ? (url = `${ApiUrl}/war/orgs/${tc.userOrg}`) : (url = `${ApiUrl}/war/users/${tc.userId}`) );
+    console.log("pathname: ", pathname);
+    pathname === "/archive"
+      ? (url = `${ApiUrl}/tasks/users/${tc.userId}`)
+      : isUnit
+      ? (url = `${ApiUrl}/war/orgs/${tc.userOrg}`)
+      : (url = `${ApiUrl}/war/users/${tc.userId}`);
 
     fetch(url)
       .then((res) => res.json())
@@ -89,7 +90,7 @@ const TaskTable = () => {
     <Box width={"90%"} margin="auto" marginTop={5}>
       <Paper>
         <Box m={3}>
-          {pathname !== '/archive' ? (
+          {pathname !== "/archive" ? (
             <FormGroup>
               <FormControlLabel
                 control={
@@ -101,10 +102,10 @@ const TaskTable = () => {
                 }
                 label="See my personal report"
               />
-            </FormGroup>)
-            :
+            </FormGroup>
+          ) : (
             <></>
-            }
+          )}
         </Box>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -113,12 +114,12 @@ const TaskTable = () => {
                 {rowNames.map((element, index) => {
                   return index === 0 ? (
                     <TableCell key={index}>
-                      <Typography >{element}</Typography>
+                      <Typography variant="h6">{element}</Typography>
                     </TableCell>
                   ) : (
                     <TableCell key={index} align="right">
-                      <Typography>{element}</Typography>
-                   </TableCell>
+                      <Typography variant="h6">{element}</Typography>
+                    </TableCell>
                   );
                 })}
               </TableRow>
@@ -135,12 +136,8 @@ const TaskTable = () => {
                         // console.log(`column:${colName}`);
                         // console.log(`index:${index}`);
                         return index === 0 ? (
-                          <TableCell
-                            key={index}
-                            component="th"
-                            scope="row"
-                          >
-                          {row[colName]}
+                          <TableCell key={index} component="th" scope="row">
+                            {row[colName]}
                           </TableCell>
                         ) : (
                           <TableCell key={index} align="right">
@@ -158,6 +155,6 @@ const TaskTable = () => {
       </Paper>
     </Box>
   );
-}
+};
 
 export default TaskTable;
