@@ -21,6 +21,7 @@ callback: Whatever function you get from the useState in the parent component to
         on change, that is the callback. It uses the function returned by useState to hook into the state of the parent so
         whatever is changed in this component can be submitted in the fetch in the parent
 inputType: if it's a large text field, this prop will indicate that, or if it is a date picker
+  -if input type is "dropdown", then display a dropdown from an optional dropdown prop
 typography: if you want to set the typography to "body", or "h1" then this is the prop field to do that (to implement)
 
         (example: I usually use [input, setInput] which is being changed onChange of a form and submitted onSubmit.

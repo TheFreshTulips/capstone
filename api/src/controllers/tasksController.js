@@ -360,6 +360,7 @@ const editTask = async (req, res) => {
     "description",
     "priority",
     "suspense_date",
+    "completed_date",
     "status",
     "org_id",
     "author_id",
@@ -369,7 +370,7 @@ const editTask = async (req, res) => {
 
   if (body.suspense_date) {
     validTimeStamp = checkTime(body.suspense_date);
-  } else {
+  }else {
     validTimeStamp = true;
   }
 

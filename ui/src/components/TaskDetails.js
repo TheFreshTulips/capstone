@@ -225,8 +225,9 @@ const TaskDetails = () => {
       .then((data) => {
         sortComments(data.comments);
         setOwners(data.owners);
-        //  setOwnsTask(data.author_id === tc.userId) //if the author of the task is the same user in the global context they can edit the task
-        setOwnsTask(tc.userId === data.task_id); //change this back to the line above once the author_id is being passed by the API
+
+        let owner_ids = data.owners.map(x => x.owner_id)
+        setOwnsTask(tc.userId === data.author_id || owner_ids.includes(tc.userId)); //change this back to the line above once the author_id is being passed by the API
       })
       .catch((err) => console.log(err));
   }, [isSubmit]);
@@ -300,6 +301,8 @@ const TaskDetails = () => {
                 canEdit={ownsTask}
                 callback={setInputTask}
                 input={inputTask}
+                inputType="dropdown"
+                dropdown = {["to do", "in progress", "finished"]}
               />
             </Stack>
           </Grid>
