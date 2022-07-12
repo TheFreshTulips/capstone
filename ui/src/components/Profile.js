@@ -52,13 +52,11 @@ const MenuProps = {
 };
 
 const Profile = () => {
-  let [input, setInput] = useState({
-    user_id: 0,
-    user_name: "",
-    user_rank: "",
+  let [input, setInput] = useState({ 
+    name: "",
+    rank: "",
     org_id: 0,
-    org_name: "",
-    user_email: "",
+    email: "",
   });
   let [orgs, setOrgs] = useState([]);
   let [selected, setSelected] = useState("");
@@ -102,7 +100,7 @@ const Profile = () => {
 
     let request = "PATCH";
     let body = formatPatchReq();
-    let url = `${ApiUrl}/users/${taskDetails.task_id}`;
+    let url = `${ApiUrl}/users/${tc.userId}`;
 
     if (Object.keys(body).length > 0) {
       fetch(url, {
