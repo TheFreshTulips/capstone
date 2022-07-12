@@ -226,8 +226,12 @@ const TaskDetails = () => {
         sortComments(data.comments);
         setOwners(data.owners);
 
-        let owner_ids = data.owners.map(x => x.owner_id)
-        setOwnsTask(tc.userId === data.author_id || owner_ids.includes(tc.userId)); //change this back to the line above once the author_id is being passed by the API
+        let owner_ids = data.owners.map((x) => x.owner_id);
+        console.log(data.author_id);
+        console.log(tc.userId);
+        setOwnsTask(
+          tc.userId === data.author_id || owner_ids.includes(tc.userId)
+        ); //change this back to the line above once the author_id is being passed by the API
       })
       .catch((err) => console.log(err));
   }, [isSubmit]);
@@ -301,8 +305,8 @@ const TaskDetails = () => {
                 canEdit={ownsTask}
                 callback={setInputTask}
                 input={inputTask}
-                inputType="dropdown"
-                dropdown = {["to do", "in progress", "finished"]}
+                input_type="dropdown"
+                dropdown={["to do", "in progress", "finished"]}
               />
             </Stack>
           </Grid>

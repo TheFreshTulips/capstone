@@ -7,6 +7,10 @@ import { Box } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 
 /*
@@ -28,12 +32,23 @@ typography: if you want to set the typography to "body", or "h1" then this is th
             the setInput is what I would pass into this component)
 */
 
+const formatString = (sentence) => {
+  const words = sentence.split(" ");
+
+  return words
+    .map((word) => {
+      return word[0].toUpperCase() + word.substring(1);
+    })
+    .join(" ");
+};
+
 const EditableText = (props) => {
   let [isEdit, setIsEdit] = useState(false);
   let [value, setValue] = useState(props.val);
   let [typography, setTypography] = useState(""); //can set the typography type if desired
 
   useEffect(() => {
+    console.log(props.dropdown);
     setValue(props.val);
     setTypography(props.typography);
   }, [props.val]);
@@ -58,9 +73,9 @@ const EditableText = (props) => {
     handleChange();
   };
 
-//   function capitalizeFirstLetter(string) {
-//     return string.charAt(0).toUpperCase() + string.slice(1);
-//   }
+  //   function capitalizeFirstLetter(string) {
+  //     return string.charAt(0).toUpperCase() + string.slice(1);
+  //   }
 
   return (
     <Box m={2} p={1}>
@@ -93,6 +108,21 @@ const EditableText = (props) => {
                 />
               </Stack>
             </LocalizationProvider>
+          ) : props.input_type === "dropdown" ? (
+            <FormControl fullWidth>
+              <InputLabel id="simple-select-label">Status</InputLabel>
+              <Select
+                labelId="simple-select-label"
+                id="simple-select"
+                value={value}
+                label="status"
+                onChange={(e) => setValue(e.target.value)}
+              >
+                {props.dropdown.map((ele) => {
+                  <MenuItem value={ele}>{formatString(ele)}</MenuItem>;
+                })}
+              </Select>
+            </FormControl>
           ) : (
             <TextField
               defaultValue={props.val}
