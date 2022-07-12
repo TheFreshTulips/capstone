@@ -404,16 +404,17 @@ const editTask = async (req, res) => {
 
 const deleteTask = (req, res) => {
   console.log(`working on delete for /tasks/${req.params.taskid}`);
+  console.log(`req.params.taskid`, req.params.taskid)
   knex("users_tasks")
-    .where("task_id", "=", parseInt(req.params.id))
+    .where("task_id", "=", parseInt(req.params.taskid))
     .del()
     .then(() => {
       knex("comments")
-        .where("task_id", "=", parseInt(req.params.id))
+        .where("task_id", "=", parseInt(req.params.taskid))
         .del()
         .then(() => {
           knex("tasks")
-            .where("tasks.id", "=", parseInt(req.params.id))
+            .where("tasks.id", "=", parseInt(req.params.taskid))
             .del()
             .catch((err) => {
               console.log(err);
