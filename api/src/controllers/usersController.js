@@ -95,7 +95,7 @@ const register = (req, res, next) => {
     req.body[keys[3]] &&
     req.body[keys[4]]
   ) {
-    userNamePromise = knex("users")
+    knex("users")
       .where("email", "=", req.body.email)
       .select("*")
       .then((data) => {

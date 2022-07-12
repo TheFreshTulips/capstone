@@ -9,11 +9,11 @@ const checkTime = (time) => {
   return time.charAt(10) === "T" && time.charAt(time.length - 1) === "Z";
 };
 
-const checkKeys = (validkeys, bodyKeys) => {
-  return Object.keys(bodyKeys).every((element) => {
-    return validKeys.includes(element);
-  });
-};
+// const checkKeys = (validkeys, bodyKeys) => {
+//   return Object.keys(bodyKeys).every((element) => {
+//     return validKeys.includes(element);
+//   });
+// };
 
 // GET requests ---------------------------------------------------------------------------------------------
 const orgRequest = (req, res) => {
@@ -273,31 +273,33 @@ const addTask = async (req, res) => {
         }
       });
   }
-  knex("tasks")
-    .insert({
-      title: req.body.title,
-      description: req.body.description,
-      priority: req.body.priority,
-      suspense_date: req.body.suspense_date,
-      status: req.body.status,
-      completed_date: null,
-      assigned_date: knex.fn.now(),
-      author_id: req.body.creator_id,
-      org_id: req.body.org_id,
-    })
-    .returning("id")
-    .then((id) => {
-      console.log(id[0].id);
-      const fieldsToInsert = req.body.owners.map((ownerId) => ({
-        user_id: ownerId,
-        task_id: id[0].id,
-      }));
-      knex("users_tasks")
-        .insert(fieldsToInsert)
-        .then((data) => {
-          res.status(200).send(data);
-        });
-    });
+  if(isValid) {
+    knex("tasks")
+      .insert({
+        title: req.body.title,
+        description: req.body.description,
+        priority: req.body.priority,
+        suspense_date: req.body.suspense_date,
+        status: req.body.status,
+        completed_date: null,
+        assigned_date: knex.fn.now(),
+        author_id: req.body.creator_id,
+        org_id: req.body.org_id,
+      })
+      .returning("id")
+      .then((id) => {
+        console.log(id[0].id);
+        const fieldsToInsert = req.body.owners.map((ownerId) => ({
+          user_id: ownerId,
+          task_id: id[0].id,
+        }));
+        knex("users_tasks")
+          .insert(fieldsToInsert)
+          .then((data) => {
+            res.status(200).send(data);
+          });
+      });
+  }
 };
 
 const addTaskUser = (req, res) => {
