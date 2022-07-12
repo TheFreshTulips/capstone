@@ -100,6 +100,7 @@ const detailedRequest = (req, res) => {
         "tasks.assigned_date as task_assigned_date",
         "tasks.suspense_date as task_suspense_date",
         "tasks.completed_date as task_completed_date",
+        "authors.id as author_id",
         "authors.rank as author_rank",
         "authors.name as author_name"
       )
