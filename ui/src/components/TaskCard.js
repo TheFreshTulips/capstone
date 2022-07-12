@@ -40,7 +40,12 @@ const TaskCard = (props) => {
 
   return (
     <Box sx={{ maxWidth: 300, minWidth: 300, minHeight: 180 }}>
-      <Card variant="outlined">{card}</Card>
+      <Card
+        variant="outlined"
+        style={{ color: "white", backgroundColor: "rgba(74,104,133,0.44)" }}
+      >
+        {card}
+      </Card>
     </Box>
   );
 };

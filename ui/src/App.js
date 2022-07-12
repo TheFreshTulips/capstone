@@ -18,23 +18,21 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 const TaskContext = createContext(null);
 
 const theme = createTheme({
-  /*
   palette: {
     primary: {
-      main: "#003655",
+      main: "#1D4367",
     },
     secondary: {
-      main: "rgba(4,1,32,0.56)",
+      main: "rgba(241,21,42,0.49)",
     },
     background: {
-      default: "#172635",
-      paper: "#192633",
+      default: "rgba(208,225,236,0.85)",
     },
-  },*/
+  },
   typography: {
-    //most text is "body1"
     h5: {
-      fontWeight: 600,
+      fontWeight: 500,
+      letterSpacing: "0.04em",
     },
   },
 });

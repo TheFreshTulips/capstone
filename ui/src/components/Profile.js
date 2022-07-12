@@ -7,12 +7,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
 import { TaskContext } from "../App.js";
-import {
-  Select,
-  MenuItem,
-  InputLabelProps,
-  OutlinedInput,
-} from "@mui/material";
+import { NativeSelect, InputLabel } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -131,7 +126,14 @@ const Profile = () => {
         <Typography variant="h4" alignContent="left">
           My Profile
         </Typography>
-        <Paper elevation={2}>
+        <Paper
+          elevation={5}
+          style={{
+            padding: "40px 20px",
+            color: "white",
+            backgroundColor: "rgba(74,104,133,0.44)",
+          }}
+        >
           <Grid container spacing={2} marginTop={2}>
             <Grid item xs={4} display="flex" justifyContent="flex-end">
               <Typography pt={3}>Name:</Typography>
@@ -174,21 +176,20 @@ const Profile = () => {
             <Grid item xs={4} display="flex" justifyContent="flex-end">
               <Typography pt={3}>Organization:</Typography>
             </Grid>
-            <Grid item xs={8} justifySelf="center">
-              <FormControl sx={{ m: 1, width: 150 }}>
-                <Select
-                  labelId="demo-multiple-name-label"
-                  id="demo-multiple-name"
+            <Grid item xs={8}>
+              <FormControl sx={{ width: 150 }}>
+                <NativeSelect
                   defaultValue={userData.org_name}
-                  value={selected}
                   onChange={handleSelect}
-                  input={<OutlinedInput label="Name" />}
-                  MenuProps={MenuProps}
+                  inputProps={{
+                    name: "org_id",
+                    id: "uncontrolled-native",
+                  }}
                 >
                   {orgs.map((el) => (
-                    <MenuItem value={el.org_id}>{el.org_name}</MenuItem>
+                    <option value={el.org_id}>{el.org_name}</option>
                   ))}
-                </Select>
+                </NativeSelect>
               </FormControl>
             </Grid>
           </Grid>

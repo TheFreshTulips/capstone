@@ -406,7 +406,11 @@ const TaskDetails = () => {
         <Container>
           <Typography variant="h6">{`Comments`}</Typography>
           <Paper
-            style={{ padding: "40px 20px" }}
+            style={{
+              padding: "40px 20px",
+              color: "white",
+              backgroundColor: "rgba(74,104,133,0.44)",
+            }}
             sx={{ fontFamily: "sans-serif" }}
           >
             {comments.map((comment) => {

@@ -88,7 +88,13 @@ const TaskTable = () => {
 
   return (
     <Box width={"90%"} margin="auto" marginTop={5}>
-      <Paper>
+      <Paper
+        style={{
+          padding: "40px 20px",
+          color: "white",
+          backgroundColor: "rgba(74,104,133,0.44)",
+        }}
+      >
         <Box m={3}>
           {pathname !== "/archive" ? (
             <FormGroup>
