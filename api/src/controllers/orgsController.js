@@ -47,6 +47,24 @@ const detailedRequest = (req, res) => {
     });
 };
 
+const childRequest = (req, res) => {
+  console.log(`working on GET for /orgs/${req.params.id}/children`)
+  if (!isNaN(parseInt(req.params.id))) {
+    knex("organizations as org")
+      .where("org.parent_id", "=", parseInt(req.params.id))
+      .select(
+        "org.id as org_id",
+        "org.name as org_name"
+      )
+      .then((data) => {
+        res.set("Access-Control-Allow-Origin", "*");
+        res.status(200).send(data);
+      });
+  } else {
+    res.status(404).send();
+  }
+}
+
 const add = (req, res) => {
   console.log(`working on POST for /orgs`);
 
@@ -168,4 +186,4 @@ const remove = (req, res) => {
   }
 };
 
-module.exports = { request, detailedRequest, add, update, remove };
+module.exports = { request, detailedRequest, childRequest, add, update, remove };

@@ -16,5 +16,6 @@ exports.seed = async function(knex) {
     { name: '21 CS', img_url: 'https://media.defense.gov/2019/May/13/2002131051/780/780/0/190513-F-O3755-1001.JPG', parent_id: 1},
     { name: 'SCX', img_url: 'https://media.defense.gov/2019/May/13/2002131051/780/780/0/190513-F-O3755-1001.JPG', parent_id: 2},
     { name: 'SCXZ', img_url: 'https://media.defense.gov/2019/May/13/2002131051/780/780/0/190513-F-O3755-1001.JPG', parent_id: 3},
+    { name: 'SCXA', img_url: 'https://media.defense.gov/2019/May/13/2002131051/780/780/0/190513-F-O3755-1001.JPG', parent_id: 3},
   ]);
 };

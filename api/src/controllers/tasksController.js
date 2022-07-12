@@ -22,6 +22,7 @@ const orgRequest = (req, res) => {
   if (!isNaN(parseInt(req.params.orgid))) {
     knex("tasks")
       .join("users", "users.id", "=", "tasks.author_id")
+      .join("organizations", "organizations.id", '=', "tasks.org_id")
       .select(
         "tasks.id as task_id",
         "tasks.title as task_title",
@@ -29,7 +30,9 @@ const orgRequest = (req, res) => {
         "tasks.priority as task_priority",
         "tasks.suspense_date as task_suspense_date",
         "users.rank as author_rank",
-        "users.name as author_name"
+        "users.name as author_name",
+        "tasks.org_id as task_org_id",
+        "organizations.name as task_org_name"
       )
       .where("tasks.org_id", "=", req.params.orgid)
       .then((data) => {

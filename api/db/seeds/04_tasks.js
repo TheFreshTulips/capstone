@@ -65,6 +65,7 @@ exports.seed = async function(knex) {
       org_id: 4,
       author_id: 1,
     },
+
     {
       title: "In-process",
       description: "Follow in processing sheet, notify supervisor with any issues",
@@ -95,6 +96,16 @@ exports.seed = async function(knex) {
       completed_date: new Date('2022-07-11'),
       status: "finished",
       org_id: 1,
+      author_id: 1,
+    },
+    {
+      title: "Assist In-Bounds",
+      description: "Help the In-bounds with In-Processing",
+      priority: 2,
+      assigned_date: new Date('2022-07-11',),
+      suspense_date: new Date('2022-07-20'),
+      status: "to do",
+      org_id: 5,
       author_id: 1,
     },
   ]);

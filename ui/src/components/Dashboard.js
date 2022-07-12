@@ -9,6 +9,7 @@ import TaskCard from "./TaskCard.js";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import { TaskContext } from "../App.js";
+import logo from "../loading-blue.gif";
 
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
@@ -49,6 +50,7 @@ const Dashboard = ({ user }) => {
   const tc = useContext(TaskContext);
   let [tasks, setTasks] = useState([]);
   let [createdTasks, setCreatedTasks] = useState([]);
+  let [childOrgTasks, setChildOrgTasks] = useState([]);
   let [isLoading, setIsLoading] = useState(null); //use this to make loading circle
   let [columns, setColumns] = useState([]);
   let navigate = useNavigate()
@@ -64,14 +66,42 @@ const Dashboard = ({ user }) => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     let getUrl;
     user
       ? (getUrl = `${ApiUrl}/tasks/users/${tc.userId}`)
-      : (getUrl = `${ApiUrl}/tasks/orgs/${tc.userOrg}`);
+      : (getUrl = `${ApiUrl}/tasks/orgs/${tc.userOrg}`)
+
     user ? setColumns(userColumns) : setColumns(unitColumns);
 
-    setIsLoading(true);
-    if(user) {
+    (tc.isSupervisor && !user) ? (
+      fetch(`${ApiUrl}/orgs/${tc.userOrg}/children`)
+        .then((res) => res.json())
+        .then((data) => {
+          let promiseArr = [];
+          data.forEach(element => {
+            promiseArr.push(fetch(`${ApiUrl}/tasks/orgs/${element.org_id}`)
+              .then(res => res.json()))
+          })
+          Promise.all(promiseArr)
+            .then(results => {
+              let tempTasks = []
+              results.forEach(result => {
+                tempTasks.push(
+                  {
+                    org_id: result[0].task_org_id,
+                    org_name: result[0].task_org_name,
+                    tasks: result,
+                  }
+                )
+              })
+              setChildOrgTasks(tempTasks);
+              setTimeout(() => setIsLoading(false), 250);
+            })
+        })
+    ) : null
+
+    if (user) {
       fetch(getUrl + '/created')
         .then((res) => res.json())
         .then((data) => {
@@ -85,7 +115,7 @@ const Dashboard = ({ user }) => {
         // if (user) {
         //   console.log(tc.userId);
         // }
-        setIsLoading(false)
+        setTimeout(() => setIsLoading(false), 250);
       });
 
   }, [user]);
@@ -102,54 +132,118 @@ const Dashboard = ({ user }) => {
           <AddIcon />
         </Fab>
       </Box>
-      <Grid
-        container
-        spacing={2}
-        direction="row"
-        justifyContent="space-evenly"
-        alignItems="center"
-      >
-        {columns.map((colName, index) => {
-          return (
-            <Box style={{ height: 100 }} key={index}>
-              <Stack spacing={2} alignItems="center">
-                <Typography
-                  variant="h4"
-                >
-                  {formatColumn(colName)}
-                </Typography>
-                { isLoading ? "Loading" : tasks.map((element) => {
-                  //if we are in the correct column, give back the following card
-                  return element.task_status === colName ? (
-                    <TaskCard
-                      key={element.task_id}
-                      id={element.task_id}
-                      title={element.task_title}
-                      status={element.task_status}
-                      suspense_date={element.task_suspense_date}
-                      priority={element.task_priority}
-                    />
-                  ) : <></>
-                })}
+      {isLoading ? (
+        <Grid container display='flex' justifyContent='center' direction='column' alignItems='center'>
+          <img src={logo} width="400px" alt="loading-spinner"/>
+          <Typography variant="h3" align='center'>Loading...</Typography>
+        </Grid>
+      ) :
+        <Stack>
+          <Box m = {2}>
+            {tasks[0] ? <Typography variant="h4" key="header" align = 'center'>{tasks[0].task_org_name}</Typography>: <></>}
+            <Grid
+              container
+              spacing={2}
+              direction="row"
+              justifyContent="space-evenly"
+              alignItems="flex-start"
+              >
+              {columns.map((colName, index) => {
+                return (
+                  <Grid item sm={12/columns.length} key={index}>
+                    <Stack spacing={2} key={index} alignItems='center'>
+                      <Typography
+                        variant="h4"
+                        style = {{}}
+                        align = 'center'
+                      >
+                        {formatColumn(colName)}
+                      </Typography>
+                      { tasks.map((element) => {
+                        //if we are in the correct column, give back the following card
+                        return element.task_status === colName ? (
+                          <TaskCard
+                            key={element.task_id}
+                            id={element.task_id}
+                            title={element.task_title}
+                            status={element.task_status}
+                            suspense_date={element.task_suspense_date}
+                            priority={element.task_priority}
+                          />
+                        ) : <></>
+                      })}
 
-                { colName === 'Created' ?
-                  createdTasks.map((element) => (
-                    //if we are in the created column, give back this
-                    <TaskCard
-                      key={element.task_id}
-                      id={element.task_id}
-                      title={element.task_title}
-                      status={formatColumn(element.task_status)}
-                      suspense_date={element.task_suspense_date}
-                      priority={element.task_priority}
-                    />
-                  )) : <></>
-                }
-              </Stack>
-            </Box>
-          );
-        })}
-      </Grid>
+                      {colName === 'Created' ?
+                        createdTasks.map((element) => (
+                          //if we are in the created column, give back this
+                          <TaskCard
+                            key={element.task_id}
+                            id={element.task_id}
+                            title={element.task_title}
+                            status={formatColumn(element.task_status)}
+                            suspense_date={element.task_suspense_date}
+                            priority={element.task_priority}
+                          />
+                        )) : <></>
+                      }
+                    </Stack>
+                  </Grid>
+                );
+              })}
+
+
+            </Grid>
+          </Box>
+
+          <Box m = {2}>
+            {tc.isSupervisor && !user ?
+              childOrgTasks.map((element) => {
+                return (
+                  <div key={element.org_id}>
+                    <Typography variant="h3" key="header" align = 'center'>{element.org_name}</Typography>
+                    <Grid
+                        container
+                        spacing={2}
+                        direction="row"
+                        justifyContent="space-evenly"
+                        alignItems="flex-start"
+                      >
+                      {columns.map((colName, index) => {
+                        return (
+
+                          <Grid item sm={12/columns.length} key={index}>
+                            <Stack spacing={2} alignItems="center">
+                              <Typography
+                                variant="h4"
+                              >
+                                {formatColumn(colName)}
+                              </Typography>
+                              {isLoading ? "Loading" : element.tasks.map((element) => {
+                                //if we are in the correct column, give back the following card
+                                return element.task_status === colName ? (
+                                  <TaskCard
+                                    key={element.task_id}
+                                    id={element.task_id}
+                                    title={element.task_title}
+                                    status={element.task_status}
+                                    suspense_date={element.task_suspense_date}
+                                    priority={element.task_priority}
+                                  />
+                                ) : <></>
+                              })}
+                            </Stack>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  </div>
+                )
+              }) : <></>
+            }
+
+          </Box>
+        </Stack>
+      }
     </div>
   );
 };

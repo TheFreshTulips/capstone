@@ -57,7 +57,7 @@ exports.seed = async function(knex) {
     {
       org_id: 3,
       name: "Claire Badger",
-      rank: "2LT",
+      rank: "1st Lt",
       email: "claire@gmail.com",
       position_id: 2,
       password: hashedpw5
