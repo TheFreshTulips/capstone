@@ -131,7 +131,6 @@ const CreateTask = () => {
       })
       .catch((err) => {
         console.log(err);
-        console.log(res.status);
         alert(`Failed to create a new task`);
       });
   };

@@ -42,6 +42,8 @@ const MenuProps = {
   },
 };
 
+let validPriorities = [1, 2, 3, 4, 5];
+
 const TaskDetails = () => {
   /*
       change the fields to use Editable Text if the userId is equal to the userId of the task
@@ -270,13 +272,13 @@ const TaskDetails = () => {
     <>
       <Box marginTop={5} sx={{ width: "100%" }}>
         {ownsTask ? (
-          <Box m={4} display="flex" justifyContent="right">
-            <Fab color="primary" aria-label="add" onClick={handleDelete}>
+          <Box m={4} sx={{ gap: 5 }} display="flex" justifyContent="right">
+            <Button variant="outlined" onClick={handleSubmitTask}>
+              Submit Changes
+            </Button>
+            <Fab color="error" aria-label="delete" onClick={handleDelete} m={3}>
               <DeleteIcon />
             </Fab>
-            <Button variant="outlined" onClick={handleSubmitTask}>
-              Submit Changes Here
-            </Button>
           </Box>
         ) : null}
         <Grid container spacing={3}>
@@ -301,6 +303,8 @@ const TaskDetails = () => {
                 callback={setInputTask}
                 input={inputTask}
                 typography={valueTypography}
+                input_type="dropdown"
+                dropdown={validPriorities}
               />
             </Stack>
           </Grid>
@@ -401,7 +405,10 @@ const TaskDetails = () => {
 
         <Container>
           <Typography variant="h6">{`Comments`}</Typography>
-          <Paper style={{ padding: "40px 20px" }}>
+          <Paper
+            style={{ padding: "40px 20px" }}
+            sx={{ fontFamily: "sans-serif" }}
+          >
             {comments.map((comment) => {
               return (
                 <>

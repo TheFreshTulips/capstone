@@ -42,6 +42,9 @@ const EditableText = (props) => {
   let [typography, setTypography] = useState(""); //can set the typography type if desired
 
   const formatString = (sentence) => {
+    if (typeof sentence !== "string") {
+      return sentence;
+    }
     const words = sentence.split(" ");
     if (words && words.length > 0) {
       return words
