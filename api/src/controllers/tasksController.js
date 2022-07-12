@@ -396,7 +396,6 @@ const editTask = async (req, res) => {
 
 const deleteTask = (req, res) => {
   console.log(`working on delete for /tasks/${req.params.taskid}`);
-  console.log(`req.params.taskid`, req.params.taskid)
   knex("users_tasks")
     .where("task_id", "=", parseInt(req.params.taskid))
     .del()
