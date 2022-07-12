@@ -153,7 +153,7 @@ const Dashboard = ({ user }) => {
                   <Grid item sm={12/columns.length} key={index}>
                     <Stack spacing={2} key={index} alignItems='center'>
                       <Typography
-                        variant="h4"
+                        variant="h5"
                         style = {{}}
                         align = 'center'
                       >
@@ -200,7 +200,7 @@ const Dashboard = ({ user }) => {
               childOrgTasks.map((element) => {
                 return (
                   <div key={element.org_id}>
-                    <Typography variant="h3" key="header" align = 'center'>{element.org_name}</Typography>
+                    <Typography variant="h4" key="header" align = 'center'>{element.org_name}</Typography>
                     <Grid
                         container
                         spacing={2}
@@ -214,7 +214,7 @@ const Dashboard = ({ user }) => {
                           <Grid item sm={12/columns.length} key={index}>
                             <Stack spacing={2} alignItems="center">
                               <Typography
-                                variant="h4"
+                                variant="h5"
                               >
                                 {formatColumn(colName)}
                               </Typography>
