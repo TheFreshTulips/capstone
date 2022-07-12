@@ -109,20 +109,22 @@ const EditableText = (props) => {
               </Stack>
             </LocalizationProvider>
           ) : props.input_type === "dropdown" ? (
-            <FormControl fullWidth>
-              <InputLabel id="simple-select-label">Status</InputLabel>
-              <Select
-                labelId="simple-select-label"
-                id="simple-select"
-                value={value}
-                label="status"
-                onChange={(e) => setValue(e.target.value)}
-              >
-                {props.dropdown.map((ele) => {
-                  <MenuItem value={ele}>{formatString(ele)}</MenuItem>;
-                })}
-              </Select>
-            </FormControl>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="simple-select-label">Status</InputLabel>
+                <Select
+                  labelId="simple-select-label"
+                  id="simple-select"
+                  value={value}
+                  label="status"
+                  onChange={(e) => setValue(e.target.value)}
+                >
+                  {props.dropdown.map((ele) => (
+                    <MenuItem value={ele}>{formatString(ele)}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
           ) : (
             <TextField
               defaultValue={props.val}
@@ -143,7 +145,11 @@ const EditableText = (props) => {
           alignItems="center"
           justifyContent="space-evenly"
         >
-          <Typography variant={typography}>{value}</Typography>
+          <Typography variant={typography}>
+            {typeof value === "string" && props.field !== "description"
+              ? formatString(value)
+              : value}
+          </Typography>
           {props.canEdit ? (
             <Button size="small" onClick={toggleEdit}>
               Edit
