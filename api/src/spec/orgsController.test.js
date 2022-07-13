@@ -15,7 +15,7 @@ describe("all orgs endpoints", () => {
         .get('/orgs')
         .expect('Content-Type', /json/)
         .expect(200)
-        .end((err, res) => {
+        .end((err) => {
           if (err) throw err;
           done();
         })
