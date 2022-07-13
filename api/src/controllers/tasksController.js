@@ -3,11 +3,11 @@ const config = require("../../knexfile")[env];
 const knex = require("knex")(config);
 
 // Helper functions ----------------------------------------------------------------------------------------
-const checkTime = (time) => {
-  //returns bool if a time stamp is in the proper format or not
+// const checkTime = (time) => {
+  // returns bool if a time stamp is in the proper format or not
   // move this to separate function
-  return time.charAt(10) === "T" && time.charAt(time.length - 1) === "Z";
-};
+//   return time.charAt(10) === "T" && time.charAt(time.length - 1) === "Z";
+// };
 
 // const checkKeys = (validkeys, bodyKeys) => {
 //   return Object.keys(bodyKeys).every((element) => {
