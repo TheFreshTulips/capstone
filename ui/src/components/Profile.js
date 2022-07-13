@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
 import { TaskContext } from "../App.js";
-import { NativeSelect, InputLabel } from "@mui/material";
+import { NativeSelect } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -35,16 +35,16 @@ const validRanks = [
   "Gen",
 ];
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       width: 250,
+//     },
+//   },
+// };
 
 const Profile = () => {
   let [input, setInput] = useState({
@@ -64,7 +64,7 @@ const Profile = () => {
     user_rank: "",
   });
   let [orgs, setOrgs] = useState([]);
-  let [selected, setSelected] = useState("");
+  // let [selected, setSelected] = useState("");
 
   const tc = useContext(TaskContext);
 
@@ -94,7 +94,7 @@ const Profile = () => {
   }, []);
 
   const handleSelect = (event) => {
-    setSelected(event.target.value);
+    // setSelected(event.target.value);
     setInput({
       ...input,
       org_id: event.target.value,
@@ -187,7 +187,7 @@ const Profile = () => {
                   }}
                 >
                   {orgs.map((el) => (
-                    <option value={el.org_id}>{el.org_name}</option>
+                    <option value={el.org_id} key={el.org_id}>{el.org_name}</option>
                   ))}
                 </NativeSelect>
               </FormControl>
