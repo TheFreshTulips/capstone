@@ -147,7 +147,9 @@ const TaskTable = () => {
                           </TableCell>
                         ) : (
                           <TableCell key={index} align="right">
-                            {row[colName] === null ? "N/A" : row[colName]}
+                            {row[colName] === null
+                              ? "N/A"
+                              : new Date(row[colName]).toLocaleString("en-US")}
                           </TableCell>
                         );
                       })}

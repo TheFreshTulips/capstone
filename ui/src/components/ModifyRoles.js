@@ -12,7 +12,6 @@ import Fab from "@mui/material/Fab";
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
-
 const ModifyRoles = () => {
   const navigate = useNavigate();
 
@@ -24,7 +23,11 @@ const ModifyRoles = () => {
     position_id: 0,
   });
 
-  const positions = [ {name: "member", id: 1}, {name: "supervisor", id:2}, {name: "admin", id:3}];
+  const positions = [
+    { name: "member", id: 1 },
+    { name: "supervisor", id: 2 },
+    { name: "admin", id: 3 },
+  ];
   const validRanks = [
     "CIV",
     "Spc 1",
@@ -45,20 +48,20 @@ const ModifyRoles = () => {
     "Brig Gen",
     "Maj Gen",
     "Lt Gen",
-    "Gen"
-  ]
-  const [orgs, setOrgs] = useState([])
+    "Gen",
+  ];
+  const [orgs, setOrgs] = useState([]);
 
-  let {id} = useParams();
+  let { id } = useParams();
 
-  const [feedback, setFeedback] = useState('');
+  const [feedback, setFeedback] = useState("");
   const handleDelete = () => {
     fetch(`${ApiUrl}/users/${id}`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' }
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
     })
       .then((res) => {
-        if(res.status === 200) {
+        if (res.status === 200) {
           alert(`Delete on user ${id} was successful!`);
           navigate("/admin/roles");
         } else {
@@ -69,32 +72,32 @@ const ModifyRoles = () => {
         console.log(err);
         alert(`Failed to delete user ${id}`);
       });
-  }
+  };
   useEffect(() => {
     fetch(`${ApiUrl}/users/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        console.log(`data on user ${id}: `, data[0])
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(`data on user ${id}: `, data[0]);
         setInput({
           name: data[0].user_name,
           rank: data[0].user_rank,
           org_id: data[0].org_id,
           email: data[0].user_email,
           position_id: data[0].position_id,
-        })
-      })
+        });
+      });
     fetch(`${ApiUrl}/orgs`)
-      .then(res => res.json())
-      .then(data => setOrgs(data))
-  }, [id])
+      .then((res) => res.json())
+      .then((data) => setOrgs(data));
+  }, [id]);
 
   const handleChange = (e) => {
     // sets Input state depending on what the user inputted into registration fields
 
-      setInput({
-        ...input,
-        [e.target.name]: e.target.value,
-      });
+    setInput({
+      ...input,
+      [e.target.name]: e.target.value,
+    });
     e.preventDefault();
   };
 
@@ -103,39 +106,39 @@ const ModifyRoles = () => {
     let error = false;
 
     //resets feedback states to empty
-    let tempFeedback = ''
+    let tempFeedback = "";
 
     //data validation for each input field
-    if(!input.email.match(
+    if (
+      !input.email.match(
         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ //eslint-disable-line
-      )) {
-        tempFeedback += 'invalid email format\n';
-        error = true;
+      )
+    ) {
+      tempFeedback += "invalid email format\n";
+      error = true;
     }
 
     setFeedback(tempFeedback);
-    if(error === false) {
+    if (error === false) {
       // sends post request with input state info to API when user clicks submit/register
       fetch(`${ApiUrl}/users/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
       })
         .then((res) => {
-          if(res.status === 200) {
+          if (res.status === 200) {
             alert(`Update on user ${id} was successful!`);
             navigate("/admin/roles");
           } else {
             alert(`Update on user ${id} failed!`);
           }
-
         })
         .catch((err) => {
           console.log(err);
           alert(`Failed to update user ${id}`);
         });
     }
-
   };
 
   return (
@@ -151,12 +154,16 @@ const ModifyRoles = () => {
     >
       <Grid container alignItems="center">
         <Grid item xs={6} justifyContent="left" display="flex">
-          <Link to={"/admin/roles"} style={{ textDecoration: 'none', color: "black" }} className='roles-link'>
+          <Link
+            to={"/admin/roles"}
+            style={{ textDecoration: "none", color: "black" }}
+            className="roles-link"
+          >
             <Typography variant="h6">Back to the roles page</Typography>
           </Link>
         </Grid>
         <Grid item xs={6} justifyContent="right" display="flex">
-          <Fab color="primary" aria-label="add" onClick={handleDelete}>
+          <Fab color="error" aria-label="delete" onClick={handleDelete}>
             <DeleteIcon />
           </Fab>
         </Grid>
@@ -175,7 +182,9 @@ const ModifyRoles = () => {
             </Box>
 
             <Box m={1}>
-              <Typography variant="body1" color="red">{feedback}</Typography>
+              <Typography variant="body1" color="red">
+                {feedback}
+              </Typography>
             </Box>
             <Box m={1}>
               <TextField
@@ -197,9 +206,13 @@ const ModifyRoles = () => {
                 onChange={handleChange}
                 name="rank"
                 required
-                sx={{minWidth: 223}}
-                >
-                {validRanks.map((rank, index) => <MenuItem key={index} value={rank}>{rank}</MenuItem>)}
+                sx={{ minWidth: 223 }}
+              >
+                {validRanks.map((rank, index) => (
+                  <MenuItem key={index} value={rank}>
+                    {rank}
+                  </MenuItem>
+                ))}
               </TextField>
             </Box>
             <Box m={1}>
@@ -211,9 +224,13 @@ const ModifyRoles = () => {
                 onChange={handleChange}
                 name="org_id"
                 required
-                sx={{minWidth: 223}}
-                >
-                {orgs.map(org => <MenuItem key={org.org_id} value={org.org_id}>{org.org_name}</MenuItem>)}
+                sx={{ minWidth: 223 }}
+              >
+                {orgs.map((org) => (
+                  <MenuItem key={org.org_id} value={org.org_id}>
+                    {org.org_name}
+                  </MenuItem>
+                ))}
               </TextField>
             </Box>
             <Box m={1}>
@@ -235,9 +252,13 @@ const ModifyRoles = () => {
                 onChange={handleChange}
                 name="position_id"
                 required
-                sx={{minWidth: 223}}
-                >
-                {positions.map(position => <MenuItem key={position.id} value={position.id}>{position.name}</MenuItem>)}
+                sx={{ minWidth: 223 }}
+              >
+                {positions.map((position) => (
+                  <MenuItem key={position.id} value={position.id}>
+                    {position.name}
+                  </MenuItem>
+                ))}
               </TextField>
             </Box>
 
@@ -245,7 +266,6 @@ const ModifyRoles = () => {
             <Button className="submitButton" type="submit" value="Submit">
               Submit Changes
             </Button>
-
           </Grid>
         </Box>
       </form>

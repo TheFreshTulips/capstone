@@ -13,10 +13,10 @@ import { TaskContext } from "../App.js";
 
 const Login = () => {
   let [input, setInput] = useState({
-    email: '',
-    password: '',
-  })
-  const [feedback, setFeedback] = useState('');
+    email: "",
+    password: "",
+  });
+  const [feedback, setFeedback] = useState("");
   let navigate = useNavigate();
   const tc = useContext(TaskContext);
 
@@ -26,77 +26,75 @@ const Login = () => {
   // }
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
     let error = false;
 
     //resets feedback states to empty
-    let tempFeedback = ''
+    let tempFeedback = "";
 
     //data validation for each input field
 
-
-
-    if (!input.email.match(
-      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ //eslint-disable-line
-    )) {
-      tempFeedback += 'invalid email format\n';
+    if (
+      !input.email.match(
+        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ //eslint-disable-line
+      )
+    ) {
+      tempFeedback += "invalid email format\n";
       error = true;
     }
     setFeedback(tempFeedback);
     if (error === false) {
       let isAuthenticated = false;
       await fetch(`${ApiUrl}/login`, {
-          method: "POST",
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(input)
-        })
-        .then(response => {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      })
+        .then((response) => {
           //console.log("RESPONSE AFTER SIGNING IN", response.json())
           if (response.ok) {
             isAuthenticated = true;
             return response.json();
           } else if (response.status === 404) {
-            setFeedback("invalid username")
-            console.log("invalid username")
+            setFeedback("invalid username");
+            console.log("invalid username");
             return;
           } else if (response.status === 400) {
-            setFeedback("invalid password")
-            console.log('invalid password')
+            setFeedback("invalid password");
+            console.log("invalid password");
           } else {
-            setFeedback("an error occurred")
-            console.log('an error occurred');
+            setFeedback("an error occurred");
+            console.log("an error occurred");
           }
         })
-        .then(data => {
+        .then((data) => {
           // res is the id of the user that signed in
           if (isAuthenticated) {
-            console.log(`data: `, data)
-            tc.setIsAdmin(data.position === "admin")
-            tc.setIsSupervisor(data.position === "supervisor")
+            console.log(`data: `, data);
+            tc.setIsAdmin(data.position === "admin");
+            tc.setIsSupervisor(data.position === "supervisor");
             tc.setUserId(data.id);
-            if(data.org_id) {
-              tc.setUserOrg(data.org_id)
+            if (data.org_id) {
+              tc.setUserOrg(data.org_id);
             }
-            navigate(`/`)
+            navigate(`/`);
           }
         })
-        .catch(error => console.log('error is', error));
-
+        .catch((error) => console.log("error is", error));
 
       // console.log("RES VALUE", res);
     }
-
-  }
+  };
 
   const handleChange = (e) => {
     const value = e.target.value;
     setInput({
       ...input,
-      [e.target.name]: value
+      [e.target.name]: value,
     });
     e.preventDefault();
-  }
+  };
 
   return (
     <Container
@@ -121,7 +119,9 @@ const Login = () => {
               <Typography variant="h5">Login</Typography>
             </Box>
             <Box m={1}>
-              <Typography variant="body1" color="red">{feedback}</Typography>
+              <Typography variant="body1" color="red">
+                {feedback}
+              </Typography>
             </Box>
             <Box m={1}>
               <TextField
@@ -146,13 +146,22 @@ const Login = () => {
             <Button className="submitButton" type="submit" value="Submit">
               Submit
             </Button>
-            <Link to={"/register"} style={{ textDecoration: 'none', color: "black", "paddingBottom":"10px"}}>
-              <Typography variant="h6" >Need to register? Click here to be taken to the registration page!</Typography>
+            <Link
+              to={"/register"}
+              style={{
+                textDecoration: "none",
+                color: "black",
+                paddingBottom: "10px",
+              }}
+            >
+              <Typography variant="h6">
+                New member? Click here to register
+              </Typography>
             </Link>
-        </Grid>
-      </Box>
-    </form>
-    </Container >
+          </Grid>
+        </Box>
+      </form>
+    </Container>
   );
 };
 

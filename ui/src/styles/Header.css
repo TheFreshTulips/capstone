@@ -2,17 +2,17 @@
   top: 0px;
   height: 100px;
   width: 100%;
-  background-color: #1D4367;
+  background-color: #1d4367;
   line-height: 35px;
   /* padding-right: 40px; */
   box-shadow: 0 0 20px rgb(31, 31, 31);
 }
 
 button {
-  background-color: #1D4367;
-  border:none;
-  color: white;
-  font-family: 'Poppins', sans-serif;
+  background-color: #1d4367;
+  border: none;
+  color: rgba(255, 255, 255, 0.855);
+  font-family: "Poppins", sans-serif;
   padding: 15px 25px;
   text-align: center;
   text-decoration: none;
@@ -24,6 +24,7 @@ button {
 button:hover {
   transition: 0.5s;
   transform: scale(1.03);
+  color: white;
 }
 
 .navButtons {
@@ -32,12 +33,6 @@ button:hover {
   padding-top: 25px;
   gap: 20px;
   margin-right: 50px;
-}
-
-.divider {
-  color: white;
-  font-size: 35px;
-  padding-top: 4px;
 }
 
 .buttonToMainContainer {
@@ -58,4 +53,3 @@ button:hover {
   padding-left: 10px;
   margin-bottom: 50px;
 }
-
