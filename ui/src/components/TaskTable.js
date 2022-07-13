@@ -118,6 +118,8 @@ const TaskTable = () => {
           padding: "20px 20px",
           color: "white",
           backgroundColor: "rgba(74,104,133,0.44)",
+          boxShadow: "0 0 10px #4DACFF",
+          borderRadius: "5px",
         }}
       >
         <Box m={3}>
@@ -152,13 +154,9 @@ const TaskTable = () => {
                   <TableHead>
                     <TableRow>
                       {rowNames.map((element, index) => {
-                        return index === 0 ? (
+                        return (
                           <TableCell key={index} align="center">
-                            <Typography variant="h6">{element}</Typography>
-                          </TableCell>
-                        ) : (
-                          <TableCell key={index} align="center">
-                            <Typography variant="h6">{element}</Typography>
+                            <Typography variant="h6" color="black">{element}</Typography>
                           </TableCell>
                         );
                       })}
@@ -178,7 +176,7 @@ const TaskTable = () => {
                                       return index === keys.length - 1 ? (
                                         <TableCell key={index} align="center">
                                           {row[colName] === null
-                                            ? "Incomplete"
+                                            ? "In Progress"
                                             : new Date(row[colName]).toLocaleString("en-US")}
                                         </TableCell>
                                       ) : colName === "assigned_to" ? (
@@ -208,15 +206,11 @@ const TaskTable = () => {
                           <TableHead>
                             <TableRow>
                               {rowNames.map((element, index) => {
-                                return index === 0 ? (
-                                  <TableCell key={index} align="center">
-                                    <Typography variant="h6">{element}</Typography>
-                                  </TableCell>
-                                ) : (
-                                  <TableCell key={index} align="center">
-                                    <Typography variant="h6">{element}</Typography>
-                                  </TableCell>
-                                );
+                                return (
+                                <TableCell key={index} align="center">
+                                  <Typography variant="h6" color="black">{element}</Typography>
+                                </TableCell>
+                                )
                               })}
                             </TableRow>
                           </TableHead>
@@ -234,7 +228,7 @@ const TaskTable = () => {
                                       return index === keys.length - 1 ? (
                                         <TableCell key={index} align="center">
                                           {row[colName] === null
-                                            ? "Incomplete"
+                                            ? "In Progress"
                                             : new Date(row[colName]).toLocaleString("en-US")}
                                         </TableCell>
                                       ) : colName === "assigned_to" ? (

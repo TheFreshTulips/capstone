@@ -8,6 +8,7 @@ import { Button, MenuItem } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Fab from "@mui/material/Fab";
+import Paper from "@mui/material/Paper";
 
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -148,10 +149,16 @@ const ModifyRoles = () => {
       sx={{
         marginBottom: "0",
         marginTop: "30px",
-        boxShadow: "0 0 10px rgb(10, 31, 10)",
-        borderRadius: "5px",
       }}
     >
+      <Paper
+          elevation={5}
+          style={{
+            backgroundColor: '#003665',
+            boxShadow: "0 0 10px #4DACFF",
+            borderRadius: "5px",
+          }}
+        >
       <Grid container alignItems="center">
         <Grid item xs={6} justifyContent="left" display="flex">
           <Link
@@ -159,10 +166,10 @@ const ModifyRoles = () => {
             style={{ textDecoration: "none", color: "black" }}
             className="roles-link"
           >
-            <Typography variant="h6">Back to the roles page</Typography>
+            <Typography variant="h6" m={5}>Back to the roles page</Typography>
           </Link>
         </Grid>
-        <Grid item xs={6} justifyContent="right" display="flex">
+        <Grid item xs={6} justifyContent="right" display="flex" p={5}>
           <Fab color="error" aria-label="delete" onClick={handleDelete}>
             <DeleteIcon />
           </Fab>
@@ -209,7 +216,7 @@ const ModifyRoles = () => {
                 sx={{ minWidth: 223 }}
               >
                 {validRanks.map((rank, index) => (
-                  <MenuItem key={index} value={rank}>
+                  <MenuItem key={index} value={rank} sx={{color:"black"}}>
                     {rank}
                   </MenuItem>
                 ))}
@@ -227,7 +234,7 @@ const ModifyRoles = () => {
                 sx={{ minWidth: 223 }}
               >
                 {orgs.map((org) => (
-                  <MenuItem key={org.org_id} value={org.org_id}>
+                  <MenuItem key={org.org_id} value={org.org_id} sx={{color:"black"}}>
                     {org.org_name}
                   </MenuItem>
                 ))}
@@ -255,20 +262,22 @@ const ModifyRoles = () => {
                 sx={{ minWidth: 223 }}
               >
                 {positions.map((position) => (
-                  <MenuItem key={position.id} value={position.id}>
+                  <MenuItem key={position.id} value={position.id} sx={{color:"black"}}>
                     {position.name}
                   </MenuItem>
                 ))}
               </TextField>
             </Box>
 
-            <Box m={2} pt={3}></Box>
-            <Button className="submitButton" type="submit" value="Submit">
-              Submit Changes
-            </Button>
+            <Box m={2} pt={3}>
+              <Button className="submitButton" type="submit" value="Submit" >
+                Submit Changes
+              </Button>
+            </Box>
           </Grid>
         </Box>
       </form>
+      </Paper>
     </Container>
   );
 };

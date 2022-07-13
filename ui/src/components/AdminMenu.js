@@ -13,8 +13,10 @@ const AdminMenu = () => {
       className="post-page"
       sx={{
         marginBottom: "0",
-        boxShadow: "0 0 10px rgb(10, 31, 10)",
+        marginTop:"5rem",
+        boxShadow: "0 0 10px #4DACFF",
         borderRadius: "5px",
+        backgroundColor : "#003665"
       }}
     >
       <Box m={2} pt={3} pb={3}>

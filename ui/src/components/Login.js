@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 import config from "../config";
 import { useNavigate, Link } from "react-router-dom";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -12,7 +13,14 @@ import '../styles/SharedStyles.css'
 
 import { TaskContext } from "../App.js";
 
+const useStyles = makeStyles({
+  input: {
+    color: "beige"
+  }
+});
+
 const Login = () => {
+  const classes = useStyles();
   let [input, setInput] = useState({
     email: "",
     password: "",
@@ -101,7 +109,7 @@ const Login = () => {
         marginBottom: "0",
         boxShadow: "0 0 10px rgb(10, 31, 10)",
         borderRadius: "5px",
-        backgroundColor: 'white'
+        backgroundColor: '#003665'
       }}
     >
       <form onSubmit={handleSubmit} >
@@ -121,13 +129,15 @@ const Login = () => {
                 {feedback}
               </Typography>
             </Box>
-            <Box m={1}>
+            <Box m={1} color="white">
               <TextField
+                inputProps={{ className: classes.input }}
                 label="Email"
                 name="email"
                 value={input.email}
                 onChange={handleChange}
                 required
+                variant="outlined"
               />
             </Box>
             <Box m={1}>

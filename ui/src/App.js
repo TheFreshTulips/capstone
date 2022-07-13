@@ -23,16 +23,22 @@ const theme = createTheme({
 
   palette: {
     primary: {
-      main: "#1D4367",
+      main: "#4DACFF",
     },
     secondary: {
-      main: "rgba(241,21,42,0.49)",
+      main: "#4DACFF",
     },
     background: {
-      default: "rgba(208,225,236,0.85)",
+      default: "#002439",
     },
   },
+  divider :{
+    color:"white"
+  },
   typography: {
+    allVariants: {
+      color: "white"
+    },
     h5: {
       fontWeight: 500,
       letterSpacing: "0.04em",

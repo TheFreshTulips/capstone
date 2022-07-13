@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+//import { makeStyles } from "@material-ui/core/styles";
 import { Button, MenuItem } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import config from "../config";
@@ -11,8 +12,15 @@ import config from "../config";
 
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
+// const useStyles = makeStyles({
+//   input: {
+//     color: "white"
+//   }
+// });
+
 
 const Register = () => {
+  //const classes = useStyles();
   const navigate = useNavigate();
 
   let [input, setInput] = useState({
@@ -117,8 +125,9 @@ const Register = () => {
       className="post-page"
       sx={{
         marginBottom: "0",
-        boxShadow: "0 0 10px rgb(10, 31, 10)",
         borderRadius: "5px",
+        backgroundColor: "#003665",
+        boxShadow: "0 0 10px #4DACFF",
       }}
     >
       <form onSubmit={handleSubmit}>
@@ -131,7 +140,7 @@ const Register = () => {
             justifyContent="space-evenly"
           >
             <Box m={2} pt={3}>
-              <Typography variant="h5">Register Here</Typography>
+              <Typography variant="h4">Register Here</Typography>
             </Box>
 
             <Box m={1}>
@@ -139,6 +148,7 @@ const Register = () => {
             </Box>
             <Box m={1}>
               <TextField
+                //inputProps={{ className: classes.input }}
                 label="Name"
                 type="name"
                 name="name"
@@ -159,7 +169,7 @@ const Register = () => {
                 required
                 sx={{minWidth: 223}}
                 >
-                {validRanks.map((rank, index) => <MenuItem key={index} value={rank}>{rank}</MenuItem>)}
+                {validRanks.map((rank, index) => <MenuItem key={index} value={rank} sx={{color:"black"}}>{rank}</MenuItem>)}
               </TextField>
             </Box>
             <Box m={1}>
@@ -173,7 +183,7 @@ const Register = () => {
                 required
                 sx={{minWidth: 223}}
                 >
-                {orgs.map(org => <MenuItem key={org.org_id} value={org.org_id}>{org.org_name}</MenuItem>)}
+                {orgs.map(org => <MenuItem key={org.org_id} value={org.org_id} sx={{color:"black"}}>{org.org_name}</MenuItem>)}
               </TextField>
             </Box>
             <Box m={1}>

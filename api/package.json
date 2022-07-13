@@ -7,7 +7,7 @@
     "start": "node ./src/index.js",
     "reseed": "knex migrate:rollback && knex migrate:latest && knex seed:run",
     "start:dev": "export NODE_ENV=development && nodemon --watch ./ ./src/index.js",
-    "test": "jest",
+    "test": "jest --watchAll",
     "lint": "eslint ./src/**/*.js ./db/**/*.js ./*.js"
   },
   "author": "The Fresh Tulips",

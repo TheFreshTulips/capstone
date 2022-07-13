@@ -18,7 +18,7 @@ const TaskCard = (props) => {
   const card = (
     <>
       <Box m={1}>
-        <Typography align="right" sx={{ fontSize: 11 }} color="text.secondary">
+        <Typography align="right" sx={{ fontSize: 11 }} color="#4DACFF">
           Suspense: {new Date(props.suspense_date).toLocaleString("en-US")}
         </Typography>
       </Box>
@@ -26,7 +26,7 @@ const TaskCard = (props) => {
         <Typography variant="h5" align="center">
           {props.title}
         </Typography>
-        <Typography sx={{ fontSize: 11 }} color="text.primary" align="center">
+        <Typography sx={{ fontSize: 11 }} align="center" color="#4DACFF">
           Priority:{props.priority}
         </Typography>
       </CardContent>
@@ -42,10 +42,10 @@ const TaskCard = (props) => {
     <Box sx={{ maxWidth: 300, minWidth: 300, minHeight: 180 }}>
       <Card
         variant="outlined"
-        style={{ color: "white", backgroundColor: "rgba(74,104,133,0.44)",}}
+        style={{ color: "white", backgroundColor: "#002439", boxShadow: "0 0 10px #4fffcc", borderRadius: ".5px"}}
         sx={{ "&:hover": {
-          border: "2px solid rgba(251,6,29,0.73)",
-          // border: '3px solid #3ed2d6'
+          //border: "2px solid rgba(251,6,29,0.73)",
+          border: '3px solid #4fffcc'
         },}}
       >
         {card}

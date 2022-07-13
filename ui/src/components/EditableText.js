@@ -95,7 +95,7 @@ const EditableText = (props) => {
           direction="column"
           alignItems="center"
           justifyContent="space-around"
-          style = {{width:600}}
+          style = {{width: 600}}
         >
           {props.input_type === "large" ? (
             <TextField
@@ -130,7 +130,7 @@ const EditableText = (props) => {
                   onChange={(e) => setValue(e.target.value)}
                 >
                   {props.dropdown.map((ele, index) => (
-                    <MenuItem value={ele} key={index}>{formatString(ele)}</MenuItem>
+                    <MenuItem value={ele} key={index} sx={{color:"black"}}>{formatString(ele)}</MenuItem>
                   ))}
                 </Select>
               </FormControl>

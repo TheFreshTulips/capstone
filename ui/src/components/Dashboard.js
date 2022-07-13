@@ -113,7 +113,7 @@ const Dashboard = ({ user }) => {
       ) :
         <Stack>
           <Box m = {1} width={"90%"} margin="auto"  >
-            <Paper elevation={10} style={{backgroundColor : " white" , marginBottom:"2rem"}}>
+            <Paper elevation={10} style={{backgroundColor : " #003665" , marginBottom:"2rem", boxShadow: "0 0 10px #4DACFF", borderRadius: "5px",}}>
             {tasks[0] ? <Typography variant="h4" key="header" align = 'center' marginBottom={2}>{tasks[0].task_org_name}</Typography>: <></>}
             <Grid
               container
@@ -176,7 +176,7 @@ const Dashboard = ({ user }) => {
                 console.log(element)
                 return (
                   <div key={element.org_id}>
-                    <Paper elevation={10} style={{backgroundColor : "white", marginBottom:"2rem"}}>
+                    <Paper elevation={10} style={{backgroundColor : "#003665", marginBottom:"2rem"}}>
                     <Typography variant="h4" key="header" align = 'center'>{element.org_name}</Typography>
                     {element.tasks.length > 0 && !checkNotFinished(element.tasks)?
                      <Grid
@@ -217,8 +217,8 @@ const Dashboard = ({ user }) => {
                    })}
                  </Grid>
                  :
-                 <Grid item sm={12} margin={3} display="flex" justifyContent="center">
-                    <Typography>No tasks to display for this Org</Typography>
+                 <Grid item sm={12} margin={3} paddingBottom={5} display="flex" justifyContent="center">
+                    <Typography variant="h5">No Tasks to Display For This Org</Typography>
                  </Grid>
                   }
 

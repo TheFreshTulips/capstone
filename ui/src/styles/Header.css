@@ -2,14 +2,15 @@
   top: 0px;
   height: 100px;
   width: 100%;
-  background-color: #005a8f;
+  background-color: #003665;
   line-height: 35px;
   /* padding-right: 40px; */
-  box-shadow: 0 0 20px rgb(31, 31, 31);
+  box-shadow: 0 0 20px #4DACFF;
+  /* position: sticky; top: 0; */
 }
 
 button {
-  background-color: #005a8f;
+  background-color: #003665;
   border: none;
   color: rgba(255, 255, 255, 0.855);
   font-family: "Poppins", sans-serif;

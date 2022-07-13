@@ -8,6 +8,7 @@ import { Button, MenuItem } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Fab from "@mui/material/Fab";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Paper from "@mui/material/Paper";
 
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -128,89 +129,97 @@ const ModifyOrgs = () => {
       sx={{
         marginBottom: "0",
         marginTop: "30px",
-        boxShadow: "0 0 10px rgb(10, 31, 10)",
-        borderRadius: "5px",
       }}
     >
-      <Grid container alignItems="center">
-        <Grid item xs={6} justifyContent="left" display="flex">
-          <Link
-            to={"/admin/orgs"}
-            style={{ textDecoration: "none", color: "black" }}
-            className="roles-link"
-          >
-            <Typography variant="h6">Back to the orgs page</Typography>
-          </Link>
-        </Grid>
-        <Grid item xs={6} justifyContent="right" display="flex">
-          <Fab color="error" aria-label="delete" onClick={handleDelete}>
-            <DeleteIcon />
-          </Fab>
-        </Grid>
-      </Grid>
-      <form onSubmit={handleSubmit}>
-        <Box m={2} pt={3}>
-          <Grid
-            container
-            spacing={3}
-            direction="column"
-            alignItems="center"
-            justifyContent="space-evenly"
-          >
-            <Box m={2} pt={3}>
-              <Typography variant="h5">Modify Organizations</Typography>
-            </Box>
-
-            <Box m={1}>
-              <Typography variant="body1" color="red">
-                {feedback}
-              </Typography>
-            </Box>
-            <Box m={1}>
-              <TextField
-                label="Organization Name"
-                type="name"
-                name="name"
-                value={input.name}
-                onChange={handleChange}
-                required
-                maxLength={50}
-              />
-            </Box>
-            <Box m={1}>
-              <TextField
-                value={input.img_url}
-                label="Image URL"
-                onChange={handleChange}
-                name="img_url"
-                required
-                sx={{ minWidth: 223 }}
-              ></TextField>
-            </Box>
-            <Box m={1}>
-              <TextField
-                select
-                value={input.parent_id}
-                label="Parent Organization"
-                onChange={handleChange}
-                name="parent_id"
-                sx={{ minWidth: 223 }}
-              >
-                {orgs.map((org) => (
-                  <MenuItem key={org.org_id} value={org.org_id}>
-                    {org.org_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box>
-
-            <Box m={2} pt={3}></Box>
-            <Button className="submitButton" type="submit" value="Submit">
-              Submit Changes
-            </Button>
+      <Paper
+          elevation={5}
+          style={{
+            backgroundColor: '#003665',
+            boxShadow: "0 0 10px #4DACFF",
+            borderRadius: "5px",
+          }}
+        >
+        <Grid container alignItems="center">
+          <Grid item xs={6} justifyContent="left" display="flex">
+            <Link
+              to={"/admin/orgs"}
+              style={{ textDecoration: "none", color: "black" }}
+              className="roles-link"
+            >
+              <Typography variant="h6" m={5}>Back to the orgs page</Typography>
+            </Link>
           </Grid>
-        </Box>
-      </form>
+          <Grid item xs={6} justifyContent="right" display="flex" p={5}>
+            <Fab color="error" aria-label="delete" onClick={handleDelete}>
+              <DeleteIcon />
+            </Fab>
+          </Grid>
+        </Grid>
+        <form onSubmit={handleSubmit}>
+          <Box m={2} pt={3}>
+            <Grid
+              container
+              spacing={3}
+              direction="column"
+              alignItems="center"
+              justifyContent="space-evenly"
+            >
+              <Box m={2} pt={3}>
+                <Typography variant="h5">Modify Organizations</Typography>
+              </Box>
+
+              <Box m={1}>
+                <Typography variant="body1" color="red">
+                  {feedback}
+                </Typography>
+              </Box>
+              <Box m={1}>
+                <TextField
+                  label="Organization Name"
+                  type="name"
+                  name="name"
+                  value={input.name}
+                  onChange={handleChange}
+                  required
+                  maxLength={50}
+                />
+              </Box>
+              <Box m={1}>
+                <TextField
+                  value={input.img_url}
+                  label="Image URL"
+                  onChange={handleChange}
+                  name="img_url"
+                  required
+                  sx={{ minWidth: 223 }}
+                ></TextField>
+              </Box>
+              <Box m={1}>
+                <TextField
+                  select
+                  value={input.parent_id}
+                  label="Parent Organization"
+                  onChange={handleChange}
+                  name="parent_id"
+                  sx={{ minWidth: 223 }}
+                >
+                  {orgs.map((org) => (
+                    <MenuItem key={org.org_id} value={org.org_id} sx={{color:"black"}}>
+                      {org.org_name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
+
+              <Box m={2} pt={3}>
+                <Button className="submitButton" type="submit" value="Submit" >
+                  Submit Changes
+                </Button>
+              </Box>
+            </Grid>
+          </Box>
+        </form>
+      </Paper>
     </Container>
   );
 };

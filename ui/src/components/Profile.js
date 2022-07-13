@@ -124,7 +124,9 @@ const Profile = () => {
         <Paper
           elevation={5}
           style={{
-            backgroundColor: '#white'
+            backgroundColor: '#003665',
+            boxShadow: "0 0 10px #4DACFF",
+            borderRadius: "5px",
           }}
         >
           <Grid container spacing={2} marginTop={2} marginBottom={2}>
@@ -180,10 +182,10 @@ const Profile = () => {
                   value={userData.org_id}
                   onChange={setInput}
                   name="org_id"
-                  sx={{ minWidth: 223 }}
+                  sx={{ minWidth: 223, color:"white"}}
                 >
                   {orgs.map((org) => (
-                    <MenuItem key={org.org_id} value={org.org_id}>
+                    <MenuItem key={org.org_id} value={org.org_id} sx={{color:"black"}}>
                       {org.org_name}
                     </MenuItem>
                   ))}

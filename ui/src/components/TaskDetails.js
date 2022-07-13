@@ -286,7 +286,7 @@ const TaskDetails = () => {
               </Grid>
             ) : (
               <>
-                <Paper elevation={8} style={{backgroundColor : "white"}} >
+                <Paper elevation={8} style={{backgroundColor : "#003665", boxShadow: "0 0 10px #4DACFF",borderRadius: "5px"}} >
                 <Grid container spacing={5}>
                   {ownsTask ? (
                     <>
@@ -316,7 +316,7 @@ const TaskDetails = () => {
 
                   <Grid item xs={6} display="flex" justifyContent="center">
                     <Stack alignItems={"center"}>
-                      <Typography variant={titleTypography} color= "#1D4367">Priority:</Typography>
+                      <Typography variant={titleTypography}>Priority:</Typography>
                       <EditableText
                         field="priority"
                         val={taskDetails.task_priority}
@@ -412,7 +412,7 @@ const TaskDetails = () => {
                           MenuProps={MenuProps}
                         >
                           {users.map((el) => (
-                            <MenuItem key={el.id} value={el.name}>
+                            <MenuItem key={el.id} value={el.name} sx={{color:"black"}}>
                               {el.name}
                             </MenuItem>
                           ))}
@@ -426,13 +426,15 @@ const TaskDetails = () => {
                 </Paper>
 
                 <Container>
-                  <Box marginTop = {5}><Typography variant="h4" sx={{ fontFamily: "sans-serif" }} >{`Comments`}</Typography></Box>
+                  <Box marginTop= {4} marginBottom={1}><Typography variant="h4" sx={{ fontFamily: "sans-serif", color: 'white' }} >{`Comments`}</Typography></Box>
                   <Paper
                     elevation = {10}
                     style={{
                       padding: "40px 20px",
-                      color: "#a0b3c4",
-                      backgroundColor: "rgba(74,104,133,0.44)",
+                      color: "white",
+                      backgroundColor: "#002439",
+                      boxShadow: "0 0 10px #4DACFF",
+                      borderRadius: "5px",
                     }}
                     sx={{ fontFamily: "sans-serif" }}
                   >
@@ -462,6 +464,7 @@ const TaskDetails = () => {
                         label="Add a comment"
                         variant="outlined"
                         onChange={handleChange}
+                        sx={{color:"white"}}
                       />
                       <Button
                         className="submitButton"

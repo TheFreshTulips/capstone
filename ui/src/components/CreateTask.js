@@ -141,9 +141,9 @@ const CreateTask = () => {
       className="post-page"
       sx={{
         marginBottom: "0",
-        boxShadow: "0 0 10px rgb(10, 31, 10)",
         borderRadius: "5px",
-        backgroundColor: "#ddeefa",
+        backgroundColor: "#003665",
+        boxShadow: "0 0 10px #4DACFF",
       }}
     >
       <form onSubmit={handleSubmit}>
@@ -190,7 +190,7 @@ const CreateTask = () => {
                 sx={{ minWidth: 223 }}
               >
                 {validPriorities.map((element) => (
-                  <MenuItem key={element} value={element}>
+                  <MenuItem key={element} value={element} sx={{color:"black"}}>
                     {element}
                   </MenuItem>
                 ))}
@@ -212,7 +212,7 @@ const CreateTask = () => {
                 >
                   {console.log(users)}
                   {users.map((el) => (
-                    <MenuItem key={el.id} value={el.name}>
+                    <MenuItem key={el.id} value={el.name} sx={{color:"black"}}>
                       {el.name}
                     </MenuItem>
                   ))}

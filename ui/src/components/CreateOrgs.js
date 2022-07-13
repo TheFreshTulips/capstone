@@ -74,6 +74,7 @@ const CreateOrgs = () => {
         marginBottom: "0",
         boxShadow: "0 0 10px rgb(10, 31, 10)",
         borderRadius: "5px",
+        backgroundColor : "#003665"
       }}
     >
       <form onSubmit={handleSubmit}>
@@ -116,9 +117,10 @@ const CreateOrgs = () => {
                 label="Parent Organization (Optional)"
                 onChange={handleChange}
                 name="parent_id"
-                sx={{ minWidth: 223 }}
+                sx={{ minWidth: 223, color:"white" }}
+
               >
-                {orgs.map(org => <MenuItem key={org.org_id} value={org.org_id}>{org.org_name}</MenuItem>)}
+                {orgs.map(org => <MenuItem key={org.org_id} value={org.org_id} sx={{color:"black"}}>{org.org_name}</MenuItem>)}
               </TextField>
             </Box>
             <Box m={2} pt={3}></Box>
