@@ -15,6 +15,10 @@ import Typography from "@mui/material/Typography";
 import config from "../config";
 import { TaskContext } from "../App.js";
 import { useLocation } from "react-router-dom";
+import logo from "../loading-blue.gif";
+import Grid from "@mui/material/Grid";
+
+
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 // const createData = (task, date_completed, completed_by) => {
@@ -32,6 +36,7 @@ const rows = [
 //variables here can probably have better names, these are the possible names of the columns
 const rowNames = ["Task Name", "Date Completed"];
 const keys = ["task_title", "task_completed_date"];
+
 // const adminRoles = [];
 // const adminOrgs = [];
 
@@ -39,6 +44,7 @@ const TaskTable = () => {
   const tc = useContext(TaskContext);
   let [tasks, setTasks] = useState([]);
   let [isUnit, setIsUnit] = useState(true); //make toggle button to toggle if the table should show unit data or single user data
+  let [isLoading, setIsLoading] = useState(false);
   let { pathname } = useLocation();
 
   // function isDateInThisWeek(date) { //assumes date is a Date objct
@@ -58,6 +64,7 @@ const TaskTable = () => {
   // }
 
   useEffect(() => {
+    setIsLoading(true);
     let url;
     console.log("pathname: ", pathname);
     pathname === "/archive"
@@ -68,7 +75,8 @@ const TaskTable = () => {
 
     fetch(url)
       .then((res) => res.json())
-      .then((data) => sortTasks(data));
+      .then((data) => sortTasks(data))
+      .then(() => setTimeout(() => setIsLoading(false), 250))
   }, [isUnit, pathname]);
 
   const sortTasks = (data) => {
@@ -96,7 +104,7 @@ const TaskTable = () => {
         }}
       >
         <Box m={3}>
-          {pathname !== "/archive" ? (
+          {pathname === "/reports" ? (
             <FormGroup>
               <FormControlLabel
                 control={
@@ -113,53 +121,61 @@ const TaskTable = () => {
             <></>
           )}
         </Box>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 400 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                {rowNames.map((element, index) => {
-                  return index === 0 ? (
-                    <TableCell key={index}>
-                      <Typography variant="h6">{element}</Typography>
-                    </TableCell>
-                  ) : (
-                    <TableCell key={index} align="right">
-                      <Typography variant="h6">{element}</Typography>
-                    </TableCell>
+
+        {isLoading ? (
+            <Grid container display='flex' justifyContent='center' direction='column' alignItems='center'>
+              <img src={logo} width="400px" alt="loading-spinner" />
+              <Typography variant="h3" align='center'>Loading...</Typography>
+            </Grid>
+          ) :
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 400 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  {rowNames.map((element, index) => {
+                    return index === 0 ? (
+                      <TableCell key={index}>
+                        <Typography variant="h6">{element}</Typography>
+                      </TableCell>
+                    ) : (
+                      <TableCell key={index} align="right">
+                        <Typography variant="h6">{element}</Typography>
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {tasks.map((row) => {
+                  return (
+                    <>
+                      <TableRow
+                        key={tasks.task_id}
+                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                      >
+                        {keys.map((colName, index) => {
+                          // console.log(`column:${colName}`);
+                          // console.log(`index:${index}`);
+                          return index === 0 ? (
+                            <TableCell key={index} component="th" scope="row">
+                              {row[colName]}
+                            </TableCell>
+                          ) : (
+                            <TableCell key={index} align="right">
+                              {row[colName] === null
+                                ? "N/A"
+                                : new Date(row[colName]).toLocaleString("en-US")}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    </>
                   );
                 })}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tasks.map((row) => {
-                return (
-                  <>
-                    <TableRow
-                      key={tasks.task_id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      {keys.map((colName, index) => {
-                        // console.log(`column:${colName}`);
-                        // console.log(`index:${index}`);
-                        return index === 0 ? (
-                          <TableCell key={index} component="th" scope="row">
-                            {row[colName]}
-                          </TableCell>
-                        ) : (
-                          <TableCell key={index} align="right">
-                            {row[colName] === null
-                              ? "N/A"
-                              : new Date(row[colName]).toLocaleString("en-US")}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  </>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        }
       </Paper>
     </Box>
   );

@@ -48,40 +48,48 @@ const userRequest = (req, res) => {
   console.log(`working on get for /tasks/users/${req.params.userid}`);
   //{id, title, status, priority, suspense date, author_rank, author_name (database is author_id)}
 
-  knex("tasks")
-    .join("users_tasks as ut", "task_id", "=", "tasks.id")
-    .select(
-      "tasks.id as task_id",
-      "tasks.title as task_title",
-      "tasks.status as task_status",
-      "tasks.priority as task_priority",
-      "tasks.suspense_date as task_suspense_date",
-      "tasks.completed_date as task_completed_date",
-      "tasks.author_id as author_id"
-    )
-    .where("ut.user_id", "=", req.params.userid)
-    .then((data) => {
-      res.set("Access-Control-Allow-Origin", "*");
-      res.status(200).send(data);
-    });
+  if (!isNaN(parseInt(req.params.userid))) {
+    knex("tasks")
+      .join("users_tasks as ut", "task_id", "=", "tasks.id")
+      .select(
+        "tasks.id as task_id",
+        "tasks.title as task_title",
+        "tasks.status as task_status",
+        "tasks.priority as task_priority",
+        "tasks.suspense_date as task_suspense_date",
+        "tasks.completed_date as task_completed_date",
+        "tasks.author_id as author_id"
+      )
+      .where("ut.user_id", "=", req.params.userid)
+      .then((data) => {
+        res.set("Access-Control-Allow-Origin", "*");
+        res.status(200).send(data);
+      });
+  } else {
+    res.status(404).send()
+  }
 };
 
 const createdByRequest = (req, res) => {
   console.log(`working on get for /tasks/users/${req.params.userid}/created`);
-  knex("tasks")
-    .select(
-      "tasks.id as task_id",
-      "tasks.title as task_title",
-      "tasks.status as task_status",
-      "tasks.priority as task_priority",
-      "tasks.suspense_date as task_suspense_date",
-      "tasks.author_id as author_id"
-    )
-    .where("tasks.author_id", "=", req.params.userid)
-    .then((data) => {
-      res.set("Access-Control-Allow-Origin", "*");
-      res.status(200).send(data);
-    });
+  if (!isNaN(parseInt(req.params.userid))) {
+    knex("tasks")
+      .select(
+        "tasks.id as task_id",
+        "tasks.title as task_title",
+        "tasks.status as task_status",
+        "tasks.priority as task_priority",
+        "tasks.suspense_date as task_suspense_date",
+        "tasks.author_id as author_id"
+      )
+      .where("tasks.author_id", "=", req.params.userid)
+      .then((data) => {
+        res.set("Access-Control-Allow-Origin", "*");
+        res.status(200).send(data);
+      });
+  } else {
+    res.status(404).send()
+  }
 };
 
 const detailedRequest = (req, res) => {
@@ -90,65 +98,68 @@ const detailedRequest = (req, res) => {
   // completed_date, status, owner(s) (array of objects with rank and name),
   // author_rank, author_name (database is author_id), comments ({id, body, parent_id, user_id, timestamp})
   let promiseArr = [];
-
-  promiseArr.push(
-    knex("tasks")
-      .join("users as authors", "authors.id", "=", "tasks.author_id")
-      .select(
-        "tasks.id as task_id",
-        "tasks.title as task_title",
-        "tasks.description as task_description",
-        "tasks.status as task_status",
-        "tasks.priority as task_priority",
-        "tasks.assigned_date as task_assigned_date",
-        "tasks.suspense_date as task_suspense_date",
-        "tasks.completed_date as task_completed_date",
-        "authors.id as author_id",
-        "authors.rank as author_rank",
-        "authors.name as author_name"
-      )
-      .where("tasks.id", "=", req.params.taskid)
-  );
-
-  promiseArr.push(
-    knex("users as owners")
-      .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
-      .select(
-        "owners.id as owner_id",
-        "owners.rank as owner_rank",
-        "owners.name as owner_name"
-      )
-      .where("ut.task_id", "=", req.params.taskid)
-  );
-
-  promiseArr.push(
-    knex("comments")
-      .join("users", "users.id", "=", "comments.user_id")
-      .select(
-        "comments.id as comment_id",
-        "comments.body as comment_body",
-        "users.rank as user_rank",
-        "users.name as user_name",
-        "comments.timestamp as comment_timestamp"
-      )
-      .where("comments.task_id", "=", req.params.taskid)
-  );
-
-  Promise.all(promiseArr)
-    .then((data) => {
-      const body = [
-        {
-          ...data[0][0],
-          owners: data[1],
-          comments: data[2],
-        },
-      ];
-      res.set("Access-Control-Allow-Origin", "*");
-      res.status(200).send(body);
-    })
-    .catch(() =>
-      console.log(`there was an error with /tasks/${req.params.taskid}`)
+  if (!isNaN(parseInt(req.params.taskid))) {
+    promiseArr.push(
+      knex("tasks")
+        .join("users as authors", "authors.id", "=", "tasks.author_id")
+        .select(
+          "tasks.id as task_id",
+          "tasks.title as task_title",
+          "tasks.description as task_description",
+          "tasks.status as task_status",
+          "tasks.priority as task_priority",
+          "tasks.assigned_date as task_assigned_date",
+          "tasks.suspense_date as task_suspense_date",
+          "tasks.completed_date as task_completed_date",
+          "authors.id as author_id",
+          "authors.rank as author_rank",
+          "authors.name as author_name"
+        )
+        .where("tasks.id", "=", req.params.taskid)
     );
+
+    promiseArr.push(
+      knex("users as owners")
+        .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
+        .select(
+          "owners.id as owner_id",
+          "owners.rank as owner_rank",
+          "owners.name as owner_name"
+        )
+        .where("ut.task_id", "=", req.params.taskid)
+    );
+
+    promiseArr.push(
+      knex("comments")
+        .join("users", "users.id", "=", "comments.user_id")
+        .select(
+          "comments.id as comment_id",
+          "comments.body as comment_body",
+          "users.rank as user_rank",
+          "users.name as user_name",
+          "comments.timestamp as comment_timestamp"
+        )
+        .where("comments.task_id", "=", req.params.taskid)
+    );
+
+    Promise.all(promiseArr)
+      .then((data) => {
+        const body = [
+          {
+            ...data[0][0],
+            owners: data[1],
+            comments: data[2],
+          },
+        ];
+        res.set("Access-Control-Allow-Origin", "*");
+        res.status(200).send(body);
+      })
+      .catch(() =>
+        console.log(`there was an error with /tasks/${req.params.taskid}`)
+      );
+  } else {
+    res.status(404).send()
+  }
 };
 
 const orgWar = (req, res) => {
@@ -170,49 +181,65 @@ const orgWar = (req, res) => {
   aWeekAgo.setDate(aWeekAgo.getDate() - 7);
   let now = new Date();
 
-  promiseArr.push(
-    knex("tasks")
-      .select(
-        "tasks.id as task_id",
-        "tasks.title as task_title",
-        "tasks.completed_date as task_completed_date",
-        "tasks.status as task_status"
-      )
-      .where("tasks.org_id", "=", req.params.orgid)
-      .whereBetween("tasks.assigned_date", [aWeekAgo, now])
-  );
+  if (!isNaN(parseInt(req.params.orgid))) {
+    promiseArr.push(
+      knex("tasks")
+        .select(
+          "tasks.id as task_id",
+          "tasks.title as task_title",
+          "tasks.completed_date as task_completed_date",
+          "tasks.status as task_status"
+        )
+        .where(function() {
+          this.where("tasks.org_id", "=", req.params.orgid)
+          .whereBetween("tasks.assigned_date", [aWeekAgo, now])
+        })
+        .orWhere(function() {
+          this.where("tasks.org_id", "=", req.params.orgid)
+          .whereBetween("tasks.completed_date", [aWeekAgo, now])
+        })
+    );
 
-  promiseArr.push(
-    knex("users as owners")
-      .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
-      .join("tasks", "tasks.id", "=", "ut.task_id")
-      .select(
-        "tasks.id as task_id",
-        "owners.rank as owner_rank",
-        "owners.name as owner_name"
-      )
-      .where("tasks.org_id", "=", req.params.orgid)
-      .whereBetween("tasks.assigned_date", [aWeekAgo, now])
-      .then((data) => {
-        console.log(`owners: `, data);
-        return data;
-      })
-  );
+    promiseArr.push(
+      knex("users as owners")
+        .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
+        .join("tasks", "tasks.id", "=", "ut.task_id")
+        .select(
+          "tasks.id as task_id",
+          "owners.rank as owner_rank",
+          "owners.name as owner_name"
+        )
+        .where(function() {
+          this.where("tasks.org_id", "=", req.params.orgid)
+          .whereBetween("tasks.assigned_date", [aWeekAgo, now])
+        })
+        .orWhere(function() {
+          this.where("tasks.org_id", "=", req.params.orgid)
+          .whereBetween("tasks.completed_date", [aWeekAgo, now])
+        })
+        .then((data) => {
+          console.log(`owners: `, data);
+          return data;
+        })
+    );
 
-  Promise.all(promiseArr).then((data) => {
-    const body = data[0].map((task) => {
-      let owners = [];
-      data[1].forEach((owner) => {
-        if (parseInt(owner.task_id) === parseInt(task.task_id)) {
-          owners.push({ rank: owner.owner_rank, name: owner.owner_name });
-        }
+    Promise.all(promiseArr).then((data) => {
+      const body = data[0].map((task) => {
+        let owners = [];
+        data[1].forEach((owner) => {
+          if (parseInt(owner.task_id) === parseInt(task.task_id)) {
+            owners.push({ rank: owner.owner_rank, name: owner.owner_name });
+          }
+        });
+        task.owners = owners;
+        return task;
       });
-      task.owners = owners;
-      return task;
+      res.set("Access-Control-Allow-Origin", "*");
+      res.status(200).send(body);
     });
-    res.set("Access-Control-Allow-Origin", "*");
-    res.status(200).send(body);
-  });
+  } else {
+    res.status(404).send()
+  }
 };
 
 const userWar = (req, res) => {
@@ -221,24 +248,34 @@ const userWar = (req, res) => {
   let aWeekAgo = new Date();
   aWeekAgo.setDate(aWeekAgo.getDate() - 7);
   let now = new Date();
-  knex("tasks")
-    .join("users_tasks as ut", "ut.task_id", "=", "tasks.id")
-    .select(
-      "tasks.id as task_id",
-      "tasks.title as task_title",
-      "tasks.completed_date as task_completed_date",
-      "tasks.status as task_status"
-    )
-    .where("ut.user_id", "=", req.params.userid)
-    .whereBetween("tasks.assigned_date", [aWeekAgo, now])
-    .then((data) => {
-      if (data) {
-        res.set("Access-Control-Allow-Origin", "*");
-        res.status(200).send(data);
-      } else {
-        res.status(404).send("unsuccessful GET");
-      }
-    });
+  if (!isNaN(parseInt(req.params.userid))) {
+    knex("tasks")
+      .join("users_tasks as ut", "ut.task_id", "=", "tasks.id")
+      .select(
+        "tasks.id as task_id",
+        "tasks.title as task_title",
+        "tasks.completed_date as task_completed_date",
+        "tasks.status as task_status"
+      )
+      .where(function() {
+        this.where("ut.user_id", "=", req.params.userid)
+        .whereBetween("tasks.assigned_date", [aWeekAgo, now])
+      })
+      .orWhere(function() {
+        this.where("ut.user_id", "=", req.params.userid)
+        .whereBetween("tasks.completed_date", [aWeekAgo, now])
+      })
+      .then((data) => {
+        if (data) {
+          res.set("Access-Control-Allow-Origin", "*");
+          res.status(200).send(data);
+        } else {
+          res.status(404).send("unsuccessful GET");
+        }
+      });
+  } else {
+    res.status(404).send()
+  }
 };
 
 // POST requests ---------------------------------------------------------------------------------------------
@@ -310,20 +347,23 @@ const addTaskUser = (req, res) => {
   // insert into tasksusers table.
   let body = req.body;
   console.log(`working on post request for /owners/${req.params.taskid}`);
+  if (!isNaN(parseInt(req.params.taskid))) {
+    if (Object.keys(body).includes("owners")) {
+      const fieldsToInsert = req.body.owners.map((ownerId) => ({
+        user_id: ownerId,
+        task_id: parseInt(req.params.taskid),
+      }));
 
-  if (Object.keys(body).includes("owners")) {
-    const fieldsToInsert = req.body.owners.map((ownerId) => ({
-      user_id: ownerId,
-      task_id: parseInt(req.params.taskid),
-    }));
-
-    knex("users_tasks")
-      .insert(fieldsToInsert)
-      .then((data) => {
-        res.status(200).send(data);
-      });
+      knex("users_tasks")
+        .insert(fieldsToInsert)
+        .then((data) => {
+          res.status(200).send(data);
+        });
+    } else {
+      res.status(400).send("does not include field owners");
+    }
   } else {
-    res.status(400).send("does not include field owners");
+    res.status(404).send()
   }
 };
 
@@ -337,19 +377,23 @@ const addComment = (req, res) => {
   console.log(
     `working on post request for /tasks/${req.params.taskid}/comments`
   );
-  knex("comments")
-    .where("task_id", "=", parseInt(req.params.taskid))
-    .insert(fieldsToInsert)
-    .returning("*")
-    .catch((err) => {
-      console.log(err);
-      res.status(404).json({
-        message: "There was a problem adding this comment",
+  if (!isNaN(parseInt(req.params.taskid))) {
+    knex("comments")
+      .where("task_id", "=", parseInt(req.params.taskid))
+      .insert(fieldsToInsert)
+      .returning("*")
+      .catch((err) => {
+        console.log(err);
+        res.status(404).json({
+          message: "There was a problem adding this comment",
+        });
+      })
+      .then((data) => {
+        res.status(200).send(data);
       });
-    })
-    .then((data) => {
-      res.status(200).send(data);
-    });
+  } else {
+    res.status(404).send()
+  }
 };
 
 // PATCH request ---------------------------------------------------------------------------------------------
@@ -375,20 +419,24 @@ const editTask = async (req, res) => {
   });
   console.log(validRequest);
 
-  if (validRequest) {
-    knex("tasks")
-      .where("tasks.id", "=", parseInt(req.params.taskid))
-      .update(req.body, Object.keys(req.body))
-      .then(() => {
-        knex("tasks")
-          .select("*")
-          .where("tasks.id", "=", parseInt(req.params.taskid))
-          .then((data) => {
-            res.status(200).json(data);
-          });
-      });
+  if (!isNaN(parseInt(req.params.taskid))) {
+    if (validRequest) {
+      knex("tasks")
+        .where("tasks.id", "=", parseInt(req.params.taskid))
+        .update(req.body, Object.keys(req.body))
+        .then(() => {
+          knex("tasks")
+            .select("*")
+            .where("tasks.id", "=", parseInt(req.params.taskid))
+            .then((data) => {
+              res.status(200).json(data);
+            });
+        });
+    } else {
+      res.status(404).send("Task edit was unsuccessful");
+    }
   } else {
-    res.status(404).send("Task edit was unsuccessful");
+    res.status(404).send()
   }
 };
 
@@ -396,50 +444,56 @@ const editTask = async (req, res) => {
 
 const deleteTask = (req, res) => {
   console.log(`working on delete for /tasks/${req.params.taskid}`);
-  console.log(`req.params.taskid`, req.params.taskid)
-  knex("users_tasks")
-    .where("task_id", "=", parseInt(req.params.taskid))
-    .del()
-    .then(() => {
-      knex("comments")
-        .where("task_id", "=", parseInt(req.params.taskid))
-        .del()
-        .then(() => {
-          knex("tasks")
-            .where("tasks.id", "=", parseInt(req.params.taskid))
-            .del()
-            .catch((err) => {
-              console.log(err);
-              res.status(404).json({
-                message: "There was a problem deleting this task",
+  if (!isNaN(parseInt(req.params.taskid))) {
+    knex("users_tasks")
+      .where("task_id", "=", parseInt(req.params.taskid))
+      .del()
+      .then(() => {
+        knex("comments")
+          .where("task_id", "=", parseInt(req.params.taskid))
+          .del()
+          .then(() => {
+            knex("tasks")
+              .where("tasks.id", "=", parseInt(req.params.taskid))
+              .del()
+              .catch((err) => {
+                console.log(err);
+                res.status(404).json({
+                  message: "There was a problem deleting this task",
+                });
+              })
+              .then((data) => {
+                res.status(200).send(`Number of records deleted: ${data}`);
               });
-            })
-            .then((data) => {
-              res.status(200).send(`Number of records deleted: ${data}`);
-            });
-        });
-    });
+          });
+      });
+  } else {
+    res.status(404).send()
+  }
 };
 
 // unassign one or multiple users from a specific task
 const deleteTaskUsers = (req, res) => {
   console.log(`working on delete for /owners/${req.params.taskid}`);
-
-  knex("users_tasks")
-    .where((builder) => builder.whereIn("user_id", req.body.owners))
-    .andWhere(function () {
-      this.where("task_id", parseInt(req.params.taskid));
-    })
-    .del()
-    .catch((err) => {
-      console.log(err);
-      res.status(404).json({
-        message: "There was a problem unassigning owners from this task",
+  if (!isNaN(parseInt(req.params.taskid))) {
+    knex("users_tasks")
+      .where((builder) => builder.whereIn("user_id", req.body.owners))
+      .andWhere(function () {
+        this.where("task_id", parseInt(req.params.taskid));
+      })
+      .del()
+      .catch((err) => {
+        console.log(err);
+        res.status(404).json({
+          message: "There was a problem unassigning owners from this task",
+        });
+      })
+      .then((data) => {
+        res.status(200).send(`Number of records deleted: ${data}`);
       });
-    })
-    .then((data) => {
-      res.status(200).send(`Number of records deleted: ${data}`);
-    });
+  } else {
+    res.status(404).send()
+  }
 };
 
 module.exports = {
