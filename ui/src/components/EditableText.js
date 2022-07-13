@@ -95,11 +95,12 @@ const EditableText = (props) => {
           direction="column"
           alignItems="center"
           justifyContent="space-around"
+          style = {{width:600}}
         >
           {props.input_type === "large" ? (
             <TextField
               defaultValue={props.val}
-              minWith="xlg"
+              fullWidth
               multiline
               rows={5}
               maxRows={10}
@@ -136,6 +137,7 @@ const EditableText = (props) => {
             </Box>
           ) : (
             <TextField
+
               defaultValue={props.val}
               value={value}
               onChange={(e) => setValue(e.target.value)}

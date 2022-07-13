@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import config from "../config";
 import { useNavigate, Link } from "react-router-dom";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
+import '../styles/SharedStyles.css'
 
 import { TaskContext } from "../App.js";
 
@@ -20,10 +21,6 @@ const Login = () => {
   let navigate = useNavigate();
   const tc = useContext(TaskContext);
 
-  // const handleSubmit = () => {
-  //   console.log("success")
-  //   console.log(tc.userId)
-  // }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -57,8 +54,8 @@ const Login = () => {
             isAuthenticated = true;
             return response.json();
           } else if (response.status === 404) {
-            setFeedback("invalid username");
-            console.log("invalid username");
+            setFeedback("email not found");
+            console.log("email not found");
             return;
           } else if (response.status === 400) {
             setFeedback("invalid password");
@@ -104,9 +101,10 @@ const Login = () => {
         marginBottom: "0",
         boxShadow: "0 0 10px rgb(10, 31, 10)",
         borderRadius: "5px",
+        backgroundColor: 'white'
       }}
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} >
         <Box m={2} pt={3}>
           <Grid
             container
@@ -154,7 +152,7 @@ const Login = () => {
                 paddingBottom: "10px",
               }}
             >
-              <Typography variant="h6">
+              <Typography variant="h6"className='underline-on-hover-link'>
                 New member? Click here to register
               </Typography>
             </Link>

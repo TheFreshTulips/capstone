@@ -42,7 +42,11 @@ const TaskCard = (props) => {
     <Box sx={{ maxWidth: 300, minWidth: 300, minHeight: 180 }}>
       <Card
         variant="outlined"
-        style={{ color: "white", backgroundColor: "rgba(74,104,133,0.44)" }}
+        style={{ color: "white", backgroundColor: "rgba(74,104,133,0.44)",}}
+        sx={{ "&:hover": {
+          border: "2px solid rgba(251,6,29,0.73)",
+          // border: '3px solid #3ed2d6'
+        },}}
       >
         {card}
       </Card>

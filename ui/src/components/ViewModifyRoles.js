@@ -50,7 +50,7 @@ const ViewModifyRoles = () => {
         {isLoading ? (
         <Grid container display='flex' justifyContent='center' direction='column' alignItems='center'>
           <img src={logo} width="400px" alt="loading-spinner"/>
-          <Typography variant="h3" align='center'>Loading...</Typography>
+          <Typography variant="h3" align='center' style={{color: 'white'}}>Loading...</Typography>
         </Grid>
         ) :
           <Paper style={{ padding: "10px 20px" }}>

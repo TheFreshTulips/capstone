@@ -21,54 +21,29 @@ import Grid from "@mui/material/Grid";
 
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
-// const createData = (task, date_completed, completed_by) => {
-//   return { task, date_completed, completed_by };
-// };
-
-/*
-const rows = [
-  createData("dont be a piece of shit", "never", "me >:D"),
-  createData("un heck yourself trainee", "tomorrow", "me mum"),
-  createData("get wrecked", "now", "ur MOM"),
-];
- */
-
-//variables here can probably have better names, these are the possible names of the columns
-const rowNames = ["Task Name", "Date Completed"];
-const keys = ["task_title", "task_completed_date"];
-
-// const adminRoles = [];
-// const adminOrgs = [];
+// should these be column names or row names?
+// const rowNames = ["Task Name", "Date Completed"];
+// const keys = ["task_title", "task_completed_date"];
+const rowNames = ["Task Name", "Description", "Assigned To", "Date Completed"];
+const keys = ["task_title", "task_description", "assigned_to", "task_completed_date"];
+/*  eslint-disable no-unexpected-multiline */
 
 const TaskTable = () => {
   const tc = useContext(TaskContext);
   let [tasks, setTasks] = useState([]);
-  let [isUnit, setIsUnit] = useState(true); //make toggle button to toggle if the table should show unit data or single user data
+  let [childOrgTasks, setChildOrgTasks] = useState([]);
+  let [isUnit, setIsUnit] = useState(true);
   let [isLoading, setIsLoading] = useState(false);
   let { pathname } = useLocation();
-
-  // function isDateInThisWeek(date) { //assumes date is a Date objct
-  //   const todayObj = new Date();
-  //   const todayDate = todayObj.getDate();
-  //   const todayDay = todayObj.getDay();
-
-  //   // get first date of week
-  //   const firstDayOfWeek = new Date(todayObj.setDate(todayDate - todayDay));
-
-  //   // get last date of week
-  //   const lastDayOfWeek = new Date(firstDayOfWeek);
-  //   lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
-
-  //   // if date is equal or within the first and last dates of the week
-  //   return date >= firstDayOfWeek && date <= lastDayOfWeek;
-  // }
 
   useEffect(() => {
     setIsLoading(true);
     let url;
     console.log("pathname: ", pathname);
+    // get data for ARCHIVE, aka all completed tasks
     pathname === "/archive"
       ? (url = `${ApiUrl}/tasks/users/${tc.userId}`)
+    // get data for weekly activity REPORTS
       : isUnit
       ? (url = `${ApiUrl}/war/orgs/${tc.userOrg}`)
       : (url = `${ApiUrl}/war/users/${tc.userId}`);
@@ -77,28 +52,70 @@ const TaskTable = () => {
       .then((res) => res.json())
       .then((data) => sortTasks(data))
       .then(() => setTimeout(() => setIsLoading(false), 250))
+
+    if(tc.isSupervisor && isUnit) {
+      fetch(`${ApiUrl}/orgs/${tc.userOrg}/children`)
+        .then((res) => res.json())
+        .then((data) => {
+          let promiseArr = [];
+          data.forEach(element => {
+            promiseArr.push(fetch(`${ApiUrl}/tasks/orgs/${element.org_id}`)
+              .then(res => res.json()))
+          })
+      Promise.all(promiseArr)
+        .then(results => {
+          let tempTasks = []
+          results.forEach(result => {
+            tempTasks.push(
+              {
+                org_id: result[0].task_org_id,
+                org_name: result[0].task_org_name,
+                tasks: result,
+              }
+            )
+          })
+          setChildOrgTasks(tempTasks);
+
+          setTimeout(() => setIsLoading(false), 250);
+        })
+      })
+    }
   }, [isUnit, pathname]);
 
-  const sortTasks = (data) => {
-    let temp = [];
-    if (pathname === "/archive") {
-      //if its archived then the completed date is not null
-      temp = data.filter((element) => element.task_completed_date !== null);
+  const getOwners = (task) => {
+    if(task.owners) {
+      const assigned_to = task.owners.reduce((prev, curr, index) => {
+        // if on the last name in the array
+        if(index === task.owners.length - 1) {
+          return prev + curr.rank + ' ' + curr.name
+        }
+        return prev + curr.rank + ' ' + curr.name + "\n"
+      }, '')
+      return assigned_to;
     } else {
-      //if its not archived then get the tasks that are completed for the week or in progress
-      //Note: I dont know if this date sorting is gonna work
-      // temp = data.filter((element) => {element.task_status === 'in progress' && isDateInThisWeek(element.task_completed_date)})
-      //use line above if we want to filter later on
-      temp = data;
+      return null;
     }
-    setTasks(temp);
+  }
+
+  // sorts out the COMPLETED tasks
+  const sortTasks = (data) => {
+    let filteredTasks = [];
+    // for archive, get tasks with completed dates
+    if (pathname === "/archive") {
+      filteredTasks = data.filter((element) => element.task_completed_date !== null);
+    // for reports, get tasks that are completed for the week or in progress this week
+    } else {
+      filteredTasks = data;
+    }
+    setTasks(filteredTasks);
+    console.log(tasks)
   };
 
   return (
     <Box width={"90%"} margin="auto" marginTop={5}>
       <Paper
         style={{
-          padding: "40px 20px",
+          padding: "20px 20px",
           color: "white",
           backgroundColor: "rgba(74,104,133,0.44)",
         }}
@@ -114,7 +131,7 @@ const TaskTable = () => {
                     }}
                   />
                 }
-                label="See my personal report"
+                label={<Typography color="white">View Personal Report</Typography>}
               />
             </FormGroup>
           ) : (
@@ -125,56 +142,125 @@ const TaskTable = () => {
         {isLoading ? (
             <Grid container display='flex' justifyContent='center' direction='column' alignItems='center'>
               <img src={logo} width="400px" alt="loading-spinner" />
-              <Typography variant="h3" align='center'>Loading...</Typography>
+              <Typography variant="h3" align='center' style={{color: 'white'}}>Loading...</Typography>
             </Grid>
-          ) :
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 400 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  {rowNames.map((element, index) => {
-                    return index === 0 ? (
-                      <TableCell key={index}>
-                        <Typography variant="h6">{element}</Typography>
-                      </TableCell>
-                    ) : (
-                      <TableCell key={index} align="right">
-                        <Typography variant="h6">{element}</Typography>
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tasks.map((row) => {
+          ) : (
+            <>
+              {tasks[0] && isUnit ? <Typography variant="h4" key="header" align = 'center' color="white">{tasks[0].task_org_name}</Typography>: <></>}
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 400 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      {rowNames.map((element, index) => {
+                        return index === 0 ? (
+                          <TableCell key={index} align="center">
+                            <Typography variant="h6">{element}</Typography>
+                          </TableCell>
+                        ) : (
+                          <TableCell key={index} align="center">
+                            <Typography variant="h6">{element}</Typography>
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {tasks.map((row) => {
+                      return (
+                        <>
+                          <TableRow
+                            key={tasks.task_id}
+                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                          >
+                            {keys.map((colName, index) => {
+                                      // console.log(`column:${colName}`);
+                                      // console.log(`index:${index}`);
+                                      return index === keys.length - 1 ? (
+                                        <TableCell key={index} align="center">
+                                          {row[colName] === null
+                                            ? "Incomplete"
+                                            : new Date(row[colName]).toLocaleString("en-US")}
+                                        </TableCell>
+                                      ) : colName === "assigned_to" ? (
+                                        <TableCell key={index} component="th" scope="row" align="center">
+                                            {getOwners(row)}
+                                        </TableCell>
+                                      ) : (
+                                        <TableCell key={index} component="th" scope="row" align="center">
+                                        {row[colName]}
+                                      </TableCell>
+                                      );
+                                    })}
+                          </TableRow>
+                        </>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              { tc.isSupervisor && isUnit && pathname === "/reports"  ? (
+                childOrgTasks.map((element) => {
                   return (
                     <>
-                      <TableRow
-                        key={tasks.task_id}
-                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                      >
-                        {keys.map((colName, index) => {
-                          // console.log(`column:${colName}`);
-                          // console.log(`index:${index}`);
-                          return index === 0 ? (
-                            <TableCell key={index} component="th" scope="row">
-                              {row[colName]}
-                            </TableCell>
-                          ) : (
-                            <TableCell key={index} align="right">
-                              {row[colName] === null
-                                ? "N/A"
-                                : new Date(row[colName]).toLocaleString("en-US")}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
+                      <Typography variant="h4" key="header" align='center' mt={5} color="whitesmoke">{element.org_name}</Typography>
+                      <TableContainer key={element.org_id} component={Paper}>
+                        <Table sx={{ minWidth: 400 }} aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              {rowNames.map((element, index) => {
+                                return index === 0 ? (
+                                  <TableCell key={index} align="center">
+                                    <Typography variant="h6">{element}</Typography>
+                                  </TableCell>
+                                ) : (
+                                  <TableCell key={index} align="center">
+                                    <Typography variant="h6">{element}</Typography>
+                                  </TableCell>
+                                );
+                              })}
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {element.tasks.map((row) => {
+                              return (
+                                <>
+                                  <TableRow
+                                    key={tasks.task_id}
+                                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                                  >
+                                    {keys.map((colName, index) => {
+                                      // console.log(`column:${colName}`);
+                                      // console.log(`index:${index}`);
+                                      return index === keys.length - 1 ? (
+                                        <TableCell key={index} align="center">
+                                          {row[colName] === null
+                                            ? "Incomplete"
+                                            : new Date(row[colName]).toLocaleString("en-US")}
+                                        </TableCell>
+                                      ) : colName === "assigned_to" ? (
+                                        <TableCell key={index} component="th" scope="row" align="center">
+                                            {getOwners(row) ? getOwners(row) : "None"}
+                                        </TableCell>
+                                      ) : (
+                                        <TableCell key={index} component="th" scope="row" align="center">
+                                        {row[colName]}
+                                      </TableCell>
+                                      );
+                                    })}
+                                  </TableRow>
+                                </>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
                     </>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  )
+                })
+              )
+              : <></> }
+            </>
+          )
         }
       </Paper>
     </Box>

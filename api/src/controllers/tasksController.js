@@ -18,53 +18,118 @@ const knex = require("knex")(config);
 // GET requests ---------------------------------------------------------------------------------------------
 const orgRequest = (req, res) => {
   console.log(`working on get for /tasks/orgs/${req.params.orgid}`);
+  let promiseArr = [];
   // values given for each task {id, title, status, priority, suspense date, author_rank, author_name (database is author_id)}
   if (!isNaN(parseInt(req.params.orgid))) {
-    knex("tasks")
+    promiseArr.push(
+      knex("tasks")
       .join("users", "users.id", "=", "tasks.author_id")
       .join("organizations", "organizations.id", "=", "tasks.org_id")
       .select(
         "tasks.id as task_id",
         "tasks.title as task_title",
         "tasks.status as task_status",
+        "tasks.description as task_description",
         "tasks.priority as task_priority",
         "tasks.suspense_date as task_suspense_date",
+        "tasks.completed_date as task_completed_date",
         "users.rank as author_rank",
         "users.name as author_name",
         "tasks.org_id as task_org_id",
         "organizations.name as task_org_name"
       )
       .where("tasks.org_id", "=", req.params.orgid)
+      )
+
+    promiseArr.push(
+      knex("users as owners")
+      .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
+      .join("tasks", "tasks.id", "=", "ut.task_id")
+      .select(
+        "tasks.id as task_id",
+        "owners.rank as owner_rank",
+        "owners.name as owner_name"
+        )
+        .where("tasks.org_id", "=", req.params.orgid)
+        );
+    Promise.all(promiseArr)
       .then((data) => {
+        const body = data[0].map((task) => {
+          let owners = [];
+          data[1].forEach((owner) => {
+            if (parseInt(owner.task_id) === parseInt(task.task_id)) {
+              owners.push({ rank: owner.owner_rank, name: owner.owner_name });
+            }
+          });
+          task.owners = owners;
+          return task;
+        });
         res.set("Access-Control-Allow-Origin", "*");
-        res.status(200).send(data);
-      });
+        res.status(200).send(body);
+      })
   } else {
     res.status(404).send();
   }
+  /*
+  .union([
+        knex("users as owners")
+        .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
+        .select(
+          "owners.id as owner_id",
+          "owners.rank as owner_rank",
+          "owners.name as owner_name"
+        )
+        .where("ut.task_id", "=", "tasks.id")
+      ])
+      */
 };
 
 const userRequest = (req, res) => {
   console.log(`working on get for /tasks/users/${req.params.userid}`);
   //{id, title, status, priority, suspense date, author_rank, author_name (database is author_id)}
-
+  let promiseArr = [];
   if (!isNaN(parseInt(req.params.userid))) {
-    knex("tasks")
+    promiseArr.push(
+      knex("tasks")
       .join("users_tasks as ut", "task_id", "=", "tasks.id")
       .select(
         "tasks.id as task_id",
         "tasks.title as task_title",
         "tasks.status as task_status",
+        "tasks.description as task_description",
         "tasks.priority as task_priority",
         "tasks.suspense_date as task_suspense_date",
         "tasks.completed_date as task_completed_date",
         "tasks.author_id as author_id"
       )
       .where("ut.user_id", "=", req.params.userid)
+    )
+    promiseArr.push(
+      knex("users as owners")
+      .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
+      .join("tasks", "tasks.id", "=", "ut.task_id")
+      .select(
+        "tasks.id as task_id",
+        "owners.rank as owner_rank",
+        "owners.name as owner_name"
+        )
+        .where("ut.user_id", "=", req.params.userid)
+        );
+    Promise.all(promiseArr)
       .then((data) => {
+        const body = data[0].map((task) => {
+          let owners = [];
+          data[1].forEach((owner) => {
+            if (parseInt(owner.task_id) === parseInt(task.task_id)) {
+              owners.push({ rank: owner.owner_rank, name: owner.owner_name });
+            }
+          });
+          task.owners = owners;
+          return task;
+        });
         res.set("Access-Control-Allow-Origin", "*");
-        res.status(200).send(data);
-      });
+        res.status(200).send(body);
+      })
   } else {
     res.status(404).send()
   }
@@ -184,11 +249,14 @@ const orgWar = (req, res) => {
   if (!isNaN(parseInt(req.params.orgid))) {
     promiseArr.push(
       knex("tasks")
+        .join("organizations", "organizations.id", "=", "tasks.org_id")
         .select(
           "tasks.id as task_id",
           "tasks.title as task_title",
+          "tasks.description as task_description",
           "tasks.completed_date as task_completed_date",
-          "tasks.status as task_status"
+          "tasks.status as task_status",
+          "organizations.name as task_org_name"
         )
         .where(function() {
           this.where("tasks.org_id", "=", req.params.orgid)
@@ -218,7 +286,7 @@ const orgWar = (req, res) => {
           .whereBetween("tasks.completed_date", [aWeekAgo, now])
         })
         .then((data) => {
-          console.log(`owners: `, data);
+          // console.log(`owners: `, data);
           return data;
         })
     );
@@ -248,14 +316,19 @@ const userWar = (req, res) => {
   let aWeekAgo = new Date();
   aWeekAgo.setDate(aWeekAgo.getDate() - 7);
   let now = new Date();
+  let promiseArr = [];
+
   if (!isNaN(parseInt(req.params.userid))) {
-    knex("tasks")
+    promiseArr.push(knex("tasks")
       .join("users_tasks as ut", "ut.task_id", "=", "tasks.id")
+      .join("organizations", "organizations.id", "=", "tasks.org_id")
       .select(
         "tasks.id as task_id",
         "tasks.title as task_title",
+        "tasks.description as task_description",
         "tasks.completed_date as task_completed_date",
-        "tasks.status as task_status"
+        "tasks.status as task_status",
+        "organizations.name as task_org_name"
       )
       .where(function() {
         this.where("ut.user_id", "=", req.params.userid)
@@ -265,14 +338,41 @@ const userWar = (req, res) => {
         this.where("ut.user_id", "=", req.params.userid)
         .whereBetween("tasks.completed_date", [aWeekAgo, now])
       })
-      .then((data) => {
-        if (data) {
-          res.set("Access-Control-Allow-Origin", "*");
-          res.status(200).send(data);
-        } else {
-          res.status(404).send("unsuccessful GET");
-        }
+    )
+
+    promiseArr.push(
+      knex("users as owners")
+        .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
+        .join("tasks", "tasks.id", "=", "ut.task_id")
+        .select(
+          "tasks.id as task_id",
+          "owners.rank as owner_rank",
+          "owners.name as owner_name"
+        )
+        .where(function() {
+          this.where("ut.user_id", "=", req.params.userid)
+          .whereBetween("tasks.assigned_date", [aWeekAgo, now])
+        })
+        .orWhere(function() {
+          this.where("ut.user_id", "=", req.params.userid)
+          .whereBetween("tasks.completed_date", [aWeekAgo, now])
+        })
+    );
+
+    Promise.all(promiseArr).then((data) => {
+      const body = data[0].map((task) => {
+        let owners = [];
+        data[1].forEach((owner) => {
+          if (parseInt(owner.task_id) === parseInt(task.task_id)) {
+            owners.push({ rank: owner.owner_rank, name: owner.owner_name });
+          }
+        });
+        task.owners = owners;
+        return task;
       });
+      res.set("Access-Control-Allow-Origin", "*");
+      res.status(200).send(body);
+    });
   } else {
     res.status(404).send()
   }
@@ -281,8 +381,13 @@ const userWar = (req, res) => {
 // POST requests ---------------------------------------------------------------------------------------------
 const addTask = async (req, res) => {
   //possible more error checking needed?
-  console.log(`working on get for /tasks`);
+  console.log(`working on POST for /tasks`);
   let isValid = true;
+
+  if (req.body.suspense_date == ""){
+    res.status(404).send("need a suspense data")
+    return;
+  }
   // still need to do data validation here
   if (req.body.creator_id === undefined || req.body.org_id === undefined) {
     res.status(404).send("creator id or org id does not exist");
@@ -399,8 +504,8 @@ const addComment = (req, res) => {
 // PATCH request ---------------------------------------------------------------------------------------------
 const editTask = async (req, res) => {
   console.log(`working on patch for /tasks/${req.params.taskid}`);
-  console.log(req.params);
-  console.log(req.body);
+  // console.log(req.params);
+  // console.log(req.body);
   let keys = [
     //suspense date is the only changeable date
     "title",
@@ -417,7 +522,7 @@ const editTask = async (req, res) => {
   const validRequest = Object.keys(body).every((element) => {
     return keys.includes(element);
   });
-  console.log(validRequest);
+  // console.log(validRequest);
 
   if (!isNaN(parseInt(req.params.taskid))) {
     if (validRequest) {

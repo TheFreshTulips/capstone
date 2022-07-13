@@ -15,6 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Fab from "@mui/material/Fab";
 import { useNavigate } from "react-router-dom";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import logo from "../loading-blue.gif";
 
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -50,6 +51,7 @@ const TaskDetails = () => {
   */
   const tc = useContext(TaskContext);
   const [ownsTask, setOwnsTask] = useState(null);
+  let [isLoading, setIsLoading] = useState(null); //use this to make loading circle
   const [taskDetails, setTaskDetails] = useState({}); // this is the actual task object
   const [owners, setOwners] = useState([]); //state for JUST the owners (like the comments)
   const [comments, setComments] = useState([]);
@@ -66,8 +68,8 @@ const TaskDetails = () => {
     owners: [],
   }); //This input will be used for PATCH for tasks
   const [isSubmit, setIsSubmit] = useState(false);
-  const titleTypography = "body1";
-  const valueTypography = "body2";
+  const titleTypography = "h5";
+  const valueTypography = "h6";
   let { task } = useParams();
   let navigate = useNavigate();
 
@@ -152,6 +154,7 @@ const TaskDetails = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(postBody),
         }).then(() => {
+          alert("Task updated!");
           setIsSubmit(!isSubmit);
         })
       );
@@ -223,6 +226,7 @@ const TaskDetails = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     let url = `${ApiUrl}/tasks/${task}`;
     fetch(url)
       .then((res) => res.json())
@@ -242,10 +246,12 @@ const TaskDetails = () => {
           tc.userId === data.author_id || owner_ids.includes(tc.userId)
         ); //change this back to the line above once the author_id is being passed by the API
       })
+      .then(() => setTimeout(() => setIsLoading(false), 250))
       .catch((err) => console.log(err));
   }, [isSubmit]);
 
   useEffect(() => {
+    setIsLoading(true);
     // fetches an array of all users in the organization and then sets the state with that info
     fetch(`${ApiUrl}/users/orgs/${tc.userOrg}`)
       .then((res) => res.json())
@@ -261,6 +267,7 @@ const TaskDetails = () => {
           })
         );
       })
+      .then(() => setTimeout(() => setIsLoading(false), 250))
       .catch((err) => console.log("Error getting users array", err));
   }, []);
 
@@ -270,188 +277,206 @@ const TaskDetails = () => {
 
   return (
     <>
-      <Box marginTop={5} sx={{ width: "100%" }}>
-        {ownsTask ? (
-          <Box m={4} sx={{ gap: 5 }} display="flex" justifyContent="right">
-            <Button variant="outlined" onClick={handleSubmitTask}>
-              Submit Changes
-            </Button>
-            <Fab color="error" aria-label="delete" onClick={handleDelete} m={3}>
-              <DeleteIcon />
-            </Fab>
-          </Box>
-        ) : null}
-        <Grid container spacing={3}>
-          <Grid item xs={12} display="flex" justifyContent="center">
-            <EditableText
-              field="title"
-              val={taskDetails.task_title}
-              canEdit={ownsTask}
-              callback={setInputTask}
-              input={inputTask}
-              typography="h5"
-            />
-          </Grid>
-
-          <Grid item xs={6} display="flex" justifyContent="center">
-            <Stack alignItems={"center"}>
-              <Typography variant={titleTypography}>Priority:</Typography>
-              <EditableText
-                field="priority"
-                val={taskDetails.task_priority}
-                canEdit={ownsTask}
-                callback={setInputTask}
-                input={inputTask}
-                typography={valueTypography}
-                input_type="dropdown"
-                dropdown={validPriorities}
-              />
-            </Stack>
-          </Grid>
-
-          <Grid item xs={6} display="flex" justifyContent="center">
-            <Stack alignItems={"center"}>
-              <Typography variant={titleTypography}>Status:</Typography>
-              <EditableText
-                field="status"
-                val={taskDetails.task_status}
-                canEdit={ownsTask}
-                callback={setInputTask}
-                input={inputTask}
-                input_type="dropdown"
-                dropdown={["to do", "in progress", "finished"]}
-                typography={valueTypography}
-              />
-            </Stack>
-          </Grid>
-
-          <Grid item xs={6} display="flex" justifyContent="center">
-            <Stack alignItems={"center"}>
-              <Typography variant={titleTypography}>Assigned Date:</Typography>
-              <Typography>{`${convertDateTime(
-                taskDetails.task_assigned_date
-              )}`}</Typography>
-            </Stack>
-          </Grid>
-
-          <Grid item xs={6} display="flex" justifyContent="center">
-            <Stack alignItems={"center"}>
-              <Typography variant={titleTypography}>Suspense Date:</Typography>
-              <EditableText
-                field="suspense_date"
-                val={taskDetails.task_suspense_date}
-                canEdit={ownsTask}
-                callback={setInputTask}
-                input={inputTask}
-                input_type="date"
-              />
-            </Stack>
-          </Grid>
-
-          <Grid item xs={12} display="flex" justifyContent="center">
-            <Stack alignItems={"center"}>
-              <Typography variant={titleTypography}>Details:</Typography>
-              <EditableText
-                field="description"
-                val={taskDetails.task_description}
-                canEdit={ownsTask}
-                callback={setInputTask}
-                input={inputTask}
-                input_type="large"
-                typography={valueTypography}
-              />
-            </Stack>
-          </Grid>
-
-          <Grid item xs={6} display="flex" justifyContent="center">
-            <Stack alignItems={"center"}>
-              <Typography>Assigned To:</Typography>
-              <Box m={2}>
-                {owners.map((owner, index) => (
-                  <Typography
-                    key={index}
-                  >{`${owner.owner_rank} ${owner.owner_name}`}</Typography>
-                ))}
-              </Box>
-            </Stack>
-          </Grid>
-          {ownsTask ? (
-            <Grid item xs={6} display="flex" justifyContent="center">
-              <FormControl sx={{ m: 1, width: 300 }}>
-                <InputLabel id="demo-multiple-checkbox-label">
-                  Reassign Task
-                </InputLabel>
-                <Select
-                  labelId="demo-multiple-name-label"
-                  id="demo-multiple-name"
-                  multiple
-                  value={selectedNameOrNames}
-                  onChange={handleSelect}
-                  input={<OutlinedInput label="Name" />}
-                  MenuProps={MenuProps}
-                >
-                  {users.map((el) => (
-                    <MenuItem key={el.id} value={el.name}>
-                      {el.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          ) : (
-            <></>
-          )}
-        </Grid>
-
-        <Container>
-          <Typography variant="h6">{`Comments`}</Typography>
-          <Paper
-            style={{
-              padding: "40px 20px",
-              color: "white",
-              backgroundColor: "rgba(74,104,133,0.44)",
-            }}
-            sx={{ fontFamily: "sans-serif" }}
-          >
-            {comments.map((comment) => {
-              return (
-                <>
-                  <Grid container wrap="nowrap" spacing={2}>
-                    <Grid justifyContent="left" item xs zeroMinWidth>
-                      <h4 style={{ margin: 0, textAlign: "left" }}>
-                        {`${comment.user_rank} ${comment.user_name}`}
-                      </h4>
-                      <p style={{ textAlign: "left" }}>
-                        {comment.comment_body}
-                      </p>
-                      <p style={{ textAlign: "left", color: "gray" }}>
-                        {convertDateTime(comment.comment_timestamp)}
-                      </p>
+      <Box m={3}></Box>
+      <Box  sx={{ width: "90%", margin:"auto"}}>
+        {isLoading ? (
+              <Grid container display='flex' justifyContent='center' direction='column' alignItems='center'>
+                <img src={logo} width="400px" alt="loading-spinner" />
+                <Typography variant="h3" align='center' style={{color: 'white'}}>Loading...</Typography>
+              </Grid>
+            ) : (
+              <>
+                <Paper elevation={8} style={{backgroundColor : "white"}} >
+                <Grid container spacing={5}>
+                  {ownsTask ? (
+                    <>
+                    <Grid item xs={4} display="flex" justifyContent="left" marginLeft = {5}>
+                        <Button variant="contained" onClick={handleSubmitTask}>
+                          Submit Changes
+                        </Button>
+                      </Grid>
+                    <Grid item xs={7} display="flex" justifyContent="right">
+                        <Fab color="error" aria-label="delete" onClick={handleDelete}>
+                          <DeleteIcon />
+                        </Fab>
                     </Grid>
+                    </>
+                  ) : null}
+
+                  <Grid item xs={12} display="flex" justifyContent="center">
+                    <EditableText
+                      field="title"
+                      val={taskDetails.task_title}
+                      canEdit={ownsTask}
+                      callback={setInputTask}
+                      input={inputTask}
+                      typography="h4"
+                    />
                   </Grid>
-                </>
-              );
-            })}
-            <form onSubmit={handleSubmitComments}>
-              <TextField
-                fullWidth
-                id="outlined-basic"
-                label="Add a comment"
-                variant="outlined"
-                onChange={handleChange}
-              />
-              <Button
-                className="submitButton"
-                type="submit"
-                value="Submit"
-                size="small"
-              >
-                {" "}
-                Done{" "}
-              </Button>
-            </form>
-          </Paper>
-        </Container>
+
+                  <Grid item xs={6} display="flex" justifyContent="center">
+                    <Stack alignItems={"center"}>
+                      <Typography variant={titleTypography} color= "#1D4367">Priority:</Typography>
+                      <EditableText
+                        field="priority"
+                        val={taskDetails.task_priority}
+                        canEdit={ownsTask}
+                        callback={setInputTask}
+                        input={inputTask}
+                        typography={valueTypography}
+                        input_type="dropdown"
+                        dropdown={validPriorities}
+                      />
+                    </Stack>
+                  </Grid>
+
+                  <Grid item xs={6} display="flex" justifyContent="center">
+                    <Stack alignItems={"center"}>
+                      <Typography variant={titleTypography}>Status:</Typography>
+                      <EditableText
+                        field="status"
+                        val={taskDetails.task_status}
+                        canEdit={ownsTask}
+                        callback={setInputTask}
+                        input={inputTask}
+                        input_type="dropdown"
+                        dropdown={["to do", "in progress", "finished"]}
+                        typography={valueTypography}
+                      />
+                    </Stack>
+                  </Grid>
+
+                  <Grid item xs={6} display="flex" justifyContent="center">
+                    <Stack alignItems={"center"}>
+                      <Typography variant={titleTypography}>Assigned Date:</Typography>
+                      <Typography paddingTop={2}>{`${convertDateTime(
+                        taskDetails.task_assigned_date
+                      )}`}</Typography>
+                    </Stack>
+                  </Grid>
+
+                  <Grid item xs={6} display="flex" justifyContent="center">
+                    <Stack alignItems={"center"}>
+                      <Typography variant={titleTypography}>Suspense Date:</Typography>
+                      <EditableText
+                        field="suspense_date"
+                        val={taskDetails.task_suspense_date}
+                        canEdit={ownsTask}
+                        callback={setInputTask}
+                        input={inputTask}
+                        input_type="date"
+                      />
+                    </Stack>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Stack alignItems={"center"}>
+                      <Typography variant={titleTypography}>Details:</Typography>
+                      <EditableText
+                        field="description"
+                        val={taskDetails.task_description}
+                        canEdit={ownsTask}
+                        callback={setInputTask}
+                        input={inputTask}
+                        input_type="large"
+                        typography={valueTypography}
+                      />
+                    </Stack>
+                  </Grid>
+
+                  <Grid item xs={6} display="flex" justifyContent="center">
+                    <Stack alignItems={"center"}>
+                      <Typography>Assigned To:</Typography>
+                      <Box m={2}>
+                        {owners.map((owner, index) => (
+                          <Typography
+                            key={index}
+                          >{`${owner.owner_rank} ${owner.owner_name}`}</Typography>
+                        ))}
+                      </Box>
+                    </Stack>
+                  </Grid>
+                  {ownsTask ? (
+                    <Grid item xs={6} display="flex" justifyContent="center">
+                      <FormControl sx={{ m: 1, width: 300 }}>
+                        <InputLabel id="demo-multiple-checkbox-label">
+                          Reassign Task
+                        </InputLabel>
+                        <Select
+                          labelId="demo-multiple-name-label"
+                          id="demo-multiple-name"
+                          multiple
+                          value={selectedNameOrNames}
+                          onChange={handleSelect}
+                          input={<OutlinedInput label="Name" />}
+                          MenuProps={MenuProps}
+                        >
+                          {users.map((el) => (
+                            <MenuItem key={el.id} value={el.name}>
+                              {el.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
+                </Grid>
+                </Paper>
+
+                <Container>
+                  <Box marginTop = {5}><Typography variant="h4" sx={{ fontFamily: "sans-serif" }} >{`Comments`}</Typography></Box>
+                  <Paper
+                    elevation = {10}
+                    style={{
+                      padding: "40px 20px",
+                      color: "#a0b3c4",
+                      backgroundColor: "rgba(74,104,133,0.44)",
+                    }}
+                    sx={{ fontFamily: "sans-serif" }}
+                  >
+                    {comments.map((comment) => {
+                      return (
+                        <>
+                          <Grid container wrap="nowrap" spacing={2}>
+                            <Grid justifyContent="left" item xs zeroMinWidth>
+                              <h4 style={{ margin: 0, textAlign: "left" }}>
+                                {`${comment.user_rank} ${comment.user_name}`}
+                              </h4>
+                              <p style={{ textAlign: "left" }}>
+                                {comment.comment_body}
+                              </p>
+                              <p style={{ textAlign: "left", color: "gray" }}>
+                                {convertDateTime(comment.comment_timestamp)}
+                              </p>
+                            </Grid>
+                          </Grid>
+                        </>
+                      );
+                    })}
+                    <form onSubmit={handleSubmitComments}>
+                      <TextField
+                        fullWidth
+                        id="outlined-basic"
+                        label="Add a comment"
+                        variant="outlined"
+                        onChange={handleChange}
+                      />
+                      <Button
+                        className="submitButton"
+                        type="submit"
+                        value="Submit"
+                        size="small"
+                      >
+                        {" "}
+                        Done{" "}
+                      </Button>
+                    </form>
+                  </Paper>
+                </Container>
+              </>
+        ) }
       </Box>
     </>
   );

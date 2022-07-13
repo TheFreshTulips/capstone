@@ -4,7 +4,7 @@ import config from "../config.js";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Stack } from "@mui/material";
+import { Stack, Paper, Divider} from "@mui/material";
 import TaskCard from "./TaskCard.js";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
@@ -13,38 +13,18 @@ import logo from "../loading-blue.gif";
 
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
-// const dummy = [
-//   {
-//     task_id: 1,
-//     task_title: "dummy",
-//     task_status: "Backlog",
-//     task_priority: 1,
-//     task_suspense_date: "now",
-//     task_created_by: "rank/firstname/lastname",
-//     task_assigned_to: "Sp4 Jones",
-//   },
-//   {
-//     task_id: 2,
-//     task_title: "dummy",
-//     task_status: "in progress",
-//     task_priority: 1,
-//     task_suspense_date: "now",
-//     task_created_by: "rank/firstname/lastname",
-//     task_assigned_to: "Sp4 Jones",
-//   },
-//   {
-//     task_id: 3,
-//     task_title: "dummy",
-//     task_status: "in progress",
-//     task_priority: 1,
-//     task_suspense_date: "now",
-//     task_author_id: 2,
-//     task_assigned_to: "Sp4 Jones",
-//   },
-// ];
-
-const userColumns = ["to do", "in progress", "Created"]; //created is current user is author and sole owner
+const userColumns = ["to do", "in progress", "Created By Me"];
 const unitColumns = ["to do", "in progress"];
+
+const checkNotFinished = (taskArr) =>{
+  return taskArr.reduce((prev, curr) => {
+    if (curr.task_status === "finished"){
+      return prev && curr
+    }else{
+      return false
+    }
+  }, true)
+}
 
 const Dashboard = ({ user }) => {
   const tc = useContext(TaskContext);
@@ -112,22 +92,15 @@ const Dashboard = ({ user }) => {
       .then((res) => res.json())
       .then((data) => {
         setTasks(data);
-        // if (user) {
-        //   console.log(tc.userId);
-        // }
         setTimeout(() => setIsLoading(false), 250);
       });
 
   }, [user]);
 
-  //const classes = useStyles()
-  // let [columns, setColumns] = useState([])
-
-  //ONCE WE HAVE MERGED, IN THIS RETURN CHANGE
 
   return (
     <div>
-      <Box m={4} display='flex' justifyContent='right'>
+      <Box marginTop = {2} marginBottom = {1} marginRight = {5} display='flex' justifyContent='right'>
         <Fab color="primary" aria-label="add" onClick={() => navigate('/tasks/add')}>
           <AddIcon />
         </Fab>
@@ -135,12 +108,13 @@ const Dashboard = ({ user }) => {
       {isLoading ? (
         <Grid container display='flex' justifyContent='center' direction='column' alignItems='center'>
           <img src={logo} width="400px" alt="loading-spinner"/>
-          <Typography variant="h3" align='center'>Loading...</Typography>
+          <Typography variant="h3" align='center' style={{color: 'white'}}>Loading...</Typography>
         </Grid>
       ) :
         <Stack>
-          <Box m = {2}>
-            {tasks[0] ? <Typography variant="h4" key="header" align = 'center'>{tasks[0].task_org_name}</Typography>: <></>}
+          <Box m = {1} width={"90%"} margin="auto"  >
+            <Paper elevation={10} style={{backgroundColor : " white" , marginBottom:"2rem"}}>
+            {tasks[0] ? <Typography variant="h4" key="header" align = 'center' marginBottom={2}>{tasks[0].task_org_name}</Typography>: <></>}
             <Grid
               container
               spacing={2}
@@ -150,11 +124,11 @@ const Dashboard = ({ user }) => {
               >
               {columns.map((colName, index) => {
                 return (
+                  <>
                   <Grid item sm={12/columns.length} key={index}>
-                    <Stack spacing={2} key={index} alignItems='center'>
+                    <Stack spacing={2} key={index} alignItems='center' padding = {1}>
                       <Typography
-                        variant="h5"
-                        style = {{}}
+                        variant="h4"
                         align = 'center'
                       >
                         {formatColumn(colName)}
@@ -188,54 +162,67 @@ const Dashboard = ({ user }) => {
                       }
                     </Stack>
                   </Grid>
+                  <Divider orientation="vertical" variant = "middle" flexItem style={{marginRight:"-1px"}} />
+                  </>
                 );
               })}
-
-
             </Grid>
-          </Box>
 
-          <Box m = {2}>
+            </Paper>
+          </Box>
+          <Box m = {1} width={"90%"} margin="auto"  >
             {tc.isSupervisor && !user ?
               childOrgTasks.map((element) => {
+                console.log(element)
                 return (
                   <div key={element.org_id}>
+                    <Paper elevation={10} style={{backgroundColor : "white", marginBottom:"2rem"}}>
                     <Typography variant="h4" key="header" align = 'center'>{element.org_name}</Typography>
-                    <Grid
-                        container
-                        spacing={2}
-                        direction="row"
-                        justifyContent="space-evenly"
-                        alignItems="flex-start"
-                      >
-                      {columns.map((colName, index) => {
-                        return (
+                    {element.tasks.length > 0 && !checkNotFinished(element.tasks)?
+                     <Grid
+                     container
+                     spacing={2}
+                     direction="row"
+                     justifyContent="space-evenly"
+                     alignItems="flex-start"
+                   >
+                   {columns.map((colName, index) => {
+                     return (
+                       <>
+                       <Grid item sm={12/columns.length} key={index}>
+                         <Stack spacing={2} alignItems="center">
+                           <Typography
+                             variant="h5"
+                           >
+                             {formatColumn(colName)}
+                           </Typography>
+                           {isLoading ? "Loading" : element.tasks.map((element) => {
+                             //if we are in the correct column, give back the following card
+                             return element.task_status === colName ? (
+                               <TaskCard
+                                 key={element.task_id}
+                                 id={element.task_id}
+                                 title={element.task_title}
+                                 status={element.task_status}
+                                 suspense_date={element.task_suspense_date}
+                                 priority={element.task_priority}
+                               />
+                             ) : <></>
+                           })}
+                         </Stack>
+                       </Grid>
+                       <Divider orientation="vertical" variant = "middle" flexItem style={{marginRight:"-1px"}} />
+                       </>
+                     );
+                   })}
+                 </Grid>
+                 :
+                 <Grid item sm={12} margin={3} display="flex" justifyContent="center">
+                    <Typography>No tasks to display for this Org</Typography>
+                 </Grid>
+                  }
 
-                          <Grid item sm={12/columns.length} key={index}>
-                            <Stack spacing={2} alignItems="center">
-                              <Typography
-                                variant="h5"
-                              >
-                                {formatColumn(colName)}
-                              </Typography>
-                              {isLoading ? "Loading" : element.tasks.map((element) => {
-                                //if we are in the correct column, give back the following card
-                                return element.task_status === colName ? (
-                                  <TaskCard
-                                    key={element.task_id}
-                                    id={element.task_id}
-                                    title={element.task_title}
-                                    status={element.task_status}
-                                    suspense_date={element.task_suspense_date}
-                                    priority={element.task_priority}
-                                  />
-                                ) : <></>
-                              })}
-                            </Stack>
-                          </Grid>
-                        );
-                      })}
-                    </Grid>
+                    </Paper>
                   </div>
                 )
               }) : <></>

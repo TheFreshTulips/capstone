@@ -121,11 +121,10 @@ const CreateTask = () => {
     })
       .then((res) => {
         if (res.status === 200) {
-              alert("Task created!");
-              navigate("/");
-              e.preventDefault();
-            }
-          else {
+          alert("Task created!");
+          navigate("/");
+        }
+        else {
           alert("task creation failed");
         }
       })
@@ -133,6 +132,7 @@ const CreateTask = () => {
         console.log(err);
         alert(`Failed to create a new task`);
       });
+      e.preventDefault();
   };
 
   return (
@@ -143,6 +143,7 @@ const CreateTask = () => {
         marginBottom: "0",
         boxShadow: "0 0 10px rgb(10, 31, 10)",
         borderRadius: "5px",
+        backgroundColor: "#ddeefa",
       }}
     >
       <form onSubmit={handleSubmit}>

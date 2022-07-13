@@ -2,14 +2,15 @@ import React, { useEffect, useState, useContext } from "react";
 import EditableText from "./EditableText.js";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
+import Box from '@mui/material/Box'
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
 import { TaskContext } from "../App.js";
-import { NativeSelect } from "@mui/material";
-import FormControl from "@mui/material/FormControl";
+// import FormControl from "@mui/material/FormControl";
 import config from "../config";
+import TextField from "@mui/material/TextField";
+import { MenuItem } from "@mui/material";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 const validRanks = [
@@ -63,8 +64,10 @@ const Profile = () => {
     user_name: "",
     user_rank: "",
   });
+
+  const titleTypography = "h5";
+  const valueTypography = "h6";
   let [orgs, setOrgs] = useState([]);
-  // let [selected, setSelected] = useState("");
 
   const tc = useContext(TaskContext);
 
@@ -93,14 +96,6 @@ const Profile = () => {
       );
   }, []);
 
-  const handleSelect = (event) => {
-    // setSelected(event.target.value);
-    setInput({
-      ...input,
-      org_id: event.target.value,
-    });
-  };
-
   const handleSubmit = (e) => {
     let request = "PATCH";
     let body = formatPatchReq();
@@ -121,22 +116,20 @@ const Profile = () => {
   };
 
   return (
-    <Box m={2} p={1} alignItems="center">
-      <Stack spacing={2} alignItems="center">
-        <Typography variant="h4" alignContent="left">
+     <Box m={2} p = {1}>
+      <Stack margin = {2} spacing={2} alignItems="center" >
+        <Typography variant="h4" style={{color:"white"}}>
           My Profile
         </Typography>
         <Paper
           elevation={5}
           style={{
-            padding: "40px 20px",
-            color: "white",
-            backgroundColor: "rgba(74,104,133,0.44)",
+            backgroundColor: '#white'
           }}
         >
-          <Grid container spacing={2} marginTop={2}>
+          <Grid container spacing={2} marginTop={2} marginBottom={2}>
             <Grid item xs={4} display="flex" justifyContent="flex-end">
-              <Typography pt={3}>Name:</Typography>
+              <Typography pt={3} variant={titleTypography}>Name:</Typography>
             </Grid>
             <Grid item xs={8}>
               <EditableText
@@ -145,10 +138,11 @@ const Profile = () => {
                 canEdit={true}
                 callback={setInput}
                 input={input}
+                typography={valueTypography}
               />
             </Grid>
             <Grid item xs={4} display="flex" justifyContent="flex-end">
-              <Typography pt={3}>Rank:</Typography>
+              <Typography pt={3} variant={titleTypography}>Rank:</Typography>
             </Grid>
             <Grid item xs={8}>
               <EditableText
@@ -157,12 +151,13 @@ const Profile = () => {
                 canEdit={true}
                 callback={setInput}
                 input={input}
+                typography={valueTypography}
                 input_type="dropdown"
                 dropdown={validRanks}
               />
             </Grid>
             <Grid item xs={4} display="flex" justifyContent="flex-end">
-              <Typography pt={3}>Email:</Typography>
+              <Typography pt={3} variant={titleTypography}>Email:</Typography>
             </Grid>
             <Grid item xs={8}>
               <EditableText
@@ -171,41 +166,45 @@ const Profile = () => {
                 canEdit={true}
                 callback={setInput}
                 input={input}
+                typography={valueTypography}
               />
             </Grid>
             <Grid item xs={4} display="flex" justifyContent="flex-end">
-              <Typography pt={3}>Organization:</Typography>
+              <Typography pt={3} variant={titleTypography}>Organization:</Typography>
             </Grid>
-            <Grid item xs={8}>
-              <FormControl sx={{ width: 150 }}>
-                <NativeSelect
-                  defaultValue={userData.org_name}
-                  onChange={handleSelect}
-                  inputProps={{
-                    name: "org_id",
-                    id: "uncontrolled-native",
-                  }}
+            <Grid item xs={8} display="flex" alignItems="center" justifyContent="center">
+              {/* <FormControl sx={{ width: 150 }}> */}
+                <TextField
+                  id="org"
+                  select
+                  value={userData.org_id}
+                  onChange={setInput}
+                  name="org_id"
+                  sx={{ minWidth: 223 }}
                 >
-                  {orgs.map((el) => (
-                    <option value={el.org_id} key={el.org_id}>{el.org_name}</option>
+                  {orgs.map((org) => (
+                    <MenuItem key={org.org_id} value={org.org_id}>
+                      {org.org_name}
+                    </MenuItem>
                   ))}
-                </NativeSelect>
-              </FormControl>
+                </TextField>
+              {/* </FormControl> */}
             </Grid>
           </Grid>
         </Paper>
-        <Button onClick={handleSubmit}>Submit Changes</Button>
+        <Button onClick={handleSubmit} style={{color: 'white'}} size = "large">Submit Changes</Button>
         <Button
           onClick={() => {
             tc.setUserId(null);
             tc.setIsAdmin(false);
             tc.setUserOrg(null);
           }}
+          style={{color: 'white'}}
         >
           Log Out
         </Button>
       </Stack>
-    </Box>
+      </Box>
   );
 };
 

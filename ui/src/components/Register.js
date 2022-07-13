@@ -8,6 +8,7 @@ import { Button, MenuItem } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import config from "../config";
 
+
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 
@@ -211,9 +212,13 @@ const Register = () => {
             <Button className="submitButton" type="submit" value="Submit">
               Register
             </Button>
-            <Link to={"/login"} style={{ textDecoration: 'none', color: "black" }} className='register-link'>
-            <Typography variant="h6" >Already have an account? Click here to be taken to the login page!</Typography>
-          </Link>
+            <Link to={"/login"} style={{
+              textDecoration: 'none',
+              color: "black",
+
+              }} className='register-link'>
+              <Typography variant="h6" >Already have an account? Click here to be taken to the login page!</Typography>
+            </Link>
           </Grid>
         </Box>
       </form>

@@ -14,10 +14,13 @@ import ViewModifyRoles from "./components/ViewModifyRoles.js";
 import CreateOrgs from "./components/CreateOrgs.js";
 import ModifyOrgs from "./components/ModifyOrgs.js";
 import ModifyRoles from "./components/ModifyRoles.js";
+import './styles/SharedStyles.css'
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 const TaskContext = createContext(null);
 
+
 const theme = createTheme({
+
   palette: {
     primary: {
       main: "#1D4367",
