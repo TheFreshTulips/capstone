@@ -9,7 +9,6 @@ import { Button, MenuItem } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import config from "../config";
 
-
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 // const useStyles = makeStyles({
@@ -17,7 +16,6 @@ const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 //     color: "white"
 //   }
 // });
-
 
 const Register = () => {
   //const classes = useStyles();
@@ -29,7 +27,7 @@ const Register = () => {
     email: "",
     position_id: 1,
     password: "",
-    org_id: null
+    org_id: null,
   });
 
   const validRanks = [
@@ -52,28 +50,28 @@ const Register = () => {
     "Brig Gen",
     "Maj Gen",
     "Lt Gen",
-    "Gen"
-  ]
+    "Gen",
+  ];
 
-  const [password2, setPassword2] = useState('');
-  const [feedback, setFeedback] = useState('');
+  const [password2, setPassword2] = useState("");
+  const [feedback, setFeedback] = useState("");
 
-  const [orgs, setOrgs] = useState([])
+  const [orgs, setOrgs] = useState([]);
 
   useEffect(() => {
-    let url = `${ApiUrl}/orgs`
+    let url = `${ApiUrl}/orgs`;
     fetch(url)
-      .then(res => res.json())
-      .then(data => setOrgs(data))
-  }, [])
+      .then((res) => res.json())
+      .then((data) => setOrgs(data));
+  }, []);
 
   const handleChange = (e) => {
     // sets Input state depending on what the user inputted into registration fields
 
-      setInput({
-        ...input,
-        [e.target.name]: e.target.value,
-      });
+    setInput({
+      ...input,
+      [e.target.name]: e.target.value,
+    });
     e.preventDefault();
   };
 
@@ -82,29 +80,31 @@ const Register = () => {
     let error = false;
 
     //resets feedback states to empty
-    let tempFeedback = ''
+    let tempFeedback = "";
 
     //data validation for each input field
-    if(!input.email.match(
+    if (
+      !input.email.match(
         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ //eslint-disable-line
-      )) {
-        tempFeedback += 'invalid email format\n';
-        error = true;
+      )
+    ) {
+      tempFeedback += "invalid email format\n";
+      error = true;
     }
-    if(input.password !== password2) {
-      tempFeedback += 'passwords must match\n'
+    if (input.password !== password2) {
+      tempFeedback += "passwords must match\n";
       error = true;
     }
     setFeedback(tempFeedback);
-    if(error === false) {
+    if (error === false) {
       // sends post request with input state info to API when user clicks submit/register
       fetch(`${ApiUrl}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
       })
         .then((res) => {
-          if(res.status === 200) {
+          if (res.status === 200) {
             alert("Registration successful!");
             navigate("/login");
           } else {
@@ -116,7 +116,6 @@ const Register = () => {
           alert(`Failed to register new user`);
         });
     }
-
   };
 
   return (
@@ -144,10 +143,17 @@ const Register = () => {
             </Box>
 
             <Box m={1}>
-              <Typography variant="body1" color="red">{feedback}</Typography>
+              <Typography variant="body1" color="red">
+                {feedback}
+              </Typography>
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 //inputProps={{ className: classes.input }}
                 label="Name"
                 type="name"
@@ -160,6 +166,12 @@ const Register = () => {
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                  minWidth: 223,
+                }}
                 id="rank"
                 select
                 value={input.rank}
@@ -167,13 +179,22 @@ const Register = () => {
                 onChange={handleChange}
                 name="rank"
                 required
-                sx={{minWidth: 223}}
-                >
-                {validRanks.map((rank, index) => <MenuItem key={index} value={rank} sx={{color:"black"}}>{rank}</MenuItem>)}
+              >
+                {validRanks.map((rank, index) => (
+                  <MenuItem key={index} value={rank} sx={{ color: "black" }}>
+                    {rank}
+                  </MenuItem>
+                ))}
               </TextField>
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                  minWidth: 223,
+                }}
                 id="org"
                 select
                 value={input.org_id}
@@ -181,13 +202,25 @@ const Register = () => {
                 onChange={handleChange}
                 name="org_id"
                 required
-                sx={{minWidth: 223}}
-                >
-                {orgs.map(org => <MenuItem key={org.org_id} value={org.org_id} sx={{color:"black"}}>{org.org_name}</MenuItem>)}
+              >
+                {orgs.map((org) => (
+                  <MenuItem
+                    key={org.org_id}
+                    value={org.org_id}
+                    sx={{ color: "black" }}
+                  >
+                    {org.org_name}
+                  </MenuItem>
+                ))}
               </TextField>
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Email"
                 name="email"
                 value={input.email}
@@ -198,6 +231,11 @@ const Register = () => {
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Password"
                 type="password"
                 name="password"
@@ -209,11 +247,16 @@ const Register = () => {
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Re-Enter Password"
                 type="password"
                 name="password2"
                 value={password2}
-                onChange={e => setPassword2(e.target.value)}
+                onChange={(e) => setPassword2(e.target.value)}
                 required
                 maxLength={50}
               />
@@ -222,12 +265,18 @@ const Register = () => {
             <Button className="submitButton" type="submit" value="Submit">
               Register
             </Button>
-            <Link to={"/login"} style={{
-              textDecoration: 'none',
-              color: "black",
-
-              }} className='register-link'>
-              <Typography variant="h6" >Already have an account? Click here to be taken to the login page!</Typography>
+            <Link
+              to={"/login"}
+              style={{
+                textDecoration: "none",
+                color: "black",
+              }}
+              className="register-link"
+            >
+              <Typography variant="h6">
+                Already have an account? Click here to be taken to the login
+                page!
+              </Typography>
             </Link>
           </Grid>
         </Box>

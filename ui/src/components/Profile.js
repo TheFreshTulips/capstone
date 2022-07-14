@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import EditableText from "./EditableText.js";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Box from '@mui/material/Box'
+import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
@@ -116,22 +116,24 @@ const Profile = () => {
   };
 
   return (
-     <Box m={2} p = {1}>
-      <Stack margin = {2} spacing={2} alignItems="center" >
-        <Typography variant="h4" style={{color:"white"}}>
+    <Box m={2} p={1}>
+      <Stack margin={2} spacing={2} alignItems="center">
+        <Typography variant="h4" style={{ color: "white" }}>
           My Profile
         </Typography>
         <Paper
           elevation={5}
           style={{
-            backgroundColor: '#003665',
+            backgroundColor: "#003665",
             boxShadow: "0 0 10px #4DACFF",
             borderRadius: "5px",
           }}
         >
           <Grid container spacing={2} marginTop={2} marginBottom={2}>
             <Grid item xs={4} display="flex" justifyContent="flex-end">
-              <Typography pt={3} variant={titleTypography}>Name:</Typography>
+              <Typography pt={3} variant={titleTypography}>
+                Name:
+              </Typography>
             </Grid>
             <Grid item xs={8}>
               <EditableText
@@ -144,7 +146,9 @@ const Profile = () => {
               />
             </Grid>
             <Grid item xs={4} display="flex" justifyContent="flex-end">
-              <Typography pt={3} variant={titleTypography}>Rank:</Typography>
+              <Typography pt={3} variant={titleTypography}>
+                Rank:
+              </Typography>
             </Grid>
             <Grid item xs={8}>
               <EditableText
@@ -159,7 +163,9 @@ const Profile = () => {
               />
             </Grid>
             <Grid item xs={4} display="flex" justifyContent="flex-end">
-              <Typography pt={3} variant={titleTypography}>Email:</Typography>
+              <Typography pt={3} variant={titleTypography}>
+                Email:
+              </Typography>
             </Grid>
             <Grid item xs={8}>
               <EditableText
@@ -172,41 +178,61 @@ const Profile = () => {
               />
             </Grid>
             <Grid item xs={4} display="flex" justifyContent="flex-end">
-              <Typography pt={3} variant={titleTypography}>Organization:</Typography>
+              <Typography pt={3} variant={titleTypography}>
+                Organization:
+              </Typography>
             </Grid>
-            <Grid item xs={8} display="flex" alignItems="center" justifyContent="center">
+            <Grid
+              item
+              xs={8}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
               {/* <FormControl sx={{ width: 150 }}> */}
-                <TextField
-                  id="org"
-                  select
-                  value={userData.org_id}
-                  onChange={setInput}
-                  name="org_id"
-                  sx={{ minWidth: 223, color:"white"}}
-                >
-                  {orgs.map((org) => (
-                    <MenuItem key={org.org_id} value={org.org_id} sx={{color:"black"}}>
-                      {org.org_name}
-                    </MenuItem>
-                  ))}
-                </TextField>
+              <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                  minWidth: 223,
+                  color: "white",
+                }}
+                id="org"
+                select
+                value={userData.org_id}
+                onChange={setInput}
+                name="org_id"
+              >
+                {orgs.map((org) => (
+                  <MenuItem
+                    key={org.org_id}
+                    value={org.org_id}
+                    sx={{ color: "black" }}
+                  >
+                    {org.org_name}
+                  </MenuItem>
+                ))}
+              </TextField>
               {/* </FormControl> */}
             </Grid>
           </Grid>
         </Paper>
-        <Button onClick={handleSubmit} style={{color: 'white'}} size = "large">Submit Changes</Button>
+        <Button onClick={handleSubmit} style={{ color: "white" }} size="large">
+          Submit Changes
+        </Button>
         <Button
           onClick={() => {
             tc.setUserId(null);
             tc.setIsAdmin(false);
             tc.setUserOrg(null);
           }}
-          style={{color: 'white'}}
+          style={{ color: "white" }}
         >
           Log Out
         </Button>
       </Stack>
-      </Box>
+    </Box>
   );
 };
 

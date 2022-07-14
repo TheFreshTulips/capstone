@@ -152,131 +152,166 @@ const ModifyRoles = () => {
       }}
     >
       <Paper
-          elevation={5}
-          style={{
-            backgroundColor: '#003665',
-            boxShadow: "0 0 10px #4DACFF",
-            borderRadius: "5px",
-          }}
-        >
-      <Grid container alignItems="center">
-        <Grid item xs={6} justifyContent="left" display="flex">
-          <Link
-            to={"/admin/roles"}
-            style={{ textDecoration: "none", color: "black" }}
-            className="roles-link"
-          >
-            <Typography variant="h6" m={5}>Back to the roles page</Typography>
-          </Link>
-        </Grid>
-        <Grid item xs={6} justifyContent="right" display="flex" p={5}>
-          <Fab color="error" aria-label="delete" onClick={handleDelete}>
-            <DeleteIcon />
-          </Fab>
-        </Grid>
-      </Grid>
-      <form onSubmit={handleSubmit}>
-        <Box m={2} pt={3}>
-          <Grid
-            container
-            spacing={3}
-            direction="column"
-            alignItems="center"
-            justifyContent="space-evenly"
-          >
-            <Box m={2} pt={3}>
-              <Typography variant="h5">Modify Role</Typography>
-            </Box>
-
-            <Box m={1}>
-              <Typography variant="body1" color="red">
-                {feedback}
+        elevation={5}
+        style={{
+          backgroundColor: "#003665",
+          boxShadow: "0 0 10px #4DACFF",
+          borderRadius: "5px",
+        }}
+      >
+        <Grid container alignItems="center">
+          <Grid item xs={6} justifyContent="left" display="flex">
+            <Link
+              to={"/admin/roles"}
+              style={{ textDecoration: "none", color: "black" }}
+              className="roles-link"
+            >
+              <Typography variant="h6" m={5}>
+                Back to the roles page
               </Typography>
-            </Box>
-            <Box m={1}>
-              <TextField
-                label="Name"
-                type="name"
-                name="name"
-                value={input.name}
-                onChange={handleChange}
-                required
-                maxLength={50}
-              />
-            </Box>
-            <Box m={1}>
-              <TextField
-                id="rank"
-                select
-                value={input.rank}
-                label="Rank"
-                onChange={handleChange}
-                name="rank"
-                required
-                sx={{ minWidth: 223 }}
-              >
-                {validRanks.map((rank, index) => (
-                  <MenuItem key={index} value={rank} sx={{color:"black"}}>
-                    {rank}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box>
-            <Box m={1}>
-              <TextField
-                id="org"
-                select
-                value={input.org_id}
-                label="Organization"
-                onChange={handleChange}
-                name="org_id"
-                required
-                sx={{ minWidth: 223 }}
-              >
-                {orgs.map((org) => (
-                  <MenuItem key={org.org_id} value={org.org_id} sx={{color:"black"}}>
-                    {org.org_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box>
-            <Box m={1}>
-              <TextField
-                label="Email"
-                name="email"
-                value={input.email}
-                onChange={handleChange}
-                required
-                maxLength={50}
-              />
-            </Box>
-            <Box m={1}>
-              <TextField
-                id="position"
-                select
-                value={input.position_id}
-                label="Position"
-                onChange={handleChange}
-                name="position_id"
-                required
-                sx={{ minWidth: 223 }}
-              >
-                {positions.map((position) => (
-                  <MenuItem key={position.id} value={position.id} sx={{color:"black"}}>
-                    {position.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box>
-
-            <Box m={2} pt={3}>
-              <Button className="submitButton" type="submit" value="Submit" >
-                Submit Changes
-              </Button>
-            </Box>
+            </Link>
           </Grid>
-        </Box>
-      </form>
+          <Grid item xs={6} justifyContent="right" display="flex" p={5}>
+            <Fab color="error" aria-label="delete" onClick={handleDelete}>
+              <DeleteIcon />
+            </Fab>
+          </Grid>
+        </Grid>
+        <form onSubmit={handleSubmit}>
+          <Box m={2} pt={3}>
+            <Grid
+              container
+              spacing={3}
+              direction="column"
+              alignItems="center"
+              justifyContent="space-evenly"
+            >
+              <Box m={2} pt={3}>
+                <Typography variant="h5">Modify Role</Typography>
+              </Box>
+
+              <Box m={1}>
+                <Typography variant="body1" color="red">
+                  {feedback}
+                </Typography>
+              </Box>
+              <Box m={1}>
+                <TextField
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      color: "white",
+                    },
+                  }}
+                  label="Name"
+                  type="name"
+                  name="name"
+                  value={input.name}
+                  onChange={handleChange}
+                  required
+                  maxLength={50}
+                />
+              </Box>
+              <Box m={1}>
+                <TextField
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      color: "white",
+                    },
+                    minWidth: 223,
+                  }}
+                  id="rank"
+                  select
+                  value={input.rank}
+                  label="Rank"
+                  onChange={handleChange}
+                  name="rank"
+                  required
+                >
+                  {validRanks.map((rank, index) => (
+                    <MenuItem key={index} value={rank} sx={{ color: "black" }}>
+                      {rank}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
+              <Box m={1}>
+                <TextField
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      color: "white",
+                    },
+                    minWidth: 223,
+                  }}
+                  id="org"
+                  select
+                  value={input.org_id}
+                  label="Organization"
+                  onChange={handleChange}
+                  name="org_id"
+                  required
+                >
+                  {orgs.map((org) => (
+                    <MenuItem
+                      key={org.org_id}
+                      value={org.org_id}
+                      sx={{ color: "black" }}
+                    >
+                      {org.org_name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
+              <Box m={1}>
+                <TextField
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      color: "white",
+                    },
+                  }}
+                  label="Email"
+                  name="email"
+                  value={input.email}
+                  onChange={handleChange}
+                  required
+                  maxLength={50}
+                />
+              </Box>
+              <Box m={1}>
+                <TextField
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      color: "white",
+                    },
+                    minWidth: 223,
+                  }}
+                  id="position"
+                  select
+                  value={input.position_id}
+                  label="Position"
+                  onChange={handleChange}
+                  name="position_id"
+                  required
+                >
+                  {positions.map((position) => (
+                    <MenuItem
+                      key={position.id}
+                      value={position.id}
+                      sx={{ color: "black" }}
+                    >
+                      {position.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
+
+              <Box m={2} pt={3}>
+                <Button className="submitButton" type="submit" value="Submit">
+                  Submit Changes
+                </Button>
+              </Box>
+            </Grid>
+          </Box>
+        </form>
       </Paper>
     </Container>
   );

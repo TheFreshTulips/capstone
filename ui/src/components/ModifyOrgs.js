@@ -132,13 +132,13 @@ const ModifyOrgs = () => {
       }}
     >
       <Paper
-          elevation={5}
-          style={{
-            backgroundColor: '#003665',
-            boxShadow: "0 0 10px #4DACFF",
-            borderRadius: "5px",
-          }}
-        >
+        elevation={5}
+        style={{
+          backgroundColor: "#003665",
+          boxShadow: "0 0 10px #4DACFF",
+          borderRadius: "5px",
+        }}
+      >
         <Grid container alignItems="center">
           <Grid item xs={6} justifyContent="left" display="flex">
             <Link
@@ -146,7 +146,9 @@ const ModifyOrgs = () => {
               style={{ textDecoration: "none", color: "black" }}
               className="roles-link"
             >
-              <Typography variant="h6" m={5}>Back to the orgs page</Typography>
+              <Typography variant="h6" m={5}>
+                Back to the orgs page
+              </Typography>
             </Link>
           </Grid>
           <Grid item xs={6} justifyContent="right" display="flex" p={5}>
@@ -175,6 +177,11 @@ const ModifyOrgs = () => {
               </Box>
               <Box m={1}>
                 <TextField
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      color: "white",
+                    },
+                  }}
                   label="Organization Name"
                   type="name"
                   name="name"
@@ -186,25 +193,39 @@ const ModifyOrgs = () => {
               </Box>
               <Box m={1}>
                 <TextField
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      color: "white",
+                    },
+                    minWidth: 223,
+                  }}
                   value={input.img_url}
                   label="Image URL"
                   onChange={handleChange}
                   name="img_url"
                   required
-                  sx={{ minWidth: 223 }}
                 ></TextField>
               </Box>
               <Box m={1}>
                 <TextField
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      color: "white",
+                    },
+                    minWidth: 223,
+                  }}
                   select
                   value={input.parent_id}
                   label="Parent Organization"
                   onChange={handleChange}
                   name="parent_id"
-                  sx={{ minWidth: 223 }}
                 >
                   {orgs.map((org) => (
-                    <MenuItem key={org.org_id} value={org.org_id} sx={{color:"black"}}>
+                    <MenuItem
+                      key={org.org_id}
+                      value={org.org_id}
+                      sx={{ color: "black" }}
+                    >
                       {org.org_name}
                     </MenuItem>
                   ))}
@@ -212,7 +233,7 @@ const ModifyOrgs = () => {
               </Box>
 
               <Box m={2} pt={3}>
-                <Button className="submitButton" type="submit" value="Submit" >
+                <Button className="submitButton" type="submit" value="Submit">
                   Submit Changes
                 </Button>
               </Box>

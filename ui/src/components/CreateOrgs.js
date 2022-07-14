@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { Button, MenuItem } from "@mui/material";
 
@@ -12,28 +12,28 @@ const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 const CreateOrgs = () => {
   let navigate = useNavigate();
-  const [orgs, setOrgs] = useState([])
+  const [orgs, setOrgs] = useState([]);
   const [input, setInput] = useState({
     img_url: "",
     name: "",
-    parent_id: 1
-  })
+    parent_id: 1,
+  });
 
   useEffect(() => {
-    let url = `${ApiUrl}/orgs`
+    let url = `${ApiUrl}/orgs`;
     fetch(url)
-      .then(res => res.json())
-      .then(data => setOrgs(data))
-  }, [])
+      .then((res) => res.json())
+      .then((data) => setOrgs(data));
+  }, []);
 
   const handleSubmit = (e) => {
     console.log(input);
     let tempInput = {};
-    if(input.parent_id === 0){
+    if (input.parent_id === 0) {
       tempInput = {
         img_url: input.img_url,
-        name: input.name
-      }
+        name: input.name,
+      };
     } else {
       tempInput = input;
     }
@@ -45,7 +45,7 @@ const CreateOrgs = () => {
       body: JSON.stringify(tempInput),
     })
       .then((res) => {
-        if(res.status === 200){
+        if (res.status === 200) {
           alert("Organization created");
           navigate("/admin/orgs");
         } else {
@@ -57,24 +57,24 @@ const CreateOrgs = () => {
         alert(`Failed to create a new organization`);
       });
     e.preventDefault();
-  }
+  };
 
   const handleChange = (e) => {
     setInput({
       ...input,
       [e.target.name]: e.target.value,
     });
-  }
+  };
 
   return (
-    < Container
+    <Container
       maxWidth="lg"
       className="post-page"
       sx={{
         marginBottom: "0",
         boxShadow: "0 0 10px rgb(10, 31, 10)",
         borderRadius: "5px",
-        backgroundColor : "#003665"
+        backgroundColor: "#003665",
       }}
     >
       <form onSubmit={handleSubmit}>
@@ -91,6 +91,11 @@ const CreateOrgs = () => {
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Organization Name"
                 type="Organization Name"
                 name="name"
@@ -101,6 +106,11 @@ const CreateOrgs = () => {
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Image URL"
                 type="Image URL"
                 name="img_url"
@@ -111,16 +121,29 @@ const CreateOrgs = () => {
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                  minWidth: 223,
+                  color: "white",
+                }}
                 id="org"
                 select
                 value={input.parent_id}
                 label="Parent Organization (Optional)"
                 onChange={handleChange}
                 name="parent_id"
-                sx={{ minWidth: 223, color:"white" }}
-
               >
-                {orgs.map(org => <MenuItem key={org.org_id} value={org.org_id} sx={{color:"black"}}>{org.org_name}</MenuItem>)}
+                {orgs.map((org) => (
+                  <MenuItem
+                    key={org.org_id}
+                    value={org.org_id}
+                    sx={{ color: "black" }}
+                  >
+                    {org.org_name}
+                  </MenuItem>
+                ))}
               </TextField>
             </Box>
             <Box m={2} pt={3}></Box>
@@ -128,10 +151,10 @@ const CreateOrgs = () => {
               Submit
             </Button>
           </Grid>
-        </Box >
-      </form >
-    </Container >
-  )
-}
+        </Box>
+      </form>
+    </Container>
+  );
+};
 //https://en.wikipedia.org/wiki/721st_Operations_Support_Squadron#/media/File:3rd_Combat_Training_Squadron_emblem.png
 export default CreateOrgs;

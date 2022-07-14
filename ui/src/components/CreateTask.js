@@ -123,8 +123,7 @@ const CreateTask = () => {
         if (res.status === 200) {
           alert("Task created!");
           navigate("/");
-        }
-        else {
+        } else {
           alert("task creation failed");
         }
       })
@@ -132,7 +131,7 @@ const CreateTask = () => {
         console.log(err);
         alert(`Failed to create a new task`);
       });
-      e.preventDefault();
+    e.preventDefault();
   };
 
   return (
@@ -160,6 +159,11 @@ const CreateTask = () => {
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Title"
                 type="title"
                 name="title"
@@ -170,6 +174,11 @@ const CreateTask = () => {
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Description"
                 type="description"
                 name="description"
@@ -180,6 +189,12 @@ const CreateTask = () => {
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                  minWidth: 223,
+                }}
                 id="priority"
                 select
                 name="priority"
@@ -187,10 +202,13 @@ const CreateTask = () => {
                 label="Priority"
                 onChange={handleChange}
                 required
-                sx={{ minWidth: 223 }}
               >
                 {validPriorities.map((element) => (
-                  <MenuItem key={element} value={element} sx={{color:"black"}}>
+                  <MenuItem
+                    key={element}
+                    value={element}
+                    sx={{ color: "black" }}
+                  >
                     {element}
                   </MenuItem>
                 ))}
@@ -212,7 +230,11 @@ const CreateTask = () => {
                 >
                   {console.log(users)}
                   {users.map((el) => (
-                    <MenuItem key={el.id} value={el.name} sx={{color:"black"}}>
+                    <MenuItem
+                      key={el.id}
+                      value={el.name}
+                      sx={{ color: "black" }}
+                    >
                       {el.name}
                     </MenuItem>
                   ))}
@@ -221,6 +243,10 @@ const CreateTask = () => {
             </Box>
             {/* <Box m={1}>
               <TextField
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Assigned Date"
                 name="assigned"
                 value={input.assigned}
@@ -242,6 +268,10 @@ const CreateTask = () => {
             </Box>
             {/* <Box m={1}>
               <TextField
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Suspense Date"
                 type="suspense"
                 name="suspense"

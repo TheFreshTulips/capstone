@@ -9,14 +9,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import config from "../config";
 import { useNavigate, Link } from "react-router-dom";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
-import '../styles/SharedStyles.css'
+import "../styles/SharedStyles.css";
 
 import { TaskContext } from "../App.js";
 
 const useStyles = makeStyles({
   input: {
-    color: "beige"
-  }
+    color: "beige",
+  },
 });
 
 const Login = () => {
@@ -28,7 +28,6 @@ const Login = () => {
   const [feedback, setFeedback] = useState("");
   let navigate = useNavigate();
   const tc = useContext(TaskContext);
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -109,10 +108,10 @@ const Login = () => {
         marginBottom: "0",
         boxShadow: "0 0 10px rgb(10, 31, 10)",
         borderRadius: "5px",
-        backgroundColor: '#003665'
+        backgroundColor: "#003665",
       }}
     >
-      <form onSubmit={handleSubmit} >
+      <form onSubmit={handleSubmit}>
         <Box m={2} pt={3}>
           <Grid
             container
@@ -131,7 +130,11 @@ const Login = () => {
             </Box>
             <Box m={1} color="white">
               <TextField
-                inputProps={{ className: classes.input }}
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Email"
                 name="email"
                 value={input.email}
@@ -142,12 +145,22 @@ const Login = () => {
             </Box>
             <Box m={1}>
               <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
                 label="Password"
                 type="password"
                 name="password"
                 value={input.password}
                 onChange={handleChange}
                 required
+                // sx={{
+                //   "& .MuiInputBase-root": {
+                //     color: "white",
+                //   },
+                // }}
               />
             </Box>
             <Box m={2} pt={3}></Box>
@@ -158,11 +171,11 @@ const Login = () => {
               to={"/register"}
               style={{
                 textDecoration: "none",
-                color: "black",
+                color: "white",
                 paddingBottom: "10px",
               }}
             >
-              <Typography variant="h6"className='underline-on-hover-link'>
+              <Typography variant="h6" className="underline-on-hover-link">
                 New member? Click here to register
               </Typography>
             </Link>
