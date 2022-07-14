@@ -43,9 +43,6 @@ jobs:
       - name: Build API
         run: |
           docker build -t api ./api
-      - name: Start DB Container
-        run: |
-          docker run -e CI=true db
       - name: Test API
         run: |
           docker run -e CI=true api npm run test
