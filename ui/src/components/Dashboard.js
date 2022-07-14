@@ -176,7 +176,7 @@ const Dashboard = ({ user }) => {
                 console.log(element)
                 return (
                   <div key={element.org_id}>
-                    <Paper elevation={10} style={{backgroundColor : "#003665", marginBottom:"2rem"}}>
+                    <Paper elevation={10} style={{backgroundColor : "#003665", marginBottom:"2rem",  boxShadow: "0 0 10px #4DACFF", borderRadius: "5px"}}>
                     <Typography variant="h4" key="header" align = 'center'>{element.org_name}</Typography>
                     {element.tasks.length > 0 && !checkNotFinished(element.tasks)?
                      <Grid
@@ -211,7 +211,7 @@ const Dashboard = ({ user }) => {
                            })}
                          </Stack>
                        </Grid>
-                       <Divider orientation="vertical" variant = "middle" flexItem style={{marginRight:"-1px"}} />
+                       <Divider orientation="vertical" variant = "middle" flexItem style={{marginRight:"-1px", color:"#4fffcc"}} />
                        </>
                      );
                    })}

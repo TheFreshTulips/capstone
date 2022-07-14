@@ -39,6 +39,7 @@ const convertDateTime = (zuluTime) => {
 const EditableText = (props) => {
   let [isEdit, setIsEdit] = useState(false);
   let [value, setValue] = useState(props.val);
+  let [width, setWidth] = useState(null)
   let [typography, setTypography] = useState(""); //can set the typography type if desired
 
   const formatString = (sentence) => {
@@ -64,6 +65,11 @@ const EditableText = (props) => {
   useEffect(() => {
     setValue(props.val);
     setTypography(props.typography);
+    if (props.field == "description"){
+      setWidth(800)
+    }else{
+      setWidth("auto")
+    }
   }, [props.val]);
 
   let toggleEdit = () => {
@@ -95,7 +101,7 @@ const EditableText = (props) => {
           direction="column"
           alignItems="center"
           justifyContent="space-around"
-          style={{ width: 600 }}
+          style={{width:width}}
         >
           {props.input_type === "large" ? (
             <TextField

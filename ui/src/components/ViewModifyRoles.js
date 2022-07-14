@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import config from "../config";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from "../loading-blue.gif";
 import Button from "@mui/material/Button";
 
@@ -19,6 +19,7 @@ const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 const ViewModifyRoles = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  let navigate = useNavigate()
 
   useEffect(() => {
     setIsLoading(true);
@@ -49,7 +50,8 @@ const ViewModifyRoles = () => {
           style={{
             padding: "20px 20px",
             color: "white",
-            backgroundColor: "rgba(74,104,133,0.44)",
+            backgroundColor: "#003665",
+            boxShadow: "0 0 10px #4DACFF",
           }}
         >
           <Typography align="center" variant="h4">
@@ -72,7 +74,7 @@ const ViewModifyRoles = () => {
                       <TableCell align="right"> Organization Name </TableCell>
                       <TableCell align="right"> Email </TableCell>
                       <TableCell align="right"> Position Name </TableCell>
-                      <TableCell align="right"> Edit </TableCell>
+                      <TableCell align="right"></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -93,12 +95,12 @@ const ViewModifyRoles = () => {
                         <TableCell align="right">{user.user_email}</TableCell>
                         <TableCell align="right">{user.position_name}</TableCell>
                         <TableCell align="right">
-                          <Link to={`/admin/roles/edit/${user.user_id}`}>
                             <Button
-                              size="small">
+                              size="small"
+                              variant = "contained"
+                              onClick = {()=>{navigate(`/admin/roles/edit/${user.user_id}`)}}>
                               Edit
                             </Button>
-                          </Link>
                         </TableCell>
                       </TableRow>
                     ))}

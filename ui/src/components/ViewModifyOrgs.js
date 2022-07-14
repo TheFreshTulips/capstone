@@ -13,7 +13,6 @@ import Typography from "@mui/material/Typography";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import logo from "../loading-blue.gif";
 import Button from "@mui/material/Button";
 
@@ -48,7 +47,8 @@ const ViewModifyOrgs = () => {
           style={{
             padding: "20px 20px",
             color: "white",
-            backgroundColor: "rgba(74,104,133,0.44)",
+            backgroundColor: "#003665",
+            boxShadow: "0 0 10px #4DACFF",
           }}
           >
             <Grid container spacing={2} direction='row' alignItems='center' justifyContent='right'>
@@ -84,7 +84,7 @@ const ViewModifyOrgs = () => {
                         <TableCell align="right"> Organization Name </TableCell>
                         <TableCell align="right"> Image </TableCell>
                         <TableCell align="right"> Parent Organization </TableCell>
-                        <TableCell align="right"> Edit </TableCell>
+                        <TableCell align="right"> </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -110,11 +110,11 @@ const ViewModifyOrgs = () => {
                           </TableCell>
                           <TableCell align="right">{org.parent_name}</TableCell>
                           <TableCell align="right">
-                            <Link to={`/admin/orgs/edit/${org.org_id}`}>
-                              <Button size="small">
+
+                              <Button size="small" variant = "contained"
+                                onClick = {()=>{navigate(`/admin/orgs/edit/${org.org_id}`)}}>
                                 Edit
                               </Button>
-                            </Link>
                           </TableCell>
                         </TableRow>
                       ))}

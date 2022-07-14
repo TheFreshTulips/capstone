@@ -117,7 +117,7 @@ const TaskTable = () => {
         style={{
           padding: "20px 20px",
           color: "white",
-          backgroundColor: "rgba(74,104,133,0.44)",
+          backgroundColor: "#003665",
           boxShadow: "0 0 10px #4DACFF",
           borderRadius: "5px",
         }}

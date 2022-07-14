@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import logo from "../loading-blue.gif";
 
+
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
@@ -277,8 +278,8 @@ const TaskDetails = () => {
 
   return (
     <>
-      <Box m={3}></Box>
-      <Box sx={{ width: "90%", margin: "auto" }}>
+      <Box m={3} marginTop={10}></Box>
+      <Box sx={{ width: "80%", margin: "auto" }}>
         {isLoading ? (
           <Grid
             container
@@ -296,6 +297,7 @@ const TaskDetails = () => {
           <>
             <Paper
               elevation={8}
+              className = "details"
               style={{
                 backgroundColor: "#003665",
                 boxShadow: "0 0 10px #4DACFF",
@@ -412,7 +414,6 @@ const TaskDetails = () => {
                     />
                   </Stack>
                 </Grid>
-
                 <Grid item xs={6} display="flex" justifyContent="center">
                   <Stack alignItems={"center"}>
                     <Typography>Assigned To:</Typography>

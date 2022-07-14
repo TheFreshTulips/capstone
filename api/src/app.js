@@ -9,6 +9,14 @@ const knex = require("knex")(config);
 app.use(cors());
 app.options("*", cors());
 app.use(express.json());
+knex.raw("SELECT VERSION()")
+  .catch(err => {
+    console.log(err);
+    throw err;
+  })
+  .finally(() => {
+    knex.destroy();
+  })
 
 app.get("/", async (req, res) => {
   res

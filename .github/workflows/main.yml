@@ -33,7 +33,7 @@ jobs:
       - name: Test UI
         run: |
           docker run -e CI=true ui npm run test
-          
+
   # This workflow kicks off the build and test for the API
   build-and-test-api:
     name: Build and Test API
@@ -43,10 +43,13 @@ jobs:
       - name: Build API
         run: |
           docker build -t api ./api
+      - name: Start DB Container
+        run: |
+          docker run -e CI=true db
       - name: Test API
         run: |
           docker run -e CI=true api npm run test
-  
+
   # This workflow kicks off the deployment to Heroku for the UI
   deploy-ui:
     name: Deploy UI to Heroku
@@ -57,13 +60,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: akhileshns/heroku-deploy@v3.12.12
-        with: 
+        with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "taskify-capstone-ui"
           heroku_email: "ralph.1996.3@gmail.com"
           appdir: "ui/"
           usedocker: true
-  
+
   # This workflow kicks off the deployment to Heroku for the UI
   deploy-api:
     name: Deploy API to Heroku
@@ -76,18 +79,18 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - uses: akhileshns/heroku-deploy@v3.12.12
-        with: 
+        with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "taskify-capstone-api"
           heroku_email: "ralph.1996.3@gmail.com"
           appdir: "api/"
           usedocker: true
 
-  # This workflow kicks off the linter for your API.  
+  # This workflow kicks off the linter for your API.
   run-api-linter:
     name: Lint API Code Base
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -100,8 +103,8 @@ jobs:
       # Executes the linter on the API code base.
       - name: Run Linter
         run: npm --prefix ./api run lint
-  
-  # This workflow kicks off the linter for API.  
+
+  # This workflow kicks off the linter for API.
   run-ui-linter:
     name: Lint UI Code Base
     runs-on: ubuntu-latest
