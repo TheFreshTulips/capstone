@@ -19,12 +19,12 @@ const testConnection = async () => {
   })
   .catch(err => {
     console.log(err);
-    throw err;
+    connection = false;
   })
-  .finally(() => {
-    connection = false
-    return;
-  })
+  // .finally(() => {
+  //   connection = false
+  //   return;
+  // })
 }
 
 testConnection();
