@@ -4,21 +4,14 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-//import { makeStyles } from "@material-ui/core/styles";
 import { Button, MenuItem } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import config from "../config";
 
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
-// const useStyles = makeStyles({
-//   input: {
-//     color: "white"
-//   }
-// });
-
 const Register = () => {
-  //const classes = useStyles();
+
   const navigate = useNavigate();
 
   let [input, setInput] = useState({
@@ -124,6 +117,7 @@ const Register = () => {
       className="post-page"
       sx={{
         marginBottom: "0",
+        marginTop: "30px",
         borderRadius: "5px",
         backgroundColor: "#003665",
         boxShadow: "0 0 10px #4DACFF",
@@ -154,7 +148,6 @@ const Register = () => {
                     color: "white",
                   },
                 }}
-                //inputProps={{ className: classes.input }}
                 label="Name"
                 type="name"
                 name="name"

@@ -23,7 +23,7 @@ services:
       retries: 5
     volumes:
       - pgdatasource:/var/lib/postgresql/data
-
+    mem_limit: 500m
   api:
     build:
       context: ./api/
@@ -46,6 +46,7 @@ services:
         source: ./api
         target: /app
     command: npm run start:dev
+    mem_limit: 500m
 
   ui:
     build: ui/
@@ -58,3 +59,4 @@ services:
       - type: bind
         source: ./ui/src
         target: /app/src
+    mem_limit: 1g

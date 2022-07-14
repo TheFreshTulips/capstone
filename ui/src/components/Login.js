@@ -5,7 +5,6 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import config from "../config";
 import { useNavigate, Link } from "react-router-dom";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -13,14 +12,8 @@ import "../styles/SharedStyles.css";
 
 import { TaskContext } from "../App.js";
 
-const useStyles = makeStyles({
-  input: {
-    color: "beige",
-  },
-});
 
 const Login = () => {
-  const classes = useStyles();
   let [input, setInput] = useState({
     email: "",
     password: "",
@@ -106,7 +99,8 @@ const Login = () => {
       className="post-page"
       sx={{
         marginBottom: "0",
-        boxShadow: "0 0 10px rgb(10, 31, 10)",
+        marginTop: "30px",
+        boxShadow: "0 0 10px #4DACFF",
         borderRadius: "5px",
         backgroundColor: "#003665",
       }}
