@@ -21,10 +21,6 @@ const testConnection = async () => {
     console.log(err);
     connection = false;
   })
-  // .finally(() => {
-  //   connection = false
-  //   return;
-  // })
 }
 
 testConnection();
