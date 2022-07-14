@@ -34,9 +34,9 @@ jobs:
         run: |
           docker run -e CI=true ui npm run test
 
-  # This workflow kicks off the build and test for the API
-  build-and-test-api:
-    name: Build and Test API
+  # This workflow kicks off the build for the API
+  build-api:
+    name: Build API
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -48,7 +48,7 @@ jobs:
   deploy-ui:
     name: Deploy UI to Heroku
     # Needs specifies the steps that must previously complete in order to deploy your application.
-    needs: [ build-and-test-ui, build-and-test-api ]
+    needs: [ build-and-test-ui, build-api ]
     runs-on: ubuntu-latest
 
     steps:
@@ -64,7 +64,7 @@ jobs:
   # This workflow kicks off the deployment to Heroku for the UI
   deploy-api:
     name: Deploy API to Heroku
-    needs: [ build-and-test-ui, build-and-test-api ]
+    needs: [ build-and-test-ui, build-api ]
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
