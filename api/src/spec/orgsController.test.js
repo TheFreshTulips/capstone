@@ -22,7 +22,6 @@ const testConnection = async () => {
     throw err;
   })
   .finally(() => {
-    knex.destroy();
     connection = false
     return;
   })
