@@ -8,8 +8,8 @@ exports.seed = async function(knex) {
 
     //1
     {
-      title: "submission for NCO of the Quarter",
-      description: "1206 due to flt/cc for NCO of the Quarter award. 1206 should have 4 job bullets and 2 whole airman concept bullets",
+      title: "submission for Quartly Awards",
+      description: "1206 due to flt/cc for all Quarterly Awards. 1206 should have 4 job bullets and 2 whole airman concept bullets",
       priority: 3,
       assigned_date: new Date("2022-07-05"),
       suspense_date:new Date("2022-07-25"),
@@ -205,7 +205,7 @@ exports.seed = async function(knex) {
 
     //17
     {
-      title: "Promote Spc4 Snuffy",
+      title: "Change Spc4 Snuffy's Taskify permissions",
       description: "Spc4 Snuffy promotes to Sgt and will be moving to 2SOPS/DOO to be a supervisor",
       priority: 4,
       assigned_date: new Date('2022-07-15',),

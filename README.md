@@ -541,10 +541,13 @@ Taskify uses the following API endpoints:
 
 There are number of additional features that could be added to future versions of Taskify:
 
+- Displaying stats about members workload to supervisors so they can determine if a member is over or under tasked
+- Displaying tasks to a supervisor that are assigned to a specific member so they can re-allocate workload as necessary
 - Drag and drop task cards
 - Exportable reports
 - Clickable inputs in Reports tables which allow users to view task details
 - Saving user login sessions for longer-term use
+
 
 ## Local Setup and Installation
 
