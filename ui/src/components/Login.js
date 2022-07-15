@@ -124,9 +124,9 @@ const Login = () => {
             <Box m={1} color="white">
               <TextField
                 sx={{
-                  "& .MuiInputBase-root": {
-                    color: "white",
-                    border: '1px solid white'
+                  "& .MuiOutlinedInput-root": {
+                    "& > fieldset": { borderColor: "white" },
+                    color: "white"
                   },
                 }}
                 label="Email"
@@ -140,9 +140,9 @@ const Login = () => {
             <Box m={1}>
               <TextField
                 sx={{
-                  "& .MuiInputBase-root": {
-                    color: "white",
-                    border: '1px solid white'
+                  "& .MuiOutlinedInput-root": {
+                    "& > fieldset": { borderColor: "white" },
+                    color: "white"
                   },
                 }}
                 label="Password"
