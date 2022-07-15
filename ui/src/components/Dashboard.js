@@ -152,7 +152,7 @@ const Dashboard = ({ user }) => {
 
                         ) : <></>
                       })}
-                      {console.log(createdTasks)}
+                      {/* {console.log(createdTasks)} */}
                       {colName === 'Created By Me' ?
                         createdTasks.map((element) => (
                           //if we are in the created column, give back this
@@ -183,7 +183,7 @@ const Dashboard = ({ user }) => {
           <Box m = {1} width={"90%"} margin="auto"  >
             {tc.isSupervisor && !user ?
               childOrgTasks.map((element) => {
-                console.log(element)
+                // console.log(element)
                 return (
                   <div key={element.org_id}>
                     <Paper elevation={10} style={{

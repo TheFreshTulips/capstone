@@ -130,12 +130,13 @@ const EditableText = (props) => {
                     "& > fieldset": { borderColor: "white" },
                     color: "white"
                   },
+                  // "& .MuiInputLabel-root": {
+                  //   color: "white",
+                  // },
                   "& .MuiButtonBase-root": {
                     color: "white",
                   },
-                  "& .MuiSvgIcon-root": {
-                    color: "white",
-                  },
+
 
                 }}
               >
@@ -146,9 +147,6 @@ const EditableText = (props) => {
                     "& .MuiOutlinedInput-root": {
                       "& > fieldset": { borderColor: "white" },
                       color: "white"
-                    },
-                    "& .MuiSvgIcon-root": {
-                      color: "white",
                     },
                   }}
                   value={value}

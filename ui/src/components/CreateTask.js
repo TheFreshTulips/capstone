@@ -43,12 +43,15 @@ const CreateTask = () => {
   const navigate = useNavigate();
   const tc = useContext(TaskContext);
 
+  let now = new Date();
+  let tomorrow = new Date();
+  tomorrow.setDate(now.getDate()+1);
   let [input, setInput] = useState({
     title: "",
     description: "",
     priority: "",
-    assigned_date: new Date(),
-    suspense_date: "",
+    assigned_date: now,
+    suspense_date: tomorrow,
     status: "to do",
     comments: "",
     creator_id: tc.userId,
@@ -77,7 +80,7 @@ const CreateTask = () => {
             promiseArr.push(fetch(`${ApiUrl}/users/orgs/${element.org_id}`)
               .then(res => res.json())
               .then(data => {
-                console.log(`got back from sub-org get data: `, data)
+                // console.log(`got back from sub-org get data: `, data)
                 return data;
               })
             )
@@ -91,7 +94,7 @@ const CreateTask = () => {
 
     Promise.all(promiseArr)
       .then((data) => {
-        console.log(`data: `, data)
+        // console.log(`data: `, data)
         let allUsers = []
         data.map(element => {
           element.map((el) => {
@@ -144,7 +147,7 @@ const CreateTask = () => {
     handleChange({ target: { name: "suspense_date", value: _value.format() } });
   };
   const handleSubmit = (e) => {
-    console.log(`sending body:`, input);
+    // console.log(`sending body:`, input);
 
     fetch(`${ApiUrl}/tasks`, {
       method: "POST",
@@ -194,8 +197,9 @@ const CreateTask = () => {
             <Box m={1}>
               <TextField
                 sx={{
-                  "& .MuiInputBase-root": {
-                    color: "white",
+                  "& .MuiOutlinedInput-root": {
+                    "& > fieldset": { borderColor: "white" },
+                    color: "white"
                   },
                   minWidth: 350,
                 }}
@@ -211,7 +215,11 @@ const CreateTask = () => {
             <Box m={1}>
               <TextField
                 sx={{
-                  "& .MuiInputBase-root": {
+                  "& .MuiOutlinedInput-root": {
+                    "& > fieldset": { borderColor: "white" },
+                    color: "white"
+                  },
+                  "& .MuiSvgIcon-root": {
                     color: "white",
                   },
                   minWidth: 350,
@@ -237,14 +245,22 @@ const CreateTask = () => {
             </Box>
             <Box m={1}>
 
-              <FormControl sx={{ m: 1, width: 350 }}>
+              <FormControl
+                sx={{
+                  m: 1,
+                  width: 350,
+                  "& .MuiOutlinedInput-root": {
+                    "& > fieldset": { borderColor: "white" },
+                    color: "white"
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "white",
+                  },
+                  }}>
                 <InputLabel id="demo-multiple-checkbox-label">
                   Assign Task To
                 </InputLabel>
                 <Select
-                  sx={{
-                    color: "white",
-                  }}
                   labelId="demo-multiple-name-label"
                   id="demo-multiple-name"
                   fullwidth
@@ -254,7 +270,7 @@ const CreateTask = () => {
                   input={<OutlinedInput label="Name" />}
                   MenuProps={MenuProps}
                 >
-                  {console.log(users)}
+                  {/* {console.log(users)} */}
                   {users.map((el) => (
                     <MenuItem
                       key={el.id}
@@ -282,7 +298,21 @@ const CreateTask = () => {
             </Box> */}
             <Box m={1} sx={{ minWidth: 350 }}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Stack spacing={3}>
+                <Stack spacing={3}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& > fieldset": { borderColor: "white" },
+                      color: "white"
+                    },
+                    // "& .MuiInputLabel-root": {
+                    //   color: "white",
+                    // },
+                    "& .MuiButtonBase-root": {
+                      color: "white",
+                    },
+
+                  }}
+                >
                   <DateTimePicker
                     label="Suspense Date/Time"
                     value={input.suspense_date}
@@ -296,7 +326,11 @@ const CreateTask = () => {
             <Box m={1} sx={{ minWidth: 500 }}>
               <TextField
                 sx={{
-                  "& .MuiInputBase-root": {
+                  "& .MuiOutlinedInput-root": {
+                    "& > fieldset": { borderColor: "white" },
+                    color: "white"
+                  },
+                  "& .MuiSvgIcon-root": {
                     color: "white",
                   },
                 }}

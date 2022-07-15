@@ -86,7 +86,7 @@ const TaskDetails = () => {
     if (inputTask.status === "finished") {
       body.completed_date = new Date();
     }
-    console.log(body);
+    // console.log(body);
     return body;
   };
 
@@ -121,7 +121,7 @@ const TaskDetails = () => {
   };
 
   const handleDelete = () => {
-    console.log("deleting this task:", taskDetails);
+    // console.log("deleting this task:", taskDetails);
     const request = {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -207,7 +207,7 @@ const TaskDetails = () => {
   };
 
   const handleSubmitComments = (e) => {
-    console.log(`sending body:`, input);
+    // console.log(`sending body:`, input);
     fetch(`${ApiUrl}/tasks/${taskDetails.task_id}/comments`, {
       method: "POST",
       headers: {
@@ -216,8 +216,8 @@ const TaskDetails = () => {
       body: JSON.stringify(input),
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
+      .then(() => {
+        // console.log(data);
         alert("Comment posted");
         setIsSubmit(!isSubmit);
       })
@@ -263,7 +263,7 @@ const TaskDetails = () => {
             promiseArr.push(fetch(`${ApiUrl}/users/orgs/${element.org_id}`)
               .then(res => res.json())
               .then(data => {
-                console.log(`got back from sub-org get data: `, data)
+                // console.log(`got back from sub-org get data: `, data)
                 return data;
               })
             )
@@ -277,7 +277,7 @@ const TaskDetails = () => {
 
     Promise.all(promiseArr)
       .then((data) => {
-        console.log(`data: `, data)
+        // console.log(`data: `, data)
         let allUsers = []
         data.map(element => {
           element.map((el) => {
