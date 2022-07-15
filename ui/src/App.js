@@ -36,17 +36,30 @@ const theme = createTheme({
     color:"white"
   },
   typography: {
-    allVariants: {
+    //targets the text inside form fields
+    body1: {
       color: "white"
+    },
+    h2: {
+      color: "white",
+    },
+    h3: {
+      color: "white",
+    },
+    h4: {
+      color: "white",
     },
     h5: {
       fontWeight: 500,
       letterSpacing: "0.04em",
+      color: "white",
     },
     h6:{
       fontWeight: 400,
+      color: "white",
     }
   },
+
 
 });
 

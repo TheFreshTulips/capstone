@@ -126,6 +126,7 @@ const Login = () => {
                 sx={{
                   "& .MuiInputBase-root": {
                     color: "white",
+                    border: '1px solid white'
                   },
                 }}
                 label="Email"
@@ -141,6 +142,7 @@ const Login = () => {
                 sx={{
                   "& .MuiInputBase-root": {
                     color: "white",
+                    border: '1px solid white'
                   },
                 }}
                 label="Password"

@@ -167,9 +167,11 @@ const ModifyOrgs = () => {
               <Box m={1}>
                 <TextField
                   sx={{
-                    "& .MuiInputBase-root": {
-                      color: "white",
+                    "& .MuiOutlinedInput-root": {
+                      "& > fieldset": { borderColor: "white" },
+                      color: "white"
                     },
+
                   }}
                   label="Organization Name"
                   type="name"
@@ -183,9 +185,11 @@ const ModifyOrgs = () => {
               <Box m={1}>
                 <TextField
                   sx={{
-                    "& .MuiInputBase-root": {
-                      color: "white",
+                    "& .MuiOutlinedInput-root": {
+                      "& > fieldset": { borderColor: "white" },
+                      color: "white"
                     },
+
                     minWidth: 223,
                   }}
                   value={input.img_url}
@@ -198,7 +202,11 @@ const ModifyOrgs = () => {
               <Box m={1}>
                 <TextField
                   sx={{
-                    "& .MuiInputBase-root": {
+                    "& .MuiOutlinedInput-root": {
+                      "& > fieldset": { borderColor: "white" },
+                      color: "white"
+                    },
+                    "& .MuiSvgIcon-root": {
                       color: "white",
                     },
                     minWidth: 223,

@@ -198,8 +198,9 @@ const ModifyRoles = () => {
               <Box m={1}>
                 <TextField
                   sx={{
-                    "& .MuiInputBase-root": {
-                      color: "white",
+                    "& .MuiOutlinedInput-root": {
+                      "& > fieldset": { borderColor: "white" },
+                      color: "white"
                     },
                   }}
                   label="Name"
@@ -214,7 +215,11 @@ const ModifyRoles = () => {
               <Box m={1}>
                 <TextField
                   sx={{
-                    "& .MuiInputBase-root": {
+                    "& .MuiOutlinedInput-root": {
+                      "& > fieldset": { borderColor: "white" },
+                      color: "white"
+                    },
+                    "& .MuiSvgIcon-root": {
                       color: "white",
                     },
                     minWidth: 223,
@@ -237,7 +242,11 @@ const ModifyRoles = () => {
               <Box m={1}>
                 <TextField
                   sx={{
-                    "& .MuiInputBase-root": {
+                    "& .MuiOutlinedInput-root": {
+                      "& > fieldset": { borderColor: "white" },
+                      color: "white"
+                    },
+                    "& .MuiSvgIcon-root": {
                       color: "white",
                     },
                     minWidth: 223,
@@ -264,8 +273,9 @@ const ModifyRoles = () => {
               <Box m={1}>
                 <TextField
                   sx={{
-                    "& .MuiInputBase-root": {
-                      color: "white",
+                    "& .MuiOutlinedInput-root": {
+                      "& > fieldset": { borderColor: "white" },
+                      color: "white"
                     },
                   }}
                   label="Email"
@@ -279,7 +289,11 @@ const ModifyRoles = () => {
               <Box m={1}>
                 <TextField
                   sx={{
-                    "& .MuiInputBase-root": {
+                    "& .MuiOutlinedInput-root": {
+                      "& > fieldset": { borderColor: "white" },
+                      color: "white"
+                    },
+                    "& .MuiSvgIcon-root": {
                       color: "white",
                     },
                     minWidth: 223,

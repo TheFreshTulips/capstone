@@ -451,8 +451,23 @@ const TaskDetails = () => {
                   </Stack>
                 </Grid>
                 {ownsTask ? (
-                  <Grid item xs={6} display="flex" justifyContent="center">
-                    <FormControl sx={{ m: 1, minWidth: 350 }}>
+                  <Grid item xs={6} display="flex" justifyContent="center"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& > fieldset": { borderColor: "white" },
+                        color: "white"
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "white",
+                      },
+
+                    }}>
+                    <FormControl
+                      sx={{
+                        m: 1,
+                        minWidth: 350 ,
+
+                      }}>
 
                       {/* <TextField
                         label="Reassign Task"
@@ -489,12 +504,6 @@ const TaskDetails = () => {
                       <Select
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
-                        sx={{"& .MuiInputBase-root": {
-                            color: "white",
-                            "border-color": "white"
-                          },
-                          color: "white",
-                        }}
                         multiple
                         value={selectedNameOrNames}
                         onChange={handleSelect}
@@ -555,8 +564,9 @@ const TaskDetails = () => {
                 <form onSubmit={handleSubmitComments}>
                   <TextField
                     sx={{
-                      "& .MuiInputBase-root": {
-                        color: "white",
+                      "& .MuiOutlinedInput-root": {
+                        "& > fieldset": { borderColor: "white" },
+                        color: "white"
                       },
                       color: "white",
                     }}

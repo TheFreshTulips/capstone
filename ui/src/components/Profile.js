@@ -219,8 +219,14 @@ const Profile = () => {
             >
               {/* <FormControl sx={{ width: 150 }}> */}
               <TextField
+
                 sx={{
+
                   "& .MuiInputBase-root": {
+                    color: "white",
+                    border: '1px solid white'
+                  },
+                  "& .MuiSvgIcon-root": {
                     color: "white",
                   },
                   minWidth: 223,

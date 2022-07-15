@@ -106,7 +106,11 @@ const EditableText = (props) => {
           {props.input_type === "large" ? (
             <TextField
               sx={{
-                "& .MuiInputBase-root": {
+                "& .MuiOutlinedInput-root": {
+                  "& > fieldset": { borderColor: "white" },
+                  color: "white"
+                },
+                "& .MuiSvgIcon-root": {
                   color: "white",
                 },
               }}
@@ -120,9 +124,33 @@ const EditableText = (props) => {
             />
           ) : props.input_type === "date" ? (
             <LocalizationProvider dateAdapter={AdapterMoment}>
-              <Stack spacing={3}>
+              <Stack spacing={3}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& > fieldset": { borderColor: "white" },
+                    color: "white"
+                  },
+                  "& .MuiButtonBase-root": {
+                    color: "white",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "white",
+                  },
+
+                }}
+              >
                 <DateTimePicker
                   label="Suspense Date/Time"
+                  sx={{
+                    color: "white",
+                    "& .MuiOutlinedInput-root": {
+                      "& > fieldset": { borderColor: "white" },
+                      color: "white"
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "white",
+                    },
+                  }}
                   value={value}
                   onChange={handleSuspenseDateChange}
                   renderInput={(params) => <TextField {...params} />}
@@ -130,18 +158,29 @@ const EditableText = (props) => {
               </Stack>
             </LocalizationProvider>
           ) : props.input_type === "dropdown" ? (
-            <Box sx={{ minWidth: 120}}>
+            <Box
+              sx={{
+                minWidth: 120,
+                "& .MuiOutlinedInput-root": {
+                  "& > fieldset": { borderColor: "white" },
+                  color: "white"
+                },
+              }}>
               <FormControl fullWidth>
                 <InputLabel id="simple-select-label">Status</InputLabel>
                 <Select
                   sx={{
-                    color: "white"
+
+                    "& .MuiSvgIcon-root": {
+                      color: "white",
+                    },
                   }}
                   labelId="simple-select-label"
                   id="simple-select"
                   value={value}
                   label="status"
                   onChange={(e) => setValue(e.target.value)}
+
                 >
                   {props.dropdown.map((ele, index) => (
                     <MenuItem value={ele} key={index} sx={{ color: "black" }}>
@@ -155,6 +194,10 @@ const EditableText = (props) => {
             <TextField
               sx={{
                 "& .MuiInputBase-root": {
+                  color: "white",
+                  border: '1px solid white'
+                },
+                "& .MuiSvgIcon-root": {
                   color: "white",
                 },
               }}
