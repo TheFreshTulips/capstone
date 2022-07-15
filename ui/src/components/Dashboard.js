@@ -15,7 +15,7 @@ const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 const userColumns = ["to do", "in progress", "Created By Me"];
 const unitColumns = ["to do", "in progress"];
-
+/*
 const checkNotFinished = (taskArr) =>{
   return taskArr.reduce((prev, curr) => {
     if (curr.task_status === "finished"){
@@ -24,7 +24,7 @@ const checkNotFinished = (taskArr) =>{
       return false
     }
   }, true)
-}
+}*/
 
 const Dashboard = ({ user }) => {
   const tc = useContext(TaskContext);
@@ -113,8 +113,8 @@ const Dashboard = ({ user }) => {
       ) :
         <Stack>
           <Box m = {1} width={"90%"} margin="auto"  >
-            <Paper elevation={10} style={{backgroundColor : " #003665" , marginBottom:"2rem", boxShadow: "0 0 10px #4DACFF", borderRadius: "5px",}}>
-            {tasks[0] ? <Typography variant="h4" key="header" align = 'center' marginBottom={2}>{tasks[0].task_org_name}</Typography>: <></>}
+            <Paper elevation={10} style={{ padding: "15px", backgroundColor : " #003665" , marginBottom:"2rem", boxShadow: "0 0 10px #4DACFF", borderRadius: "5px",}}>
+            {tasks[0] ? <Typography variant="h4" key="header" align = 'center' marginBottom={2} sx={{marginTop:"20px"}}>{tasks[0].task_org_name}</Typography>: <></>}
             <Grid
               container
               spacing={2}
@@ -122,6 +122,9 @@ const Dashboard = ({ user }) => {
               justifyContent="space-evenly"
               alignItems="flex-start"
               >
+              {
+               tasks.length > 0 || createdTasks.length > 0?
+               <>
               {columns.map((colName, index) => {
                 return (
                   <>
@@ -130,10 +133,12 @@ const Dashboard = ({ user }) => {
                       <Typography
                         variant="h4"
                         align = 'center'
+                        sx={{marginTop:"15px"}}
                       >
                         {formatColumn(colName)}
                       </Typography>
-                      { tasks.map((element) => {
+                      {
+                      tasks.map((element) => {
                         //if we are in the correct column, give back the following card
                         return element.task_status === colName ? (
                           <TaskCard
@@ -144,10 +149,11 @@ const Dashboard = ({ user }) => {
                             suspense_date={element.task_suspense_date}
                             priority={element.task_priority}
                           />
+
                         ) : <></>
                       })}
-
-                      {colName === 'Created' ?
+                      {console.log(createdTasks)}
+                      {colName === 'Created By Me' ?
                         createdTasks.map((element) => (
                           //if we are in the created column, give back this
                           <TaskCard
@@ -162,10 +168,14 @@ const Dashboard = ({ user }) => {
                       }
                     </Stack>
                   </Grid>
-                  <Divider orientation="vertical" variant = "middle" flexItem style={{marginRight:"-1px"}} />
+                  {index < columns.length-1? <Divider orientation="vertical" variant = "middle" flexItem style={{marginRight:"-5px", color:"#4fffcc", borderRightWidth:"5px"}} /> : <></>}
                   </>
                 );
               })}
+              </>
+              :
+              <Typography variant = "h4" sx={{marginTop:"50px", marginBottom:"50px"}}>You have no Tasks to Display!</Typography>
+              }
             </Grid>
 
             </Paper>
@@ -176,9 +186,15 @@ const Dashboard = ({ user }) => {
                 console.log(element)
                 return (
                   <div key={element.org_id}>
-                    <Paper elevation={10} style={{backgroundColor : "#003665", marginBottom:"2rem",  boxShadow: "0 0 10px #4DACFF", borderRadius: "5px"}}>
-                    <Typography variant="h4" key="header" align = 'center'>{element.org_name}</Typography>
-                    {element.tasks.length > 0 && !checkNotFinished(element.tasks)?
+                    <Paper elevation={10} style={{
+                      backgroundColor : "#003665",
+                      marginBottom:"2rem",
+                      boxShadow: "0 0 10px #4DACFF",
+                      borderRadius: "5px",
+                      padding: "15px",
+                      }}>
+                    <Typography variant="h4" key="header" align = 'center' sx={{marginBottom:"15px"}}>{element.org_name}</Typography>
+                    {element.tasks.length > 0?
                      <Grid
                      container
                      spacing={2}
@@ -211,7 +227,8 @@ const Dashboard = ({ user }) => {
                            })}
                          </Stack>
                        </Grid>
-                       <Divider orientation="vertical" variant = "middle" flexItem style={{marginRight:"-1px", color:"#4fffcc"}} />
+                       {index < columns.length-1? <Divider orientation="vertical" variant = "middle" flexItem style={{marginRight:"-5px", color:"#4fffcc", borderRightWidth:"5px"}} /> : <></>}
+
                        </>
                      );
                    })}

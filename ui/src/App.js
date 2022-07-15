@@ -43,7 +43,11 @@ const theme = createTheme({
       fontWeight: 500,
       letterSpacing: "0.04em",
     },
+    h6:{
+      fontWeight: 400,
+    }
   },
+
 });
 
 function App() {

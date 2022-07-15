@@ -30,5 +30,5 @@ exports.seed = async function(knex) {
       body: "users 15 - 17 do not exist yet, they need to register. I have notified them",
       user_id: 3,
     },
-  ]);
-};
+    ]);
+  };

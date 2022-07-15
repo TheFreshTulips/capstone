@@ -185,12 +185,10 @@ const login = async (req, res) => {
                 });
               }
             });
-          // .catch((err) => {
-          //   console.log(`Failed to authenticate user ${req.body.email}`, err);
-          //   res.status(404).send('invalid password');
-          // });
         }
       });
+  } else {
+    res.status(404).send('invalid request')
   }
 };
 

@@ -30,15 +30,8 @@ const ViewModifyRoles = () => {
       .then(() => setTimeout(() => setIsLoading(false), 250));
   }, []);
 
-  // const updateByIndex = (index) => {
-  //   let tempUsers = users;
-  //   users[index] = {
-  //     ...input,
-  //     [e.target.name]: e.target.value,
-  //   };
-  // };
   return (
-    <Box width={"90%"} margin="auto" marginTop={5}>
+    <Box width={"90%"} margin="auto" marginTop={10}>
       <Grid
         container
         spacing={3}
@@ -116,46 +109,3 @@ const ViewModifyRoles = () => {
 };
 
 export default ViewModifyRoles;
-
-/*
-    "user_id": 1,
-    "user_name": "Jeff Haddock",
-    "user_rank": "CIV",
-    "org_id": 1,
-    "org_name": "21 CS",
-    "user_email": "jeff.haddock@gmail.com",
-    "position_id": 1,
-    "position_name": "member"
-
-        <SearchBar
-          value={searched}
-          onChange={(searchVal) => requestSearch(searchVal)}
-          onCancelSearch={() => cancelSearch()}
-        />
-        <TableContainer>
-          <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Food (100g serving)</TableCell>
-                <TableCell align="right">Calories</TableCell>
-                <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                <TableCell align="right">Protein&nbsp;(g)</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.name}>
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
-                  <TableCell align="right">{row.calories}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
-                  <TableCell align="right">{row.carbs}</TableCell>
-                  <TableCell align="right">{row.protein}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-*/

@@ -12,7 +12,6 @@ import "../styles/SharedStyles.css";
 
 import { TaskContext } from "../App.js";
 
-
 const Login = () => {
   let [input, setInput] = useState({
     email: "",

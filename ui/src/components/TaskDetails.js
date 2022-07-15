@@ -6,17 +6,16 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import { Button, Select, MenuItem, InputLabel, Stack } from "@mui/material";
+import { Button, MenuItem, Stack } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import { TaskContext } from "../App.js";
 import EditableText from "./EditableText.js";
-// import { useParams } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Fab from "@mui/material/Fab";
 import { useNavigate } from "react-router-dom";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import logo from "../loading-blue.gif";
-
+import {InputLabel, Select} from '@mui/material'
 
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -45,11 +44,14 @@ const MenuProps = {
 };
 
 let validPriorities = [1, 2, 3, 4, 5];
+const priorityColors = {1: "red", 2:"#DA5309", 3:"#FFB302", 4:"#FDED61", 5:"#99F666"}
+
 
 const TaskDetails = () => {
   /*
       change the fields to use Editable Text if the userId is equal to the userId of the task
   */
+
   const tc = useContext(TaskContext);
   const [ownsTask, setOwnsTask] = useState(null);
   let [isLoading, setIsLoading] = useState(null); //use this to make loading circle
@@ -241,8 +243,6 @@ const TaskDetails = () => {
         setOwners(data.owners);
 
         let owner_ids = data.owners.map((x) => x.owner_id);
-        console.log(data.author_id);
-        console.log(tc.userId);
         setOwnsTask(
           tc.userId === data.author_id || owner_ids.includes(tc.userId)
         ); //change this back to the line above once the author_id is being passed by the API
@@ -251,25 +251,48 @@ const TaskDetails = () => {
       .catch((err) => console.log(err));
   }, [isSubmit]);
 
-  useEffect(() => {
+  useEffect( async () => {
     setIsLoading(true);
     // fetches an array of all users in the organization and then sets the state with that info
-    fetch(`${ApiUrl}/users/orgs/${tc.userOrg}`)
+    let promiseArr = [];
+    if(tc.isSupervisor) {
+      await fetch(`${ApiUrl}/orgs/${tc.userOrg}/children`)
+        .then((res) => res.json())
+        .then((data) => {
+          data.forEach(element => {
+            promiseArr.push(fetch(`${ApiUrl}/users/orgs/${element.org_id}`)
+              .then(res => res.json())
+              .then(data => {
+                console.log(`got back from sub-org get data: `, data)
+                return data;
+              })
+            )
+          })
+        })
+    }
+
+    promiseArr.push(fetch(`${ApiUrl}/users/orgs/${tc.userOrg}`)
       .then((res) => res.json())
+    )
+
+    Promise.all(promiseArr)
       .then((data) => {
-        setUsers(
-          data.map((el) => {
-            return {
+        console.log(`data: `, data)
+        let allUsers = []
+        data.map(element => {
+          element.map((el) => {
+            allUsers.push({
               id: el.user_id,
               name: el.user_name,
               rank: el.user_rank,
-              email: el.user_email,
-            };
+            })
           })
-        );
+        })
+        setUsers(allUsers);
+        setTimeout(() => setIsLoading(false), 250)
       })
-      .then(() => setTimeout(() => setIsLoading(false), 250))
       .catch((err) => console.log("Error getting users array", err));
+
   }, []);
 
   const convertDateTime = (zuluTime) => {
@@ -353,6 +376,7 @@ const TaskDetails = () => {
                       typography={valueTypography}
                       input_type="dropdown"
                       dropdown={validPriorities}
+                      color = {inputTask.priority !== null ? priorityColors[inputTask.priority] : priorityColors[taskDetails.task_priority]}
                     />
                   </Stack>
                 </Grid>
@@ -428,18 +452,26 @@ const TaskDetails = () => {
                 </Grid>
                 {ownsTask ? (
                   <Grid item xs={6} display="flex" justifyContent="center">
-                    <FormControl sx={{ m: 1, width: 300 }}>
-                      <InputLabel id="demo-multiple-checkbox-label">
-                        Reassign Task
-                      </InputLabel>
-                      <Select
+                    <FormControl sx={{ m: 1, minWidth: 350 }}>
+
+                      {/* <TextField
+                        label="Reassign Task"
+                        sx={{
+                          "& .MuiInputBase-root": {
+                            color: "white",
+                          },
+                          minWidth: 223,
+                          color: "white",
+                        }}
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
+                        select
                         multiple
                         value={selectedNameOrNames}
                         onChange={handleSelect}
                         input={<OutlinedInput label="Name" />}
                         MenuProps={MenuProps}
+
                       >
                         {users.map((el) => (
                           <MenuItem
@@ -448,6 +480,30 @@ const TaskDetails = () => {
                             sx={{ color: "black" }}
                           >
                             {el.name}
+                          </MenuItem>
+                        ))}
+                      </TextField> */}
+                      <InputLabel id="demo-multiple-checkbox-label">
+                        Reassign Task
+                      </InputLabel>
+                      <Select
+                        labelId="demo-multiple-name-label"
+                        id="demo-multiple-name"
+                        sx={{"& .MuiInputBase-root": {
+                            color: "white",
+                            "border-color": "white"
+                          },
+                          color: "white",
+                        }}
+                        multiple
+                        value={selectedNameOrNames}
+                        onChange={handleSelect}
+                        input={<OutlinedInput label="Name" />}
+                        MenuProps={MenuProps}
+                      >
+                        {users.map((el) => (
+                          <MenuItem key={el.id} value={el.name} sx={{ color: "black" }}>
+                            {`${el.rank} ${el.name}`}
                           </MenuItem>
                         ))}
                       </Select>
@@ -530,4 +586,3 @@ const TaskDetails = () => {
 };
 
 export default TaskDetails;
-/*{validRanks.map((rank, index) => <MenuItem key={index} value={rank}>{rank}</MenuItem>)} */

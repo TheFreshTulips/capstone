@@ -9,3 +9,7 @@ body {
 .details{
     background-image: url("https://www.transparenttextures.com/patterns/classy-fabric.png");
 }
+
+.dtptextcolor{
+    text-decoration-color: black;
+}

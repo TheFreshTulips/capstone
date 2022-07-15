@@ -11,6 +11,7 @@ import { TaskContext } from "../App.js";
 import config from "../config";
 import TextField from "@mui/material/TextField";
 import { MenuItem } from "@mui/material";
+import '../styles/SharedStyles.css'
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 const validRanks = [
@@ -52,6 +53,7 @@ const Profile = () => {
     name: "",
     rank: "",
     org_id: 0,
+    org_name: "",
     email: "",
   });
   let [userData, setUserData] = useState({
@@ -86,19 +88,26 @@ const Profile = () => {
     let url = `${ApiUrl}/users/${tc.userId}`;
     fetch(url)
       .then((res) => res.json())
-      .then((data) => setUserData(data[0]))
-      .then(
+      .then((data) => {setUserData(data[0]); return data[0];})
+      .then( (data) => {
+        setInput( {
+          ...input,
+          org_id: data.org_id
+        }
+        )
         fetch(`${ApiUrl}/orgs`)
           .then((res) => res.json())
           .then((data) => {
             setOrgs(data);
           })
+        }
       );
   }, []);
 
   const handleSubmit = (e) => {
     let request = "PATCH";
     let body = formatPatchReq();
+    console.log(body)
     let url = `${ApiUrl}/users/${tc.userId}`;
 
     console.log(body);
@@ -110,10 +119,29 @@ const Profile = () => {
         body: JSON.stringify(body),
       }).then((res) => {
         console.log(res);
+        alert("Profile has been updated.")
       });
       e.preventDefault();
     }
   };
+
+  const handleChange = (e) => {
+    console.log(e.target.value)
+    setInput({
+      ...input,
+      org_id : e.target.value
+    })
+    // let name
+    // orgs.forEach(ele => {
+    //   if (ele.org_id == e.target.value){
+    //     name = ele.org_name
+    //   }
+    // })
+    // setInput({
+    //   ...input,
+    //   org_name : name
+    // })
+  }
 
   return (
     <Box m={2} p={1}>
@@ -200,8 +228,9 @@ const Profile = () => {
                 }}
                 id="org"
                 select
-                value={userData.org_id}
-                onChange={setInput}
+                default={userData.org_name}
+                value={input.org_id}
+                onChange={handleChange}
                 name="org_id"
               >
                 {orgs.map((org) => (

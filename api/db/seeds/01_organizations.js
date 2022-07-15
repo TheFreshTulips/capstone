@@ -13,9 +13,9 @@ exports.seed = async function(knex) {
   await knex('organizations').del()
   await knex('organizations').insert([
     { name: 'Space Force', img_url: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/Logo_of_the_United_States_Space_Force.png', parent_id: null},
-    { name: '21 CS', img_url: 'https://media.defense.gov/2019/May/13/2002131051/780/780/0/190513-F-O3755-1001.JPG', parent_id: 1},
-    { name: 'SCX', img_url: 'https://media.defense.gov/2019/May/13/2002131051/780/780/0/190513-F-O3755-1001.JPG', parent_id: 2},
-    { name: 'SCXZ', img_url: 'https://media.defense.gov/2019/May/13/2002131051/780/780/0/190513-F-O3755-1001.JPG', parent_id: 3},
-    { name: 'SCXA', img_url: 'https://media.defense.gov/2019/May/13/2002131051/780/780/0/190513-F-O3755-1001.JPG', parent_id: 3},
+    { name: '2 SOPS', img_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/2nd_Space_Operations_Squadron_emblem.png', parent_id: 1},
+    { name: '2SOPS/DOO', img_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/2nd_Space_Operations_Squadron_emblem.png', parent_id: 2},
+    { name: '2SOPS/DOOA', img_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/2nd_Space_Operations_Squadron_emblem.png', parent_id: 3},
+    { name: '2SOPS/DOOC', img_url: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/2nd_Space_Operations_Squadron_emblem.png', parent_id: 3},
   ]);
 };

@@ -149,53 +149,61 @@ const TaskTable = () => {
           ) : (
             <>
               {tasks[0] && isUnit ? <Typography variant="h4" key="header" align = 'center' color="white">{tasks[0].task_org_name}</Typography>: <></>}
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 400 }} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      {rowNames.map((element, index) => {
+              {tasks.length > 0 ? (
+                <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 400 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        {rowNames.map((element, index) => {
+                          return (
+                            <TableCell key={index} align="center">
+                              <Typography variant="h6" color="black">{element}</Typography>
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {tasks.map((row) => {
                         return (
-                          <TableCell key={index} align="center">
-                            <Typography variant="h6" color="black">{element}</Typography>
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {tasks.map((row) => {
-                      return (
-                        <>
-                          <TableRow
-                            key={tasks.task_id}
-                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                          >
-                            {keys.map((colName, index) => {
-                                      // console.log(`column:${colName}`);
-                                      // console.log(`index:${index}`);
-                                      return index === keys.length - 1 ? (
-                                        <TableCell key={index} align="center">
-                                          {row[colName] === null
-                                            ? "In Progress"
-                                            : new Date(row[colName]).toLocaleString("en-US")}
+
+                            <TableRow
+                              key={tasks.task_id}
+                              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                            >
+                              {keys.map((colName, index) => {
+                                        // console.log(`column:${colName}`);
+                                        // console.log(`index:${index}`);
+                                        return index === keys.length - 1 ? (
+                                          <TableCell key={index} align="center">
+                                            {row[colName] === null
+                                              ? "In Progress"
+                                              : new Date(row[colName]).toLocaleString("en-US")}
+                                          </TableCell>
+                                        ) : colName === "assigned_to" ? (
+                                          <TableCell key={index} component="th" scope="row" align="center">
+                                              {getOwners(row)}
+                                          </TableCell>
+                                        ) : (
+                                          <TableCell key={index} component="th" scope="row" align="center">
+                                          {row[colName]}
                                         </TableCell>
-                                      ) : colName === "assigned_to" ? (
-                                        <TableCell key={index} component="th" scope="row" align="center">
-                                            {getOwners(row)}
-                                        </TableCell>
-                                      ) : (
-                                        <TableCell key={index} component="th" scope="row" align="center">
-                                        {row[colName]}
-                                      </TableCell>
-                                      );
-                                    })}
-                          </TableRow>
-                        </>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                                        );
+                                      })}
+                            </TableRow>
+
+                          );
+                          })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+              )
+                :
+                <Grid item sm={12} margin={3} paddingBottom={5} display="flex" justifyContent="center">
+                  <Typography variant="h5">No Tasks to Display</Typography>
+                </Grid>
+              }
               { tc.isSupervisor && isUnit && pathname === "/reports"  ? (
                 childOrgTasks.map((element) => {
                   return (
@@ -215,7 +223,8 @@ const TaskTable = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {element.tasks.map((row) => {
+                          {element.tasks.length > 0 ? (
+                            element.tasks.map((row) => {
                               return (
                                 <>
                                   <TableRow
@@ -244,7 +253,12 @@ const TaskTable = () => {
                                   </TableRow>
                                 </>
                               );
-                            })}
+                            }) )
+                          :
+                          <Grid item sm={12} margin={3} paddingBottom={5} display="flex" justifyContent="center">
+                              <Typography variant="h5">No Tasks to Display</Typography>
+                          </Grid>
+                            }
                           </TableBody>
                         </Table>
                       </TableContainer>

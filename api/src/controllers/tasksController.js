@@ -70,18 +70,6 @@ const orgRequest = (req, res) => {
   } else {
     res.status(404).send();
   }
-  /*
-  .union([
-        knex("users as owners")
-        .join("users_tasks as ut", "ut.user_id", "=", "owners.id")
-        .select(
-          "owners.id as owner_id",
-          "owners.rank as owner_rank",
-          "owners.name as owner_name"
-        )
-        .where("ut.task_id", "=", "tasks.id")
-      ])
-      */
 };
 
 const userRequest = (req, res) => {
@@ -148,6 +136,7 @@ const createdByRequest = (req, res) => {
         "tasks.author_id as author_id"
       )
       .where("tasks.author_id", "=", req.params.userid)
+      .whereNot("tasks.status", "=", "finished")
       .then((data) => {
         res.set("Access-Control-Allow-Origin", "*");
         res.status(200).send(data);

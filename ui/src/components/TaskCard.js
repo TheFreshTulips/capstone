@@ -7,6 +7,8 @@ import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
+const priorityColors = {1: "red", 2:"#DA5309", 3:"#FFB302", 4:"#FDED61", 5:"#99F666"}
+
 const TaskCard = (props) => {
   console.log("here");
   const navigate = useNavigate();
@@ -26,8 +28,8 @@ const TaskCard = (props) => {
         <Typography variant="h5" align="center">
           {props.title}
         </Typography>
-        <Typography sx={{ fontSize: 11 }} align="center" color="#4DACFF">
-          Priority:{props.priority}
+        <Typography sx={{ fontSize: 11, color: priorityColors[props.priority]}} align="center">
+          Priority: {props.priority}
         </Typography>
       </CardContent>
       <CardActions>

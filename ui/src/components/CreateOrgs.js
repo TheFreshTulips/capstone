@@ -71,8 +71,9 @@ const CreateOrgs = () => {
       maxWidth="lg"
       className="post-page"
       sx={{
+        marginTop:"50px",
         marginBottom: "0",
-        boxShadow: "0 0 10px rgb(10, 31, 10)",
+        boxShadow: "0 0 10px #4DACFF",
         borderRadius: "5px",
         backgroundColor: "#003665",
       }}
@@ -156,5 +157,5 @@ const CreateOrgs = () => {
     </Container>
   );
 };
-//https://en.wikipedia.org/wiki/721st_Operations_Support_Squadron#/media/File:3rd_Combat_Training_Squadron_emblem.png
+
 export default CreateOrgs;

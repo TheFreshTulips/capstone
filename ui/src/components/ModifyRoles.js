@@ -16,6 +16,8 @@ const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 const ModifyRoles = () => {
   const navigate = useNavigate();
 
+  let { id } = useParams();
+
   let [input, setInput] = useState({
     name: "",
     rank: "",
@@ -52,8 +54,6 @@ const ModifyRoles = () => {
     "Gen",
   ];
   const [orgs, setOrgs] = useState([]);
-
-  let { id } = useParams();
 
   const [feedback, setFeedback] = useState("");
   const handleDelete = () => {
@@ -154,6 +154,7 @@ const ModifyRoles = () => {
       <Paper
         elevation={5}
         style={{
+          marginTop:"20px",
           backgroundColor: "#003665",
           boxShadow: "0 0 10px #4DACFF",
           borderRadius: "5px",
@@ -166,19 +167,19 @@ const ModifyRoles = () => {
               style={{ textDecoration: "none", color: "black" }}
               className="roles-link"
             >
-              <Typography variant="h6" m={5}>
+              <Typography variant="h6" m={2}>
                 Back to the roles page
               </Typography>
             </Link>
           </Grid>
-          <Grid item xs={6} justifyContent="right" display="flex" p={5}>
+          <Grid item xs={6} justifyContent="right" display="flex" p={2}>
             <Fab color="error" aria-label="delete" onClick={handleDelete}>
               <DeleteIcon />
             </Fab>
           </Grid>
         </Grid>
         <form onSubmit={handleSubmit}>
-          <Box m={2} pt={3}>
+          <Box m={2}>
             <Grid
               container
               spacing={3}
@@ -186,10 +187,9 @@ const ModifyRoles = () => {
               alignItems="center"
               justifyContent="space-evenly"
             >
-              <Box m={2} pt={3}>
-                <Typography variant="h5">Modify Role</Typography>
+              <Box m={2}>
+                <Typography variant="h4">Modify Role</Typography>
               </Box>
-
               <Box m={1}>
                 <Typography variant="body1" color="red">
                   {feedback}
@@ -303,7 +303,6 @@ const ModifyRoles = () => {
                   ))}
                 </TextField>
               </Box>
-
               <Box m={2} pt={3}>
                 <Button className="submitButton" type="submit" value="Submit">
                   Submit Changes

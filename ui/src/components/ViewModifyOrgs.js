@@ -35,7 +35,7 @@ const ViewModifyOrgs = () => {
 
   return (
     <>
-      <Box width={"90%"} margin="auto" marginTop={5}>
+      <Box width={"90%"} margin="auto" marginTop={10}>
         <Grid
           container
           spacing={3}

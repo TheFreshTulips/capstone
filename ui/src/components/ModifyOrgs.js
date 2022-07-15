@@ -15,11 +15,10 @@ const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 const ModifyOrgs = () => {
   const navigate = useNavigate();
-  //   "org.id as org_id",
-  // "org.img_url as org_img_url",
-  // "org.name as org_name",
-  // "org.parent_id as org_parent_id",
-  // "parent.name as parent_name"
+  const [feedback, setFeedback] = useState("");
+  const [orgs, setOrgs] = useState([]);
+
+  let { id } = useParams();
   let [input, setInput] = useState({
     name: "",
     parent_name: "",
@@ -27,21 +26,11 @@ const ModifyOrgs = () => {
     img_url: "",
   });
 
-  const [feedback, setFeedback] = useState("");
-  const [orgs, setOrgs] = useState([]);
-
-  let { id } = useParams();
-
   useEffect(() => {
     fetch(`${ApiUrl}/orgs/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(`data on orgs ${id}: `, data[0]);
-        //   "org.id as org_id",
-        // "org.img_url as org_img_url",
-        // "org.name as org_name",
-        // "org.parent_id as org_parent_id",
-        // "parent.name as parent_name"
         setInput({
           name: data[0].org_name,
           img_url: data[0].org_img_url,
@@ -55,7 +44,6 @@ const ModifyOrgs = () => {
 
   const handleChange = (e) => {
     // sets Input state depending on what the user inputted into registration fields
-
     setInput({
       ...input,
       [e.target.name]: e.target.value,
@@ -134,6 +122,7 @@ const ModifyOrgs = () => {
       <Paper
         elevation={5}
         style={{
+          marginTop:"20px",
           backgroundColor: "#003665",
           boxShadow: "0 0 10px #4DACFF",
           borderRadius: "5px",
@@ -151,14 +140,14 @@ const ModifyOrgs = () => {
               </Typography>
             </Link>
           </Grid>
-          <Grid item xs={6} justifyContent="right" display="flex" p={5}>
+          <Grid item xs={6} justifyContent="right" display="flex" p={3}>
             <Fab color="error" aria-label="delete" onClick={handleDelete}>
               <DeleteIcon />
             </Fab>
           </Grid>
         </Grid>
         <form onSubmit={handleSubmit}>
-          <Box m={2} pt={3}>
+          <Box m={2}>
             <Grid
               container
               spacing={3}
@@ -166,7 +155,7 @@ const ModifyOrgs = () => {
               alignItems="center"
               justifyContent="space-evenly"
             >
-              <Box m={2} pt={3}>
+              <Box m={2}>
                 <Typography variant="h5">Modify Organizations</Typography>
               </Box>
 

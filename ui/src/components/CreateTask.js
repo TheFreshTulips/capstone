@@ -5,6 +5,8 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+// import { ThemeProvider } from "@mui/material/styles";
+
 import {
   Button,
   MenuItem,
@@ -21,6 +23,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import config from "../config";
 const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
+import '../styles/SharedStyles.css';
 import { TaskContext } from "../App.js";
 
 const ITEM_HEIGHT = 48;
@@ -55,20 +58,51 @@ const CreateTask = () => {
   let [users, setUsers] = useState([]);
   const [selectedNameOrNames, setSelectedNameOrNames] = useState([]);
 
-  useEffect(() => {
+  // const dtptextcolor = {
+  //   typography: {
+  //     allVariants: {
+  //       color: "white"
+  //     },
+  //   }
+  // };
+
+  useEffect(async () => {
     // fetches an array of all users in the organization and then sets the state with that info
-    fetch(`${ApiUrl}/users/orgs/${tc.userOrg}`)
+    let promiseArr = [];
+    if (tc.isSupervisor) {
+      await fetch(`${ApiUrl}/orgs/${tc.userOrg}/children`)
+        .then((res) => res.json())
+        .then((data) => {
+          data.forEach(element => {
+            promiseArr.push(fetch(`${ApiUrl}/users/orgs/${element.org_id}`)
+              .then(res => res.json())
+              .then(data => {
+                console.log(`got back from sub-org get data: `, data)
+                return data;
+              })
+            )
+          })
+        })
+    }
+
+    promiseArr.push(fetch(`${ApiUrl}/users/orgs/${tc.userOrg}`)
       .then((res) => res.json())
+    )
+
+    Promise.all(promiseArr)
       .then((data) => {
-        setUsers(
-          data.map((el) => {
-            return {
+        console.log(`data: `, data)
+        let allUsers = []
+        data.map(element => {
+          element.map((el) => {
+            allUsers.push({
               id: el.user_id,
               name: el.user_name,
               rank: el.user_rank,
-            };
+            })
           })
-        );
+        })
+        setUsers(allUsers);
       })
       .catch((err) => console.log("Error getting users array", err));
   }, []);
@@ -146,7 +180,7 @@ const CreateTask = () => {
       }}
     >
       <form onSubmit={handleSubmit}>
-        <Box m={2} pt={3}>
+        <Box m={2} pt={3} marginTop={10}>
           <Grid
             container
             spacing={3}
@@ -163,6 +197,7 @@ const CreateTask = () => {
                   "& .MuiInputBase-root": {
                     color: "white",
                   },
+                  minWidth: 350,
                 }}
                 label="Title"
                 type="title"
@@ -172,28 +207,14 @@ const CreateTask = () => {
                 required
               />
             </Box>
+
             <Box m={1}>
               <TextField
                 sx={{
                   "& .MuiInputBase-root": {
                     color: "white",
                   },
-                }}
-                label="Description"
-                type="description"
-                name="description"
-                value={input.description}
-                onChange={handleChange}
-                required
-              />
-            </Box>
-            <Box m={1}>
-              <TextField
-                sx={{
-                  "& .MuiInputBase-root": {
-                    color: "white",
-                  },
-                  minWidth: 223,
+                  minWidth: 350,
                 }}
                 id="priority"
                 select
@@ -215,13 +236,18 @@ const CreateTask = () => {
               </TextField>
             </Box>
             <Box m={1}>
-              <FormControl sx={{ m: 1, width: 300 }}>
+
+              <FormControl sx={{ m: 1, width: 350 }}>
                 <InputLabel id="demo-multiple-checkbox-label">
-                  Assign Task
+                  Assign Task To
                 </InputLabel>
                 <Select
+                  sx={{
+                    color: "white",
+                  }}
                   labelId="demo-multiple-name-label"
                   id="demo-multiple-name"
+                  fullwidth
                   multiple
                   value={selectedNameOrNames}
                   onChange={handleSelect}
@@ -235,7 +261,7 @@ const CreateTask = () => {
                       value={el.name}
                       sx={{ color: "black" }}
                     >
-                      {el.name}
+                      {`${el.rank} ${el.name}`}
                     </MenuItem>
                   ))}
                 </Select>
@@ -254,17 +280,34 @@ const CreateTask = () => {
                 required="required"
               />
             </Box> */}
-            <Box m={1}>
+            <Box m={1} sx={{ minWidth: 350 }}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Stack spacing={3}>
                   <DateTimePicker
                     label="Suspense Date/Time"
                     value={input.suspense_date}
                     onChange={handleSuspenseDateChange}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
+                    renderInput={(params) =>
+                        <TextField {...params} />
+                    }/>
                 </Stack>
               </LocalizationProvider>
+            </Box>
+            <Box m={1} sx={{ minWidth: 500 }}>
+              <TextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    color: "white",
+                  },
+                }}
+                label="Description"
+                type="description"
+                name="description"
+                fullWidth
+                value={input.description}
+                onChange={handleChange}
+                required
+              />
             </Box>
             {/* <Box m={1}>
               <TextField

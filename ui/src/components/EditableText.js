@@ -130,10 +130,13 @@ const EditableText = (props) => {
               </Stack>
             </LocalizationProvider>
           ) : props.input_type === "dropdown" ? (
-            <Box sx={{ minWidth: 120 }}>
+            <Box sx={{ minWidth: 120}}>
               <FormControl fullWidth>
                 <InputLabel id="simple-select-label">Status</InputLabel>
                 <Select
+                  sx={{
+                    color: "white"
+                  }}
                   labelId="simple-select-label"
                   id="simple-select"
                   value={value}
@@ -173,7 +176,7 @@ const EditableText = (props) => {
           alignItems="center"
           justifyContent="space-evenly"
         >
-          <Typography variant={typography}>
+          <Typography variant={typography} sx={{color:props.color}}>
             {props.field === "suspense_date"
               ? convertDateTime(value)
               : typeof value === "string" && props.field !== "description"
