@@ -4,10 +4,6 @@
 
 Taskify is a dashboard-based task management tool which simplifies task tracking and streamlines Weekly Activity Reporting for units and individuals. Depending on their role(s), users can view, filter, create, update, delete, and assign tasks in a one-stop-shop.
 
-This app is deployed to Heroku on two separate applications, one for the [UI/front-end](https://taskify-capstone-ui.herokuapp.com/) and one for the [API/back-end](https://taskify-capstone-api.herokuapp.com/).
-
-*Be aware that if the application is currently spun down because it's been idle for some time, then it will likely take some time to spin back up. If it doesn't come up the first time you may have to refresh the page.*
-
 ## Developers
 
 - Nehemiah Alvarado [@Alvarado96](https://github.com/Alvarado96)
